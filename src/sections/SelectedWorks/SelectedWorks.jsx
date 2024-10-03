@@ -95,8 +95,7 @@ const SelectedWorks = () => {
             Renovación y Creación
           </h2>
           <p className="text-[#929294] font-medium text-[80%] lg:text-base">
-            Let's get a deeper look at the challenges we overcome daily to
-            create success stories for brands.
+            Transformamos tu negocio adaptandonos a tu visión, los valores y el branding de tu marca.
           </p>
         </motion.div>
         <motion.div
