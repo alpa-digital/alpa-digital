@@ -25,12 +25,12 @@ const Navbar = () => {
 					whileInView='visible'
 					className='flex flex-row justify-between items-center py-4 px-4 lg:px-8 pb-4 lg:pb-8 border-b border-[#dddddd] max-w-[1200px] m-auto'>
 					<Link
-						to='about'
+						to='home'
 						className='cursor-pointer text-gray-700 font-semibold text-[80%] lg:text-[1rem] pt-[8px] hidden md:flex'>
 						<motion.span variants={riseUpItem}>Sobre Nosotros</motion.span>
 					</Link>
 					<Link
-						to='project'
+						to='ofrecemos'
 						className='cursor-pointer text-gray-700 font-semibold text-[80%] lg:text-[1rem] pt-[8px] hidden md:flex'>
 						<motion.span variants={riseUpItem}>Proyectos</motion.span>
 					</Link>

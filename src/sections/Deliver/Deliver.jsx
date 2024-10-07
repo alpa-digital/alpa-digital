@@ -10,7 +10,7 @@ const Deliver = () => {
     useContext(AnimationContext);
   return (
     <div
-      id="about"
+      id="ofrecemos"
       data-scroll-section
       className="h-full text-white pt-[5rem] pb-[2rem] lg:w-[90%] max-w-[1200px] m-auto px-6 md:px-10 md:pt-[15rem] xxl:pt-[20rem]"
     >

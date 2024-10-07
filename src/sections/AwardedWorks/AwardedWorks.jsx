@@ -64,8 +64,9 @@ const AwardedWorks = () => {
         labels={[
           { name: "Software", delay: 0 },
           { name: "SaaS", delay: 0.2 },
-          { name: "Mejor proyecto de Ingeniería del Software", delay: 0.4 },
           { name: "11/2022", delay: 0.4 },
+          { name: "Mejor proyecto de Ingeniería del Software", delay: 0.4 },
+          
         ]}
         caption="Cognicise.app"
         title="Cognicise.app"

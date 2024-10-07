@@ -52,9 +52,9 @@ const CTA = () => {
             }}
           >
             <Button className="flex items-center justify-center text-[#090909] bg-[#fff] font-medium w-max md:py-2 md:px-4">
-              <span className="mr-2 lg:text-2xl font-semibold text-[80%] md:text-base">
-                Obten tu Consulta GRATIS
-              </span>
+              <a  href="https://cal.com/alpa-digital-studio" target="_blank"><span className="mr-2 lg:text-2xl font-semibold text-[80%] md:text-base">
+                Agenda tu Consulta GRATIS
+              </span></a>
               <FiArrowUpRight size={20} />
             </Button>
           </motion.div>

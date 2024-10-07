@@ -54,7 +54,9 @@ const Home = () => {
               <div className="flex flex-col items-center md:flex-row md:justify-center lg:justify-start">
                 <motion.span initial={{ opacity: 0, y: 20 }} whileInView={fade}>
                   <Button className="flex items-center w-fit mb-12 md:mb-0 font-medium">
+                  <a  href="https://cal.com/alpa-digital-studio" target="_blank">
                     <span className="mr-4">agenda tu Consulta gratis</span>{" "}
+                    </a>
                     <FiArrowUpRight />
                   </Button>
                 </motion.span>
