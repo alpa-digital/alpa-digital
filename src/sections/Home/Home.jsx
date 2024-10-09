@@ -23,7 +23,12 @@ const Home = () => {
               whileInView="visible"
               className="lg:w-[60%] text-center lg:text-left mb-8 lg:mb-0"
             >
+              <a className="inline-flex items-center px-4 py-2 bg-[#D0F1D6] bg-opacity-80 text-[#78C585] rounded-full text-sm font-medium mb-2 hover:bg-opacity-30 transition-all duration-300">
+                  <span className="mr-2 text-2xl">•</span>
+                  Agenda abierta
+              </a>
               <div className="md:flex items-center">
+              
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={fade}
@@ -38,7 +43,7 @@ const Home = () => {
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={fade}
-                className="lg:mb-4 mb-4 text-sm lg:text-base md:w-[80%] lg:w-full m-auto font-regular text-gray-700 mt-2"
+                className="lg:mb-4 mb-4 text-m lg:text-base md:w-[80%] lg:w-full m-auto font-regular text-gray-700 lg:mt-8 mt-2"
               >
                 Nuestros servicios de agencia digital transforman PYMES mediante IA, Data Analytics y 
                 las últimas tendencias tecnológicas. 
@@ -47,13 +52,13 @@ const Home = () => {
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={fade}
-                className="lg:mb-4 mb-4 text-sm lg:text-base md:w-[80%] lg:w-full m-auto font-regular text-gray-700"
+                className="lg:mb-4 mb-4 text-m lg:text-base md:w-[80%] lg:w-full m-auto font-regular text-gray-700"
               >
                 Mejoramos el reconocimiento de marca, optimizamos procesos y aumentamos el tráfico web de tu negocio.
               </motion.p>
               <div className="flex flex-col items-center md:flex-row md:justify-center lg:justify-start">
                 <motion.span initial={{ opacity: 0, y: 20 }} whileInView={fade}>
-                  <Button className="flex items-center w-fit mb-12 md:mb-0 font-medium">
+                  <Button className="flex items-center w-fit mb-12 md:mb-0 font-medium bg-[#FFBD59] text-white">
                   <a  href="https://cal.com/alpa-digital-studio" target="_blank">
                     <span className="mr-4">agenda tu Consulta gratis</span>{" "}
                     </a>

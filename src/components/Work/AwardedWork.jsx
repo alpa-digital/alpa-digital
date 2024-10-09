@@ -3,7 +3,7 @@ import { AnimationContext } from "../../context/animation";
 import Label from "../Label/Label";
 import { motion } from "framer-motion";
 
-const AwardedWork = ({ labels, caption, title, icon, className }) => {
+const AwardedWork = ({ labels, caption, title, subtitle, icon, className }) => {
 	return (
 		<div className='mt-5 lg:mt-10'>
 			{/* The head */}
@@ -43,7 +43,7 @@ const AwardedWork = ({ labels, caption, title, icon, className }) => {
 						transition: { duration: 0.8, delay: 0.6 },
 					}}
 					className='text:lg lg:text-2xl hidden lg:flex uppercase text-[#929294] font-semibold'>
-					&copy; {caption}
+					{caption}
 				</motion.div>
 			</div>
 
@@ -59,18 +59,28 @@ const AwardedWork = ({ labels, caption, title, icon, className }) => {
 					transition: { duration: 0.8, delay: 0.5 },
 				}}
         viewport={{ once: true }}
-				className={`${className} h-50 w-full bg-no-repeat bg-cover bg-right mt-2 lg:mt-6 rounded-[1.5rem] md:rounded-[2.5rem] px-5 py-10 lg:p-10 text-white `}>
+				className={`${className} h-50 w-full bg-no-repeat bg-cover bg-right mt-2 lg:mt-6 rounded-[2.5rem] md:rounded-[2.5rem] px-5 py-10 lg:p-10 text-white `}>
 				<div className='text-3xl text-center md:text-left lg:text-3xl uppercase font-bold w-[100%] lg:w-[40%]'>
 					<h3 className='relative'>
 						{title}
 						<span
-							className='
-            absolute ml-4 bottom-1 center'>
+							className='absolute ml-4 bottom-1 center'>
 							
 						</span>
 					</h3>
 				</div>
+				<div className='text-m text-center mt-12 mb-12 md:text-left lg:text-m font-regular w-[100%] lg:w-[40%]'>
+					<h3 className='relative'>
+						{subtitle}
+						<span
+							className='absolute ml-4 bottom-1 center'>
+							
+						</span>
+					</h3>
+				</div>
+				
 			</motion.div>
+			
 		</div>
 	);
 };

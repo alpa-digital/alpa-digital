@@ -38,7 +38,7 @@ const Clients = () => {
             y: 0,
             transition: { duration: 0.8, delay: 0.3 },
           }}
-          className="text-[#929294] font-medium lg:text-base text-[80%] lg:w-[40%] my-6 md:my-0 text-left"
+          className="text-[#929294] font-medium lg:text-base text-[90%] lg:w-[40%] my-6 md:my-0 text-left"
         >
           We are encouraged and inspired when our clients share their project
           results with us, we always have noted outstanding results of our work.

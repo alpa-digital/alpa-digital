@@ -35,7 +35,7 @@ const Footer = () => {
             </Link>
             <motion.p
               variants={riseUpItem}
-              className="text-[#929294] font-medium mb-8 lg:text-base text-[80%]"
+              className="text-[#929294] font-medium mb-8 lg:text-base text-[90%]"
             >
             </motion.p>
             {/*<motion.span variants={riseUpItem}>

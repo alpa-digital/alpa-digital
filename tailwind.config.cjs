@@ -20,6 +20,8 @@ module.exports = {
       backgroundImage: {
         "t-banner": "url('assets/images/Home Trump Banner.png')",
         "work-banner-1": "url('assets/images/cognicise-bg.png')",
+        "work-banner-2": "url('assets/images/cta-bg.png')",
+        "work-banner-3": "url('assets/images/Classic Blue Bg.png')",
         "cta-banner": "url('assets/images/Start Project Bg.png')",
       },
     },

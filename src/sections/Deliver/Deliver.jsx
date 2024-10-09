@@ -44,20 +44,20 @@ const Deliver = () => {
         >
           <motion.p
             variants={riseUpItem}
-            className="text-[#929294] font-regular lg:text-base text-[80%]"
+            className="text-[#929294] font-regular lg:text-base text-[90%]"
           >
             Estrategia digital personalizada basada en un análisis profundo. 
             Tu negocio merece más que una solución predefinida.
           </motion.p>
           <motion.p
             variants={riseUpItem}
-            className="text-[#929294] font-regular lg:text-base text-[80%]"
+            className="text-[#929294] font-regular lg:text-base text-[90%]"
           >
             Transparencia total: seguimiento en tiempo real del progreso y resultados de tu proyecto.
           </motion.p>
           <motion.p
             variants={riseUpItem}
-            className="text-[#929294] font-regular lg:text-base text-[80%]"
+            className="text-[#929294] font-regular lg:text-base text-[90%]"
           >
             Servicios integrados para maximizar tu ROI, alineados con tus objetivos de crecimiento.
           </motion.p>

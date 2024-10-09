@@ -37,7 +37,7 @@ const Team = () => {
             className="text-center"
           >
             <p className="text-white md:text-xl lg:text-2xl">John Travolta</p>
-            <span className="text-[#929294] text-[80%] lg:text-[100%]">
+            <span className="text-[#929294] text-[90%] lg:text-[100%]">
               CEO Alpa.
             </span>
           </motion.div>
@@ -64,7 +64,7 @@ const Team = () => {
             className="text-center"
           >
             <p className="text-white md:text-xl lg:text-2xl">Frank Staven</p>
-            <span className="text-[#929294] text-[80%] lg:text-[100%]">
+            <span className="text-[#929294] text-[90%] lg:text-[100%]">
               Art Director Alpa.
             </span>
           </motion.div>
@@ -85,7 +85,7 @@ const Team = () => {
         </motion.h2>
         <motion.p
           variants={riseUpItem}
-          className="text-[#929294] font-medium lg:text-base text-[80%]"
+          className="text-[#929294] font-medium lg:text-base text-[90%]"
         >
           Our team consists of more than 80 experienced and very passionate
           people at the cutting edge of all things digital marketing. We always

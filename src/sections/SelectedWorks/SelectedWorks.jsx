@@ -50,13 +50,12 @@ const SelectedWorks = () => {
           >
             <SelectedWork
               title={
-                <h3 className="text-[1.5rem] lg:text-[1.5rem] font-semibold uppercase w-[100%] break-all leading-[3rem]">
-                  <span className="block">Transformación</span>
-                  <span>digital para PYMEs</span>
+                <h3 className="text-[1.1rem] text-white lg:text-[1.1rem] font-regular  w-[100%]">
+                  <span>Diseñamos la estructura y estilo según los objetivos acordados. Incorporamos tu feedback y realizamos ajustes para lograr el mejor resultado posible.</span>
                 </h3>
               }
-              year="02"
-              className="bg-white"
+              year="Paso 2 - Definición"
+              className="bg-[#FFBD59]"
             />
           </motion.div>
           <motion.div
@@ -77,13 +76,12 @@ const SelectedWorks = () => {
           >
             <SelectedWork
               title={
-                <h3 className="text-[1.5rem] lg:text-[1.5rem] font-semibold uppercase w-[100%] break-all leading-[3rem]">
-                  <span className="block">Diseño, Marketing y</span>
-                  <span>Software a medida</span>
+                <h3 className="text-[1.1rem] text-white lg:text-[1.1rem] font-regular  w-[100%]">
+                  <span>Iniciamos el desarrollo. Al finalizar, tendrás un producto completamente desarrollado y estará listo para atraer nuevos clientes.</span>
                 </h3>
               }
-              year="03"
-              className="bg-white"
+              year="Paso 3 - Desarrollo"
+              className="bg-[#FFBD59]"
             />
           </motion.div>
         </div>
@@ -94,7 +92,7 @@ const SelectedWorks = () => {
           <h2 className="uppercase text-[1.5rem] lg:text-[3rem] font-semibold w-full leading-[3rem] mb-4">
             Renovación y Creación
           </h2>
-          <p className="text-[#929294] font-medium text-[80%] lg:text-base">
+          <p className="text-[#929294] font-medium text-[90%] lg:text-base">
             Transformamos tu negocio adaptándonos a tu vision, los valores y el branding de tu marca.
           </p>
         </motion.div>
@@ -116,12 +114,13 @@ const SelectedWorks = () => {
         >
           <SelectedWork
             title={
-              <h3 className="text-[1.5rem] lg:text-[1.5rem] font-semibold uppercase w-full">
-                Creación de Startups y proyectos desde 0
-              </h3>
+              <h4 className="text-[1.1rem] text-white lg:text-[1.1rem] font-regular w-full">
+                Agenda una reunión de 30 minutos para que podamos conocer tu empresa, ver si podemos ayudarte y definir un posible proyecto.
+
+              </h4>
             }
-            year="01"
-            className=" bg-[#fff] lg:w-[300px] mt-8 mb-12"
+            year="Paso 01 - Kick Off"
+            className=" bg-[#FFBD59] lg:w-[300px] mt-8"
           />
         </motion.div>
 
