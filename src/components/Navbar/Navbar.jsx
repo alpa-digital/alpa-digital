@@ -1,106 +1,22 @@
-import React, { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
-import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import React from "react";
 import Logo from "../../assets/images/alpa-logo2.png";
 import { Link } from "react-scroll";
-import { motion, AnimatePresence } from "framer-motion";
-import { useContext } from "react";
-import { AnimationContext } from "../../context/animation";
 
 const Navbar = () => {
-	const [nav, setNav] = useState(false);
-	const handleNav = () => {
-		setNav(!nav);
-	};
-
-	const { riseUpVariant, riseUpItem, navVariants, itemVariants, tagVariant } =
-		useContext(AnimationContext);
-
 	return (
-		<>
-			<div className='bg-[#f1f1f1] relative z-10'>
-				<motion.div
-					variants={riseUpVariant}
-					initial='hidden'
-					whileInView='visible'
-					className='flex flex-row justify-between items-center py-4 px-4 lg:px-8 pb-4 lg:pb-8 border-b border-[#dddddd] max-w-[1200px] m-auto'>
-					
-					
-					<Link to='home' className='cursor-pointer'>
-						<motion.img
-							variants={riseUpItem}
-							src={Logo}
-							alt='Logo'
-							className='h-[35px] mt-2'
-						/>
-					</Link>
-					
-					<Link
-						to='contact'
-						className='cursor-pointer bg-[#FFBD59] text-white rounded-lg font-medium text-[60%] lg:text-[0.80rem] pl-[16px] pr-[16px] pt-[8px] pb-[8px] hidden md:flex'
-						href=''>
-						<motion.span variants={riseUpItem}>Hablemos</motion.span>{" "}
-					</Link>
-					<motion.div
-						variants={tagVariant}
-						className='md:hidden'
-						onClick={handleNav}>
-						<HiOutlineMenuAlt3 size={25} />
-					</motion.div>
-				</motion.div>
+		<div className='bg-[#f1f1f1] relative z-10'>
+			<div className='flex flex-row justify-between items-center py-4 px-4 lg:px-8 pb-4 lg:pb-8 border-b border-[#dddddd] max-w-[1200px] m-auto'>
+				<Link to='home' className='cursor-pointer'>
+					<img src={Logo} alt='Logo' className='h-[35px] mt-2' />
+				</Link>
+				<a
+					href="https://cal.com/alpa-digital-studio"
+					target="_blank"
+					className='cursor-pointer bg-[#FFBD59] text-white rounded-lg font-medium text-[60%] lg:text-[0.80rem] pl-[16px] pr-[16px] pt-[8px] pb-[8px] hidden md:flex'>
+					Hablemos
+				</a>
 			</div>
-			<AnimatePresence>
-				<motion.div
-					initial={{ left: "100%" }}
-					animate={
-						nav
-							? { left: "0"}
-							: { left: "100%", transition: { delay: 1 } }
-					}
-					className={`bg-black bg-center bg-[length:900%] h-screen z-50 fixed top-0 w-screen duration-300 `}>
-					<motion.div
-						initial='hidden'
-						whileInView={nav ? "visible" : "hidden"}
-						variants={navVariants}
-						exit='hidden'
-						className='backdrop-blur-[8px] h-screen'>
-						<div
-							onClick={handleNav}
-							className='flex justify-end p-4 text-white'>
-							<motion.span variants={tagVariant}>
-								<FaTimes size={25} />
-							</motion.span>
-						</div>
-						<div className='flex flex-col items-center text-white'>
-							<Link
-								to='about'
-								onClick={handleNav}
-								className='p-6 text-[1.5rem] hover:text-[2rem] transition-all duration-150 font-semibold'>
-								<motion.span variants={itemVariants}> Sobre Nosotros</motion.span>
-							</Link>
-							<Link
-								to='project'
-								onClick={handleNav}
-								className='p-6 text-[1.5rem] hover:text-[2rem] transition-all duration-150 font-semibold'>
-								<motion.span variants={itemVariants}>Proyectos</motion.span>
-							</Link>
-							<Link
-								to='services'
-								onClick={handleNav}
-								className='p-6 text-[1.5rem] hover:text-[2rem] transition-all duration-150 font-semibold'>
-								<motion.span variants={itemVariants}>Servicios</motion.span>
-							</Link>
-							<Link
-								to='contact'
-								onClick={handleNav}
-								className='p-6 text-[1.5rem] hover:text-[2rem] transition-all duration-150 font-semibold'>
-								<motion.span variants={itemVariants}>Contacto</motion.span>
-							</Link>
-						</div>
-					</motion.div>
-				</motion.div>
-			</AnimatePresence>
-		</>
+		</div>
 	);
 };
 

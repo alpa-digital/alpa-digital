@@ -1,113 +1,123 @@
-import AwardedWork from "../../components/Work/AwardedWork";
-import CogniciseTag from "../../assets/images/cognicise-bg.png";
-import Crown from "../../assets/images/Awarded Works Crown.png";
-import Tag from "../../components/Tag/Tag";
-import OrangyWaveTag from "../../assets/images/reqs-bg.png";
-import { motion } from "framer-motion";
-import { useContext } from "react";
-import { AnimationContext } from "../../context/animation";
+import React from 'react';
+import ACMarcaLogo from '../../assets/logos/ACMarcaLogo.png';
+import CAFLogo from '../../assets/logos/CAFLogo.png';
+import CepsaLogo from '../../assets/logos/CepsaLogo.png';
+import CirsaLogo from '../../assets/logos/CirsaLogo.png';
+import DeoleoLogo from '../../assets/logos/DeoleoLogo.png';
+import GoodyearLogo from '../../assets/logos/GoodyearLogo.png';
+import LogistaLogo from '../../assets/logos/LogistaLogo.png';
+import MatsaLogo from '../../assets/logos/MatsaLogo.png';
+import PeraladaLogo from '../../assets/logos/PeraladaLogo.png';
+import TelefonicaLogo from '../../assets/logos/TelefonicaLogo.png';
+import VectaliaLogo from '../../assets/logos/VectaliaLogo.png';
 
 const AwardedWorks = () => {
-  const { riseUpVariant } = useContext(AnimationContext);
+  const testimonials = [
+    {
+      text: "La automatización con IA nos permitió triplicar nuestra productividad",
+      company: "TechFin"
+    },
+    {
+      text: "Mejoramos nuestro posicionamiento y visibilidad online significativamente",
+      company: "E-commerce"
+    }
+  ];
+
+  const logos = [
+    { name: "CAF", image: CAFLogo },
+    { name: "Grup Peralada", image: PeraladaLogo },
+    { name: "Cepsa", image: CepsaLogo },
+    { name: "Telefónica Tech", image: TelefonicaLogo },
+    { name: "Logista", image: LogistaLogo },
+    { name: "Vectalia", image: VectaliaLogo },
+    { name: "Goodyear", image: GoodyearLogo },
+    { name: "AC Marca", image: ACMarcaLogo },
+    { name: "Cirsa", image: CirsaLogo },
+    { name: "Deoleo", image: DeoleoLogo },
+    { name: "Matsa", image: MatsaLogo }
+  ];
+
   return (
     <div
       id="services"
       data-scroll-section
-      className="text-[#e5e5e5] pb-[2rem] lg:w-[90%] max-w-[1200px] m-auto px-6 xxl:pt-[3rem]"
+      className="relative"
     >
-      <motion.div
-        variants={riseUpVariant}
-        initial="hidden"
-        whileInView="visible"
-        className="flex flex-col lg:flex-row justify-between lg:items-center gap-10 lg:gap-10 mt-[4rem]"
-      >
-        <motion.h2
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          whileInView={{ opacity: 1, y: 0, transition: { duration: 0.8 } }}
-          className="uppercase text-[1.5rem] lg:text-[3rem] font-semibold lg:w-[100%] "
-        >
-          Proyectos Recientes
-        </motion.h2>
-        <motion.p
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.8, delay: 0.3 },
-          }}
-          className="text-[#929294] lg:w-[30%] font-medium lg:text-base text-[40%] text-left my-6 md:my-0 mt-8"
-        >
-    
-        </motion.p>
-        <motion.div
-          initial={{
-            opacity: 0,
-            x: 20,
-          }}
-          whileInView={{
-            opacity: 1,
-            x: 0,
-            transition: { duration: 0.8, delay: 0.6 },
-          }}
-        >
-        </motion.div>
-        
-      </motion.div>
+      <div className="absolute inset-0 bg-[#090909]">
+        <div className="absolute top-0 w-full h-px bg-white/5" />
+        <div className="absolute bottom-0 w-full h-px bg-white/5" />
+      </div>
 
-      {/* Awarded Work 1 */}
+      <div className="relative py-20 lg:py-24 lg:w-[80%] max-w-[1200px] m-auto px-6">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="inline-block text-[#FFBD59] font-semibold mb-4">
+            CASOS DE ÉXITO
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Transformación Digital en Acción
+          </h2>
+          <p className="text-[#929294]">
+            Descubre cómo empresas de todos los tamaños están aprovechando el poder de la IA
+          </p>
+        </div>
 
-      <AwardedWork
-        labels={[
-          { name: "Software", delay: 0 },
-          { name: "SaaS", delay: 0.2 },
-          { name: "Django Rest", delay: 0.2 },
-          { name: "React", delay: 0.2 },
-          { name: "07/2024", delay: 0.4 },
-          
-        ]}
-        caption="Reqs.ai"
-        title="reqs.ai"
-        subtitle="Reqs.ai es un Software As A Services que permite a sus usuarios generar documentos de toma de requerimientos en pocos minutos gracias al uso de Inteligencia Artificial Generativa."
-        className="bg-work-banner-3 mb-[3rem] sm:mb-0 bg-cover"
-      />
+        <div className="grid md:grid-cols-2 gap-6 mb-16">
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className="bg-[#1d1d1d] rounded-xl p-6 border border-white/5">
+              <blockquote className="text-white/80 text-lg mb-4">
+                "{testimonial.text}"
+              </blockquote>
+              <div className="text-[#FFBD59]">
+                Cliente - {testimonial.company}
+              </div>
+            </div>
+          ))}
+        </div>
 
-      <AwardedWork
-        labels={[
-          { name: "Software", delay: 0 },
-          { name: "Mobile", delay: 0.2 },
-          { name: "Flutter", delay: 0.2 },
-          { name: "Firebase", delay: 0.2 },
-          { name: "04/2024", delay: 0.4 },
-          
-        ]}
-        caption="Khé App"
-        title="Khé"
-        subtitle="Khé es una aplicación que permite a sus usuarios descubrir un mundo de emociones compartidas y crear un nuevo concepto de diario social."
-        className="bg-work-banner-2 mb-[3rem] sm:mb-0"
-      />
+        <div className="bg-[#1d1d1d]/50 rounded-2xl p-8 md:p-12 border border-white/5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-12 gap-y-10 items-center">
+            {logos.map((logo, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-center px-4"
+              >
+                <div className="relative group w-full">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#FFBD59]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <img
+                    src={logo.image}
+                    alt={logo.name}
+                    className="max-h-8 w-auto mx-auto opacity-60 group-hover:opacity-100 transition-all duration-300 filter brightness-200 group-hover:brightness-100"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      <AwardedWork
-        labels={[
-          { name: "Software", delay: 0 },
-          { name: "SaaS", delay: 0.2 },
-          { name: "Django Rest", delay: 0.2 },
-          { name: "Rect.js", delay: 0.2 },
-          { name: "11/2022", delay: 0.4 },
-          { name: "Premiado", delay: 0.4 },
-          
-        ]}
-        caption="Cognicise.app"
-        title="Cognicise.app"
-        subtitle="Cognicise es una aplicación móvil de ejercitación, monitorización, recordatorios y ayuda diseñada para personas con signos de deterioro cognitivo leve."
-        className="bg-work-banner-1 mb-[3rem] sm:mb-0"
-      />
-      
+        <div className="mt-12 text-center">
+          <a
+            href="https://cal.com/alpa-digital-studio"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-[#FFBD59] text-black font-semibold py-4 px-8 rounded-xl hover:bg-[#ffcb7d] transition-colors"
+          >
+            <span>Únete a estas Empresas</span>
+            <svg 
+              className="w-5 h-5" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
     </div>
   );
 };
