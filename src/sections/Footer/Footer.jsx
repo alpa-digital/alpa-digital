@@ -23,7 +23,7 @@ const Footer = () => {
           <div className="md:w-[40%] flex flex-col justify-between">
             <FooterLink text="Email" handle="info@alpa.digital" />
             <FooterLink text="Instagram" handle="@alpadigitalstudio" />
-            <FooterLink text="LinkedIn" handle="@alpadigitalstudio" />
+            <FooterLink text="Recursos" handle="Ver Guías" to="/ia-para-setters" />
           </div>
         </div>
       </footer>
