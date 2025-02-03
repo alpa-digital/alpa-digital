@@ -44,23 +44,32 @@ const GuiaSetters = () => {
  const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
+  
   try {
-    const response = await fetch('https://alpa.digital/api/send-guide', {
+    console.log('Sending request with data:', formData);
+    
+    const response = await fetch('/.netlify/functions/send-guide', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(formData)
     });
 
     const data = await response.json();
-    
-    if (response.ok) {
-      console.log('Email sent:', data);
-      setSuccess(true);
-    } else {
+    console.log('Response:', data);
+
+    if (!response.ok) {
       throw new Error(data.error || 'Error sending email');
     }
+
+    if (data.success) {
+      setSuccess(true);
+    }
+
   } catch (error) {
     console.error('Error:', error);
+    // Aquí podrías añadir un estado para mostrar el error al usuario
   } finally {
     setLoading(false);
   }
