@@ -1,6 +1,3 @@
-Parece un error 502, lo cual sugiere que la función está fallando al intentar leer el archivo. Vamos a modificar la forma en que manejamos el PDF:
-
-```javascript
 // netlify/functions/send-guide.js
 import { Resend } from 'resend';
 
@@ -147,11 +144,3 @@ export async function handler(event) {
     };
   }
 }
-```
-
-Este código:
-1. Elimina la dependencia de leer el archivo del sistema
-2. Usa un template de email más estructurado
-3. Simplifica el manejo de errores
-
-Necesitaremos el base64 del PDF. ¿Podrías proporcionarme el PDF para convertirlo a base64 y añadirlo al código?
