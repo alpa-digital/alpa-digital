@@ -27,7 +27,7 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
-        <Route path="/ia-para-setters" element={<GuiaSetters />} />
+        <Route path="/ia-para-setters" element={<GuiaSetters />} /> 
       </Routes>
     </BrowserRouter>
   );
