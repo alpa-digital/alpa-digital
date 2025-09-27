@@ -1,71 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="src/assets/images/alpa-ico.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- SEO Metadata -->
-    <title>Alpa | Agencia de Automatización con IA y Marketing Digital</title>
-    <meta name="description" content="Automatiza y escala tu negocio con IA. Servicios de automatización de procesos, marketing digital y desarrollo de software. Aumenta tu productividad hasta un 70%. Consultoría gratuita." />
-    <meta name="keywords" content="automatización IA, marketing digital, desarrollo software, generación contenido IA, SEO IA, agencia digital, chatbots, automatización procesos, PYMES, emprendedores" />
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Open Graph -->
-    <meta property="og:title" content="ALPA Digital Studio | Automatización IA y Marketing Digital" />
-    <meta property="og:description" content="Transforma tu negocio con IA. Automatización de procesos, marketing digital y desarrollo. Primera consultoría gratuita." />
-    <meta property="og:image" content="https://alpa.digital/og-image.jpg" />
-    <meta property="og:url" content="https://alpa.digital" />
+    <!-- SEO Meta Tags -->
+    <title>Alpa Digital - Desarrollo de Apps en 4 Semanas | MVP desde 700€</title>
+    <meta name="description" content="Convertimos tu idea en app móvil o web en 4 semanas. Desarrollo MVP desde 700€. Especialistas en aplicaciones empresariales y startups. ¡Contacta hoy!" />
+    <meta name="keywords" content="desarrollo app móvil, crear aplicación web, MVP desarrollo, app empresarial, desarrollo software España, aplicaciones móviles baratas, desarrollo rápido apps" />
+    <meta name="author" content="Alpa Digital Studio" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="language" content="Spanish" />
+    <meta name="geo.region" content="ES" />
+    <meta name="geo.placename" content="España" />
     
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ALPA Digital Studio | Agencia IA 2025" />
-    <meta name="twitter:description" content="Automatización con IA, marketing digital y desarrollo para PYMES y emprendedores. Transforma tu negocio." />
-    
-    <!-- Canonical -->
+    <!-- Canonical URL -->
     <link rel="canonical" href="https://alpa.digital" />
     
-    <!-- Verificación -->
-    <meta name="google-site-verification" content="TU-CÓDIGO-DE-VERIFICACIÓN" />
-
-    <!-- Estructurado -->
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://alpa.digital" />
+    <meta property="og:title" content="Alpa Digital - Desarrollo de Apps en 4 Semanas | MVP desde 700€" />
+    <meta property="og:description" content="Convertimos tu idea en app móvil o web en 4 semanas. Desarrollo MVP desde 700€. Especialistas en aplicaciones empresariales y startups." />
+    <meta property="og:image" content="https://alpa.digital/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Alpa Digital Studio" />
+    <meta property="og:locale" content="es_ES" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://alpa.digital" />
+    <meta name="twitter:title" content="Alpa Digital - Desarrollo de Apps en 4 Semanas" />
+    <meta name="twitter:description" content="Convertimos tu idea en app móvil o web en 4 semanas. MVP desde 700€. Contacta para tu proyecto." />
+    <meta name="twitter:image" content="https://alpa.digital/og-image.jpg" />
+    
+    <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "ProfessionalService",
+      "@type": "Organization",
       "name": "Alpa Digital Studio",
-      "description": "Agencia especializada en automatización con IA, marketing digital y desarrollo de software para PYMES y emprendedores.",
-      "image": "https://alpa.digital/logo.png",
       "url": "https://alpa.digital",
+      "logo": "https://alpa.digital/alpa-logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+34-XXX-XXX-XXX",
+        "contactType": "customer service",
+        "email": "info@alpa.digital",
+        "availableLanguage": ["Spanish", "English"]
+      },
       "address": {
         "@type": "PostalAddress",
         "addressCountry": "ES"
       },
-      "priceRange": "$$",
       "sameAs": [
-        "https://www.linkedin.com/company/alpadigitalstudio",
-        "https://www.instagram.com/alpadigitalstudio"
+        "https://linkedin.com/company/alpa-digital"
       ],
-      "areaServed": "Spain",
-      "serviceType": [
-        "Automatización con IA",
-        "Marketing Digital",
-        "Desarrollo de Software",
-        "SEO",
-        "Generación de Contenido"
-      ]
+      "service": {
+        "@type": "Service",
+        "name": "Desarrollo de Aplicaciones Móviles y Web",
+        "description": "Desarrollo rápido de MVP y aplicaciones empresariales",
+        "provider": {
+          "@type": "Organization",
+          "name": "Alpa Digital Studio"
+        }
+      }
     }
     </script>
-
-    <!-- Preload de recursos críticos -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=montserrat:wght@100;300;400;700&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
   </head>
+
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

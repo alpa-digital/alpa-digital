@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://alpa.digital/sitemap.xml
