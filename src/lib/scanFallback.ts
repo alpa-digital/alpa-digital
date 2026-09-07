@@ -8,6 +8,7 @@ export interface ScanArea {
 
 export interface ScanResult {
   company: string;
+  sectorId: SectorId;
   sector: string;
   summary: string;
   areas: ScanArea[];
@@ -132,6 +133,25 @@ export function companyNameFromDomain(domain: string): string {
     .join(" ");
 }
 
+const sectorHints: [SectorId, RegExp][] = [
+  ["salud", /clinic|dental|dentist|medic|salud|fisio|farmac|optic|veterin|psico|nutri|estetic|wellness/],
+  ["hosteleria", /hotel|hostal|restaur|bar|cafe|catering|turism|tour|viaje|apartament|camping|bodega|gastro/],
+  ["construccion", /construc|reforma|obra|electric|fontan|climat|instalac|pintur|carpint|alumin|solar|fotovolt|arquitect/],
+  ["inmobiliaria", /inmobil|finca|piso|vivienda|realestate|propiedad|alquiler|home/],
+  ["industria", /industr|taller|fabric|mecaniz|metal|maquin|mantenim|logist|transporte|plastic|textil|tecnolog/],
+  ["comercio", /tienda|shop|store|distrib|mayorista|comercial|suministr|almacen|ferreter|market|moda|muebles/],
+  ["servicios", /asesor|gestor|abogad|legal|consult|agencia|contab|seguro|formacion|academ|estudio|marketing|diseno|software/],
+];
+
+/** Adivina el sector a partir del dominio cuando no hay análisis de la web. */
+export function guessSectorFromDomain(rawUrl: string): SectorId {
+  const domain = domainFromUrl(rawUrl).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  for (const [sector, pattern] of sectorHints) {
+    if (pattern.test(domain)) return sector;
+  }
+  return "otro";
+}
+
 /** Estimación determinista por sector y dominio, usada cuando el análisis con IA no está disponible. */
 export function estimateScan(rawUrl: string, sector: SectorId): ScanResult {
   const domain = domainFromUrl(rawUrl);
@@ -148,6 +168,7 @@ export function estimateScan(rawUrl: string, sector: SectorId): ScanResult {
   const totalHours = areas.reduce((sum, a) => sum + a.hoursPerWeek, 0);
   return {
     company: companyNameFromDomain(domain),
+    sectorId: sector,
     sector: sectorLabel,
     summary: `Estimación inicial para ${domain}: unas ${totalHours} horas semanales de trabajo repetitivo automatizables, concentradas en ${areaNames[areas[0].id].toLowerCase()} y ${areaNames[areas[1].id].toLowerCase()}.`,
     areas,

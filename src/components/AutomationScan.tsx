@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Globe, Lock, Mail, Calendar, CheckCircle2, Loader2, ArrowRight, Sparkles } from "lucide-react";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { areaNames, estimateScan, domainFromUrl, sectors, type ScanResult, type SectorId } from "@/lib/scanFallback";
+import { areaNames, estimateScan, domainFromUrl, guessSectorFromDomain, type ScanResult } from "@/lib/scanFallback";
 
 type Phase = "idle" | "scanning" | "result";
 
@@ -16,6 +16,7 @@ const scanSteps = [
 
 const resultSchema = z.object({
   company: z.string(),
+  sectorId: z.enum(["servicios", "comercio", "industria", "salud", "inmobiliaria", "hosteleria", "construccion", "otro"]),
   sector: z.string(),
   summary: z.string(),
   areas: z.array(
@@ -29,14 +30,14 @@ const resultSchema = z.object({
   ),
 });
 
-async function requestAnalysis(url: string, sector: SectorId): Promise<ScanResult> {
+async function requestAnalysis(url: string): Promise<ScanResult> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 40000);
   try {
     const response = await fetch("/api/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, sector }),
+      body: JSON.stringify({ url }),
       signal: controller.signal,
     });
     if (!response.ok) throw new Error(`analyze ${response.status}`);
@@ -52,7 +53,6 @@ const AutomationScan = () => {
   const { toast } = useToast();
   const [phase, setPhase] = useState<Phase>("idle");
   const [url, setUrl] = useState("");
-  const [sector, setSector] = useState<SectorId>("servicios");
   const [urlError, setUrlError] = useState<string | null>(null);
   const [step, setStep] = useState(0);
   const [result, setResult] = useState<ScanResult | null>(null);
@@ -87,9 +87,9 @@ const AutomationScan = () => {
     const started = Date.now();
     let analysis: ScanResult;
     try {
-      analysis = await requestAnalysis(clean, sector);
+      analysis = await requestAnalysis(clean);
     } catch {
-      analysis = estimateScan(clean, sector);
+      analysis = estimateScan(clean, guessSectorFromDomain(clean));
     }
     const minimum = 900 * scanSteps.length + 400;
     const elapsed = Date.now() - started;
@@ -107,7 +107,7 @@ const AutomationScan = () => {
     }
     setEmailError(null);
     setSending(true);
-    const payload = { email: parsed.data, url: url.trim(), sector, analysis: result };
+    const payload = { email: parsed.data, url: url.trim(), sector: result?.sector, analysis: result };
     try {
       const response = await fetch("/api/lead", {
         method: "POST",
@@ -120,7 +120,7 @@ const AutomationScan = () => {
     } catch {
       const subject = encodeURIComponent(`Informe de automatización para ${domainFromUrl(url)}`);
       const body = encodeURIComponent(
-        `Hola, quiero recibir el informe completo de automatización.\n\nWeb: ${url.trim()}\nSector: ${sectors.find((s) => s.id === sector)?.label}\nEmail: ${parsed.data}\n`
+        `Hola, quiero recibir el informe completo de automatización.\n\nWeb: ${url.trim()}\nSector: ${result?.sector ?? "sin determinar"}\nEmail: ${parsed.data}\n`
       );
       window.location.href = `mailto:info@alpa.digital?subject=${subject}&body=${body}`;
       setSent(true);
@@ -145,7 +145,7 @@ const AutomationScan = () => {
               ¿Qué se automatizaría en la tuya?
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground mb-8" style={{ lineHeight: "1.8" }}>
-              Escribe la dirección de tu web. En medio minuto te mostramos un primer mapa de las áreas de tu empresa con más trabajo repetitivo y las dos automatizaciones con más impacto.
+              Escribe la dirección de tu web. Leemos a qué te dedicas, deducimos tu sector y en medio minuto te mostramos un primer mapa de las áreas con más trabajo repetitivo y las dos automatizaciones con más impacto.
             </p>
 
             <form onSubmit={handleScan} className="space-y-4 max-w-lg">
@@ -167,20 +167,6 @@ const AutomationScan = () => {
                 </div>
                 {urlError && <p className="text-sm text-red-500 mt-2">{urlError}</p>}
               </div>
-              <div>
-                <label htmlFor="scan-sector" className="block text-sm font-medium text-foreground mb-2">Sector</label>
-                <select
-                  id="scan-sector"
-                  value={sector}
-                  onChange={(e) => setSector(e.target.value as SectorId)}
-                  disabled={phase === "scanning"}
-                  className="w-full rounded-full border border-border bg-background px-4 py-3.5 text-base outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                >
-                  {sectors.map((s) => (
-                    <option key={s.id} value={s.id}>{s.label}</option>
-                  ))}
-                </select>
-              </div>
               <button
                 type="submit"
                 disabled={phase === "scanning"}
@@ -189,7 +175,7 @@ const AutomationScan = () => {
                 {phase === "scanning" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
                 {phase === "scanning" ? "Analizando…" : "Analizar mi empresa"}
               </button>
-              <p className="text-xs text-muted-foreground">Sin registro. Solo leemos lo que tu web ya muestra públicamente.</p>
+              <p className="text-xs text-muted-foreground">Sin registro ni formularios. Solo leemos lo que tu web ya muestra públicamente.</p>
             </form>
           </div>
 
@@ -243,7 +229,7 @@ const AutomationScan = () => {
                         {result.source === "analysis" ? "Mapa de automatización" : "Estimación inicial"} · {domainFromUrl(url)}
                       </p>
                       <h3 className="text-2xl md:text-3xl font-medium text-foreground">{result.company}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{result.sector}</p>
+                      <p className="text-sm text-muted-foreground mt-1">Sector detectado: {result.sector}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-3xl md:text-4xl font-semibold text-foreground" style={{ fontVariantNumeric: "tabular-nums" }}>{totalHours} h</p>
