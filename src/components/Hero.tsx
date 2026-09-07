@@ -1,9 +1,27 @@
 import { useEffect, useState } from "react";
-import newPhoneMockup from "@/assets/new-phone-mockup.png";
+import { Mail, Sparkles, CheckCircle2, ArrowDown, Clock, ShieldCheck, Euro } from "lucide-react";
 
 interface HeroProps {
   onContactClick: () => void;
 }
+
+const flowSteps = [
+  {
+    icon: Mail,
+    label: "Entra una solicitud",
+    detail: "Un cliente escribe por email, WhatsApp o el formulario de tu web.",
+  },
+  {
+    icon: Sparkles,
+    label: "La IA la entiende",
+    detail: "Clasifica la petición, extrae los datos y redacta una respuesta.",
+  },
+  {
+    icon: CheckCircle2,
+    label: "Tu equipo solo revisa",
+    detail: "El presupuesto, la cita o la tarea ya están creados en tus herramientas.",
+  },
+];
 
 const Hero = ({ onContactClick }: HeroProps) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -21,40 +39,78 @@ const Hero = ({ onContactClick }: HeroProps) => {
         <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
       </div>
 
-      {/* Hero section con tipografía gigante */}
       <section className="flex items-center pt-32 pb-20 relative z-10">
         <div className="max-w-7xl mx-auto px-8 w-full">
           <div className={`max-w-6xl transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-foreground leading-[1.1] mb-12 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Convertimos tu idea en app en 4 semanas
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-4xl animate-fade-in" style={{ animationDelay: '0.4s', lineHeight: '1.8' }}>
-              Explora algunas de nuestras experiencias digitales más valoradas creadas desde 2015. Desde productos de startup hasta plataformas corporativas, todas las experiencias que desarrollamos son el resultado de una fusión única: las ideas e inspiración de nuestros clientes con la experiencia y creatividad de nuestro equipo.
+            <p className="text-sm md:text-base font-medium text-primary mb-6 animate-fade-in tracking-wide uppercase">
+              Automatización e IA para pymes
             </p>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-foreground leading-[1.05] mb-10 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              Tu pyme trabajando mientras tú te ocupas del negocio
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-3xl animate-fade-in" style={{ animationDelay: '0.4s', lineHeight: '1.8' }}>
+              Automatizamos con inteligencia artificial las tareas que hoy te roban horas: atención al cliente, presupuestos, facturación, seguimiento comercial y administración. Sin proyectos eternos ni tecnología que nadie entiende. Empezamos por un proceso, medimos el resultado y seguimos.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 mt-10 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+              <button
+                onClick={onContactClick}
+                className="bg-primary text-white px-8 py-4 rounded-full text-base md:text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 active:scale-95"
+              >
+                Reservar una llamada gratuita
+              </button>
+              <a
+                href="#servicios"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base md:text-lg font-medium border border-border text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+              >
+                Ver qué automatizamos
+              </a>
+            </div>
+
+            <ul className="flex flex-wrap gap-x-8 gap-y-3 mt-10 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.8s' }}>
+              <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> Primera automatización en semanas, no meses</li>
+              <li className="flex items-center gap-2"><Euro className="w-4 h-4 text-primary" /> Presupuesto cerrado antes de empezar</li>
+              <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> Tus datos se quedan en tus herramientas</li>
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* Imagen del teléfono que ocupa todo el ancho con leyenda superpuesta */}
-      <section className="relative w-full bg-[#F6F6F6]">
-        <div className={`w-full flex justify-center py-16 transition-all duration-1000 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: '0.8s' }}>
-          <img 
-            src={newPhoneMockup}
-            alt="Desarrollo de aplicación móvil MVP - Ejemplo de app Womanhood creada por Alpa Digital en 4 semanas"
-            className="w-full max-w-lg object-contain"
-            loading="eager"
-            width="512"
-            height="600"
-          />
-        </div>
-        {/* Leyenda posicionada sobre la imagen */}
-        <div className={`absolute bottom-6 left-8 transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-5'}`} style={{ transitionDelay: '1s' }}>
-          <p className="text-sm text-foreground font-medium bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full">
-            Featured project: Womanhood App
+      {/* Ejemplo visual de una automatización */}
+      <section className="relative w-full bg-[#F6F6F6] dark:bg-muted">
+        <div className={`max-w-7xl mx-auto px-8 py-16 md:py-20 transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`} style={{ transitionDelay: '0.8s' }}>
+          <p className="text-xs md:text-sm font-medium text-muted-foreground uppercase tracking-wide mb-8">
+            Así funciona una automatización real que montamos en una pyme
+          </p>
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+            {flowSteps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div key={step.label} className="relative">
+                  <div className="h-full bg-background rounded-2xl border border-border/60 p-6 md:p-8 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-500">
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <span className="text-xs font-medium text-muted-foreground">Paso {index + 1}</span>
+                    </div>
+                    <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">{step.label}</h3>
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed">{step.detail}</p>
+                  </div>
+                  {index < flowSteps.length - 1 && (
+                    <div className="md:hidden flex justify-center py-2 text-primary/60">
+                      <ArrowDown className="w-5 h-5" />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-sm text-muted-foreground mt-8">
+            Resultado típico: horas de trabajo manual a la semana que desaparecen y respuestas al cliente en minutos en lugar de días.
           </p>
         </div>
       </section>
-
     </div>
   );
 };

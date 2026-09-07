@@ -9,32 +9,32 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "¿Por qué elegirnos?",
-      answer: "Combinamos experiencia técnica con un enfoque centrado en resultados. Nuestro equipo especializado en tecnologías Low-Code y No-Code te permite lanzar tu aplicación rápidamente sin comprometer la calidad. Además, ofrecemos acompañamiento completo desde la idea hasta el lanzamiento y más allá."
+      question: "¿Esto es para una empresa de mi tamaño?",
+      answer: "Sí. Trabajamos con pymes de entre 5 y 100 personas: despachos, clínicas, distribuidores, talleres, inmobiliarias, comercios y empresas de servicios. No hace falta departamento de informática ni grandes inversiones. Empezamos por un solo proceso y crecemos según los resultados."
     },
     {
-      question: "¿Por qué elegir Alpa para tu aplicación?",
-      answer: "En Alpa nos enfocamos en entender realmente tu negocio y tus objetivos. No solo desarrollamos aplicaciones, creamos soluciones que impulsan tu crecimiento. Nuestro proceso transparente y comunicación constante garantizan que el resultado final supere tus expectativas."
+      question: "¿Qué tareas se pueden automatizar con IA?",
+      answer: "Las que se repiten, siguen reglas parecidas y consumen tiempo: responder consultas frecuentes, preparar presupuestos, leer y registrar facturas, hacer seguimiento a clientes, cribar candidaturas, redactar contenido o preparar informes. En el diagnóstico te decimos cuáles tienen sentido en tu caso y cuáles no."
     },
     {
-      question: "¿Desarrollar en Low-Code significa que el resultado será de menor calidad?",
-      answer: "Para nada. Las tecnologías Low-Code modernas son utilizadas por empresas Fortune 500 para crear aplicaciones robustas y escalables. La diferencia está en la velocidad de desarrollo, no en la calidad del resultado final. Obtienes la misma funcionalidad y rendimiento, pero en mucho menos tiempo."
+      question: "¿Tengo que cambiar mis programas actuales?",
+      answer: "No. Conectamos la automatización a las herramientas que ya usas: correo, WhatsApp, Google Workspace o Microsoft 365, tu CRM, tu programa de facturación o tu ERP. Solo recomendamos cambiar de herramienta cuando la actual es el problema, y eso te lo diremos con claridad."
     },
     {
-      question: "¿La escalabilidad será un problema?",
-      answer: "No, las aplicaciones que desarrollamos están diseñadas para crecer contigo. Las plataformas Low-Code que utilizamos pueden manejar desde miles hasta millones de usuarios. Además, siempre planificamos la arquitectura pensando en el crecimiento futuro de tu negocio."
+      question: "¿Qué pasa con mis datos y los de mis clientes?",
+      answer: "Tus datos siguen en tus sistemas. Elegimos proveedores de IA con garantías de privacidad, no usamos tu información para entrenar modelos y dejamos por escrito qué datos se procesan y dónde. Si tu sector tiene requisitos especiales, adaptamos la solución a ellos."
     },
     {
-      question: "¿La experiencia de usuario será buena?",
-      answer: "Absolutamente. El diseño de experiencia de usuario es una de nuestras principales fortalezas. Creamos interfaces intuitivas y atractivas que tus usuarios amarán. Cada pantalla y interacción está cuidadosamente diseñada para ofrecer la mejor experiencia posible."
+      question: "¿Y si la IA se equivoca?",
+      answer: "Se equivoca, como cualquier persona nueva en un puesto. Por eso diseñamos cada automatización con puntos de revisión: la IA prepara, una persona aprueba lo importante. Con el tiempo, cuando la fiabilidad está demostrada, se puede dar más autonomía."
     },
     {
-      question: "¿Cómo será la comunicación?",
-      answer: "Mantenemos comunicación constante y transparente durante todo el proyecto. Recibirás actualizaciones regulares sobre el progreso, tendrás acceso a prototipos funcionales desde las primeras semanas, y siempre estaremos disponibles para resolver tus dudas o incorporar feedback."
+      question: "¿Cuánto cuesta y cuánto se tarda?",
+      answer: "El diagnóstico tiene un precio cerrado y dura una o dos semanas. Cada automatización se presupuesta con alcance, precio y plazo fijos antes de empezar, normalmente entre dos y seis semanas. El acompañamiento mensual es una cuota sin permanencia. Nunca cobramos por horas abiertas."
     },
     {
-      question: "Sin sorpresas, transparencia total",
-      answer: "Trabajamos con presupuestos fijos y cronogramas claros desde el inicio. No hay costos ocultos ni sorpresas desagradables. Sabrás exactamente qué esperar, cuándo esperarlo, y cuánto costará. Nuestra reputación se basa en cumplir lo que prometemos."
+      question: "¿Qué pasa cuando la automatización está en marcha?",
+      answer: "Formamos a tu equipo, dejamos documentado cómo funciona y te acompañamos el primer mes. Después puedes gestionarla tú, contar con nosotros mes a mes o llamarnos cuando algo cambie en tu negocio."
     }
   ];
 
@@ -109,7 +109,7 @@ const FAQ = () => {
             Preguntas frecuentes
           </h2>
           <p className="text-xl text-muted-foreground">
-            Resolvemos las dudas más comunes sobre nuestro proceso y servicios
+            Lo que nos preguntan las pymes antes de empezar
           </p>
         </div>
 

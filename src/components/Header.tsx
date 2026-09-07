@@ -26,7 +26,7 @@ const Header = ({ onContactClick }: HeaderProps) => {
       <div className="max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
         <div className="flex items-center">
           <a href="/" className="hover:opacity-80 transition-all duration-300 hover:scale-105 cursor-pointer">
-            <img src={alpaLogo} alt="Alpa Digital Studio - Desarrollo de aplicaciones móviles y web" className="h-6 md:h-8" />
+            <img src={alpaLogo} alt="Alpa Digital - Automatización e IA para pymes" className="h-6 md:h-8" />
           </a>
         </div>
         
@@ -35,7 +35,7 @@ const Header = ({ onContactClick }: HeaderProps) => {
             onClick={onContactClick}
             className="bg-primary hover:bg-primary/90 text-white rounded-full px-3 py-1.5 md:px-6 md:py-2 text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 active:scale-95"
           >
-            Contacta ahora
+            Hablemos
           </button>
         </div>
       </div>

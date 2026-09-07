@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-const CTA = () => {
+interface CTAProps {
+  onContactClick: () => void;
+}
+
+const CTA = ({ onContactClick }: CTAProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -14,23 +18,23 @@ const CTA = () => {
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <div className="animate-fade-in">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 md:mb-8">
-            ¿Listo para lanzar tu próximo proyecto?
+            ¿Qué tarea te gustaría dejar de hacer a mano?
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 leading-relaxed">
-            Cuéntanos tu idea y te ayudamos a convertirla en una aplicación exitosa. 
-            Sin complicaciones, con resultados reales.
+            Cuéntanosla en una llamada de 30 minutos. Te diremos con franqueza si merece la pena automatizarla, cuánto costaría y cuánto tiempo ahorrarías.
           </p>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in" style={{ animationDelay: '0.3s' }}>
           <button 
+            onClick={onContactClick}
             className={`bg-primary text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 active:scale-95 relative overflow-hidden group ${
               isHovered ? 'shadow-2xl shadow-primary/30' : ''
             }`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <span className="relative z-10">Empezar ahora</span>
+            <span className="relative z-10">Reservar llamada gratuita</span>
             <div className={`absolute inset-0 bg-gradient-to-r from-primary to-primary/80 transition-transform duration-300 ${
               isHovered ? 'scale-110' : 'scale-100'
             }`}></div>

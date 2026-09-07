@@ -74,7 +74,7 @@ const Testimonials = () => {
       <div className="absolute top-0 left-0 w-full h-px bg-border"></div>
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-light text-foreground mb-16 animate-fade-in">
-          Nuestros clientes opinan
+          Lo que dicen quienes ya han trabajado con nosotros
         </h2>
 
         <div className="grid md:grid-cols-3 gap-12">

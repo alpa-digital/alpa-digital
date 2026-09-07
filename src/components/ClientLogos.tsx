@@ -83,10 +83,10 @@ const ClientLogos = () => {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <h3 className="text-5xl font-light text-foreground mb-6">
-            Clientes que han confiado en nosotros
+            Empresas que han confiado en nosotros
           </h3>
           <p className="text-sm md:text-base text-muted-foreground/70">
-            Empresas líderes que han elegido nuestras soluciones
+            Grandes empresas y pymes con las que hemos trabajado en proyectos digitales
           </p>
         </div>
         
@@ -122,7 +122,7 @@ const ClientLogos = () => {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`} style={{ transitionDelay: '1.2s' }}>
           <p className="text-xs md:text-sm text-muted-foreground/60">
-            + de 50 empresas confían en nosotros para su transformación digital
+            Experiencia con grandes empresas, ahora al servicio de las pymes
           </p>
         </div>
 
@@ -171,9 +171,9 @@ const ClientLogos = () => {
               style={{ transitionDelay: '2.1s' }}
             >
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Conecta con nosotros y obtén una estrategia de transformación digital 
-                personalizada. Hacemos que la innovación tecnológica sea accesible para 
-                tu PYME.
+                Hemos trabajado en proyectos digitales para grandes compañías. Esa misma
+                forma de trabajar, con plazos y presupuestos cerrados, es la que llevamos
+                ahora a la automatización con IA en pymes.
               </p>
             </div>
           </div>
