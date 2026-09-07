@@ -14,6 +14,8 @@ export interface ScanResult {
   areas: ScanArea[];
   favicon?: string;
   source: "analysis" | "estimate";
+  /** Motivo por el que no se pudo analizar la web (solo en estimaciones). */
+  note?: string;
 }
 
 export const sectors = [
