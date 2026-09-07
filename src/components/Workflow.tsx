@@ -7,28 +7,28 @@ const Workflow = () => {
   const steps = [
     {
       number: "01",
-      title: "Nos sumergimos en tu idea",
-      description: "Primero, nos sentamos contigo y escuchamos. Queremos entender de qué trata tu aplicación, por qué la necesitas y qué esperas lograr. Nos tomamos el tiempo para revisar cada detalle, asegurándonos de que todo lo que hagamos a partir de ahí esté alineado con tu visión y tus objetivos."
+      title: "Entendemos cómo trabajas hoy",
+      description: "Nos sentamos con las personas que hacen el trabajo, no solo con dirección. Vemos qué tareas se repiten, cuánto tiempo cuestan, qué herramientas usáis y dónde se atasca la información. Sin cambiar nada todavía."
     },
     {
       number: "02",
-      title: "Diseñamos una experiencia intuitiva y atractiva",
-      description: "Con tu idea clara, diseñamos la experiencia de tu aplicación. Nos aseguramos de que cada pantalla sea intuitiva y agradable para tus usuarios. Nuestro objetivo es crear una app que no solo funcione a la perfección, sino que también brinde una experiencia memorable para quienes la usan."
+      title: "Elegimos por dónde empezar",
+      description: "No todo merece la pena automatizarse. Priorizamos por tiempo ahorrado, coste y riesgo, y te entregamos un plan claro con una primera automatización acotada, con precio y plazo cerrados."
     },
     {
       number: "03",
-      title: "Construimos tu aplicación con tecnología ágil",
-      description: "Utilizamos herramientas que nos permiten desarrollar de manera rápida y con la máxima calidad. Con tecnologías Low-Code y No-Code, entregamos tu aplicación en tiempo récord, asegurándonos de que esté lista para escalar o adaptarse en el futuro si es necesario."
+      title: "Construimos la automatización",
+      description: "La montamos conectada a las herramientas que ya tienes (correo, WhatsApp, CRM, facturación, hojas de cálculo o tu ERP). Trabajamos con plataformas de automatización y modelos de IA de confianza, y la probamos con casos reales tuyos antes de activarla."
     },
     {
       number: "04",
-      title: "Lanzamos tu aplicación al mercado",
-      description: "Nos aseguramos de que tu aplicación esté lista para publicarse en las principales plataformas, como Google Play y App Store. De esta forma, podrás empezar a atraer usuarios y validar tu producto en el mercado de inmediato."
+      title: "Formamos a tu equipo",
+      description: "Una automatización que nadie entiende termina apagada. Explicamos a tu equipo qué hace, qué revisar y qué hacer cuando la IA no está segura, para que la use con confianza desde el primer día."
     },
     {
       number: "05",
-      title: "Evolucionamos tu aplicación a medida que tu negocio crece",
-      description: "Una vez que tu aplicación está lanzada, permanecemos a tu lado para realizar mejoras y agregar funcionalidades basadas en el feedback de los usuarios. Esto garantiza que tu producto se mantenga actualizado y preparado para aprovechar nuevas oportunidades."
+      title: "Medimos y seguimos mejorando",
+      description: "Revisamos juntos el tiempo ahorrado y los errores evitados. Con esos datos decidimos la siguiente automatización o ajustamos la que ya funciona. Si quieres, seguimos acompañándote cada mes."
     }
   ];
 
@@ -73,8 +73,8 @@ const Workflow = () => {
             Nuestro proceso
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            Un proceso probado que nos permite entregar aplicaciones excepcionales 
-            de manera eficiente y predecible.
+            Un camino corto y predecible, pensado para empresas que no tienen
+            un departamento técnico ni tiempo que perder.
           </p>
         </div>
 

@@ -2,79 +2,97 @@ import { useEffect } from 'react';
 
 const SEOHead = () => {
   useEffect(() => {
-    // Add structured data for FAQ
     const faqStructuredData = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "¿Por qué elegirnos para desarrollar tu aplicación?",
+          "name": "¿La automatización con IA es para una pyme?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Combinamos experiencia técnica con un enfoque centrado en resultados. Nuestro equipo especializado en tecnologías Low-Code y No-Code te permite lanzar tu aplicación rápidamente sin comprometer la calidad."
-          }
-        },
-        {
-          "@type": "Question", 
-          "name": "¿Desarrollar en Low-Code significa menor calidad?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Para nada. Las tecnologías Low-Code modernas son utilizadas por empresas Fortune 500 para crear aplicaciones robustas y escalables. La diferencia está en la velocidad de desarrollo, no en la calidad del resultado final."
+            "text": "Sí. Trabajamos con pymes de entre 5 y 100 personas sin departamento técnico. Empezamos por un solo proceso y crecemos según los resultados."
           }
         },
         {
           "@type": "Question",
-          "name": "¿La escalabilidad será un problema?",
+          "name": "¿Qué tareas se pueden automatizar con IA en una pyme?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No, las aplicaciones que desarrollamos están diseñadas para crecer contigo. Las plataformas Low-Code que utilizamos pueden manejar desde miles hasta millones de usuarios."
-          }
-        }
-      ]
-    };
-
-    // Add pricing structured data
-    const pricingStructuredData = {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "name": "Desarrollo de Aplicación MVP",
-      "description": "Desarrollo de aplicación MVP para lanzar tu primera versión funcional",
-      "offers": [
-        {
-          "@type": "Offer",
-          "name": "Basic MVP",
-          "description": "Para lanzar tu primera versión funcional, rápido y con lo esencial",
-          "price": "700",
-          "priceCurrency": "EUR",
-          "availability": "https://schema.org/InStock",
-          "seller": {
-            "@type": "Organization",
-            "name": "Alpa Digital Studio"
+            "text": "Atención al cliente, presupuestos, lectura y registro de facturas, seguimiento comercial, selección de personal, contenido de marketing e informes de dirección."
           }
         },
         {
-          "@type": "Offer", 
-          "name": "Avanzado",
-          "description": "Desarrollo web o app nativa completamente a medida",
-          "price": "3500",
-          "priceCurrency": "EUR",
-          "availability": "https://schema.org/InStock",
-          "seller": {
-            "@type": "Organization",
-            "name": "Alpa Digital Studio"
+          "@type": "Question",
+          "name": "¿Hay que cambiar los programas actuales para automatizar con IA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Conectamos la automatización a las herramientas que ya usa la empresa: correo, WhatsApp, CRM, facturación o ERP."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cuánto cuesta automatizar un proceso con IA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El diagnóstico cuesta 490 €. Cada automatización parte de 1.500 € con alcance, precio y plazo cerrados antes de empezar. El acompañamiento mensual son 350 € al mes sin permanencia. Precios sin IVA."
           }
         }
       ]
     };
 
-    // Add contact structured data
+    const servicesStructuredData = {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Alpa Digital",
+      "url": "https://alpa.digital",
+      "email": "info@alpa.digital",
+      "description": "Consultoría y automatización con inteligencia artificial para pequeñas y medianas empresas en España.",
+      "areaServed": { "@type": "Country", "name": "ES" },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de automatización e IA para pymes",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "price": "490",
+            "priceCurrency": "EUR",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diagnóstico de automatización",
+              "description": "Análisis de procesos y plan priorizado de automatizaciones con IA para una pyme."
+            }
+          },
+          {
+            "@type": "Offer",
+            "price": "1500",
+            "priceCurrency": "EUR",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Automatización con IA",
+              "description": "Diseño e implementación de automatizaciones con inteligencia artificial integradas en las herramientas de la empresa."
+            }
+          },
+          {
+            "@type": "Offer",
+            "price": "350",
+            "priceCurrency": "EUR",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Consultoría y acompañamiento en IA",
+              "description": "Acompañamiento mensual, formación del equipo y mantenimiento de automatizaciones."
+            }
+          }
+        ]
+      }
+    };
+
     const contactStructuredData = {
       "@context": "https://schema.org",
       "@type": "ContactPage",
       "mainEntity": {
         "@type": "Organization",
-        "name": "Alpa Digital Studio",
+        "name": "Alpa Digital",
         "email": "info@alpa.digital",
         "url": "https://alpa.digital",
         "contactPoint": {
@@ -86,13 +104,11 @@ const SEOHead = () => {
       }
     };
 
-    // Create and add structured data scripts
-    const addStructuredData = (data: any, id: string) => {
+    const addStructuredData = (data: object, id: string) => {
       const existingScript = document.getElementById(id);
       if (existingScript) {
         existingScript.remove();
       }
-      
       const script = document.createElement('script');
       script.id = id;
       script.type = 'application/ld+json';
@@ -100,13 +116,13 @@ const SEOHead = () => {
       document.head.appendChild(script);
     };
 
-    addStructuredData(faqStructuredData, 'faq-structured-data');
-    addStructuredData(pricingStructuredData, 'pricing-structured-data');
-    addStructuredData(contactStructuredData, 'contact-structured-data');
+    const ids = ['faq-structured-data', 'services-structured-data', 'contact-structured-data'];
+    addStructuredData(faqStructuredData, ids[0]);
+    addStructuredData(servicesStructuredData, ids[1]);
+    addStructuredData(contactStructuredData, ids[2]);
 
-    // Cleanup function
     return () => {
-      ['faq-structured-data', 'pricing-structured-data', 'contact-structured-data'].forEach(id => {
+      ids.forEach(id => {
         const script = document.getElementById(id);
         if (script) script.remove();
       });

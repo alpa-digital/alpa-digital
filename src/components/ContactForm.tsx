@@ -92,7 +92,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
 
     try {
       // Create mailto link with form data
-      const subject = encodeURIComponent("Nueva consulta desde el sitio web");
+      const subject = encodeURIComponent("Consulta de automatización con IA desde alpa.digital");
       const body = encodeURIComponent(
         `Nombre: ${formData.name}\n` +
         `Email: ${formData.email}\n` +
@@ -143,7 +143,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               <Mail className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-foreground">Contacta con nosotros</h2>
+              <h2 className="text-xl font-semibold text-foreground">Cuéntanos qué quieres automatizar</h2>
               <p className="text-sm text-muted-foreground">Te respondemos en menos de 24h</p>
             </div>
           </div>
@@ -227,13 +227,13 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
           <div className="space-y-2">
             <Label htmlFor="message" className="flex items-center space-x-2">
               <MessageSquare className="w-4 h-4" />
-              <span>Mensaje *</span>
+              <span>¿Qué tarea te quita más tiempo? *</span>
             </Label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => handleInputChange("message", e.target.value)}
-              placeholder="Cuéntanos sobre tu proyecto..."
+              placeholder="Ej.: cada semana dedico horas a pasar facturas a mano, contestar las mismas preguntas por WhatsApp..."
               rows={3}
               className={errors.message ? "border-red-500" : ""}
               maxLength={1000}
@@ -282,7 +282,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
           {/* Cal.com scheduling option */}
           <div className="text-center">
             <p className="text-sm text-muted-foreground mb-3">
-              ¿Prefieres hablar directamente?
+              ¿Prefieres contarlo en una llamada de 30 minutos?
             </p>
             <a
               href="https://cal.com/alpa-digital-studio/30min?user=alpa-digital-studio&overlayCalendar=true"
@@ -291,7 +291,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-primary bg-primary/10 border border-primary/20 rounded-full hover:bg-primary/20 transition-all duration-300 hover:scale-105"
             >
               <Calendar className="w-4 h-4 mr-2" />
-              Agenda una llamada directamente
+              Reservar llamada gratuita
               <ExternalLink className="w-3 h-3 ml-2" />
             </a>
           </div>
