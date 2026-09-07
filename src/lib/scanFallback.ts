@@ -12,6 +12,7 @@ export interface ScanResult {
   sector: string;
   summary: string;
   areas: ScanArea[];
+  favicon?: string;
   source: "analysis" | "estimate";
 }
 

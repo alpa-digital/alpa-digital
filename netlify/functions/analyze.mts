@@ -103,7 +103,28 @@ function htmlToText(html: string): string {
     .trim();
 }
 
-async function fetchSiteText(url: URL): Promise<string> {
+function extractFavicon(html: string, base: URL): string | undefined {
+  const links = html.match(/<link[^>]+rel=["'][^"']*icon[^"']*["'][^>]*>/gi) ?? [];
+  const candidates = links
+    .map((tag) => ({
+      href: tag.match(/href=["']([^"']+)["']/i)?.[1],
+      sizes: parseInt(tag.match(/sizes=["'](\d+)/i)?.[1] ?? "0", 10),
+      apple: /apple-touch-icon/i.test(tag),
+    }))
+    .filter((c): c is { href: string; sizes: number; apple: boolean } => Boolean(c.href) && !/^data:/i.test(c.href!));
+  candidates.sort((a, b) => (b.apple ? 1 : 0) - (a.apple ? 1 : 0) || b.sizes - a.sizes);
+  for (const candidate of candidates) {
+    try {
+      const resolved = new URL(candidate.href, base);
+      if (resolved.protocol === "https:" || resolved.protocol === "http:") return resolved.toString();
+    } catch {
+      /* siguiente candidato */
+    }
+  }
+  return undefined;
+}
+
+async function fetchSite(url: URL): Promise<{ text: string; favicon?: string }> {
   const response = await fetch(url, {
     redirect: "follow",
     signal: AbortSignal.timeout(10000),
@@ -116,7 +137,8 @@ async function fetchSiteText(url: URL): Promise<string> {
   const html = (await response.text()).slice(0, 400000);
   const text = htmlToText(html);
   if (text.length < 200) throw new Error("site text too short");
-  return text.slice(0, 14000);
+  const finalUrl = response.url ? new URL(response.url) : url;
+  return { text: text.slice(0, 14000), favicon: extractFavicon(html, finalUrl) ?? `https://www.google.com/s2/favicons?domain=${finalUrl.hostname}&sz=128` };
 }
 
 interface MistralResponse {
@@ -164,18 +186,18 @@ export default async (req: Request, _context: Context) => {
   const url = normalizeUrl(input.url);
   if (!url) return json({ error: "invalid url" }, 400);
 
-  let siteText: string;
+  let site: { text: string; favicon?: string };
   try {
-    siteText = await fetchSiteText(url);
+    site = await fetchSite(url);
   } catch (error) {
     return json({ error: "site unreachable", detail: error instanceof Error ? error.message : String(error) }, 422);
   }
 
   try {
-    let response = await askMistral(apiKey, url.hostname, siteText, true);
+    let response = await askMistral(apiKey, url.hostname, site.text, true);
     // Si el modelo configurado no admite json_schema, se reintenta con json_object.
     if (response.status === 400 || response.status === 422) {
-      response = await askMistral(apiKey, url.hostname, siteText, false);
+      response = await askMistral(apiKey, url.hostname, site.text, false);
     }
     if (response.status === 429) return json({ error: "rate limited" }, 429);
     if (!response.ok) return json({ error: "analysis failed", status: response.status, detail: (await response.text()).slice(0, 300) }, 502);
@@ -184,7 +206,7 @@ export default async (req: Request, _context: Context) => {
     const cleaned = content.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
     const parsed = analysisSchema.safeParse(JSON.parse(cleaned));
     if (!parsed.success) return json({ error: "analysis malformed", issues: parsed.error.issues.slice(0, 3) }, 502);
-    return json(parsed.data);
+    return json({ ...parsed.data, favicon: site.favicon });
   } catch (error) {
     return json({ error: "analysis failed", detail: error instanceof Error ? error.message : String(error) }, 502);
   }

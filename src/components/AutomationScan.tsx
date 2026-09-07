@@ -1,10 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { Globe, Lock, Mail, Calendar, CheckCircle2, Loader2, ArrowRight, Sparkles } from "lucide-react";
+import { Globe, CheckCircle2, Loader2, Sparkles } from "lucide-react";
+import ScanResultCard from "@/components/ScanResultCard";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { areaNames, estimateScan, domainFromUrl, guessSectorFromDomain, type ScanResult } from "@/lib/scanFallback";
+import { estimateScan, domainFromUrl, guessSectorFromDomain, type ScanResult } from "@/lib/scanFallback";
 
 type Phase = "idle" | "scanning" | "result";
+
+const sampleResult: ScanResult = {
+  ...estimateScan("voltia-instalaciones.es", "construccion"),
+  company: "Voltia Instalaciones",
+  sector: "Instalaciones eléctricas y fotovoltaicas",
+  summary: "Ejemplo de resultado. En Voltia, presupuestos, certificaciones y facturas de obra concentran unas 28 horas semanales de trabajo repetitivo que un agente podría asumir.",
+  source: "analysis",
+};
 
 const scanSteps = [
   "Leyendo tu web",
@@ -19,6 +28,7 @@ const resultSchema = z.object({
   sectorId: z.enum(["servicios", "comercio", "industria", "salud", "inmobiliaria", "hosteleria", "construccion", "otro"]),
   sector: z.string(),
   summary: z.string(),
+  favicon: z.string().url().optional(),
   areas: z.array(
     z.object({
       id: z.enum(["atencion", "ventas", "admin", "rrhh", "marketing", "direccion"]),
@@ -130,10 +140,6 @@ const AutomationScan = () => {
     }
   };
 
-  const revealed = result?.areas.slice(0, 2) ?? [];
-  const locked = result?.areas.slice(2) ?? [];
-  const totalHours = result?.areas.reduce((sum, a) => sum + a.hoursPerWeek, 0) ?? 0;
-
   return (
     <section id="analiza-tu-empresa" className="py-24 px-4 md:px-8 bg-background relative overflow-hidden scroll-mt-24">
       <div className="absolute top-0 left-0 w-full h-px bg-border" />
@@ -180,17 +186,7 @@ const AutomationScan = () => {
           </div>
 
           <div ref={resultRef} className="scroll-mt-28">
-            {phase === "idle" && (
-              <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-8 md:p-10 min-h-[360px] flex flex-col justify-center">
-                <p className="text-sm font-medium text-foreground mb-4">Qué obtendrás</p>
-                <ul className="space-y-3 text-muted-foreground">
-                  <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" /> Un mapa de las seis áreas de tu empresa con su potencial de automatización</li>
-                  <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" /> Las dos automatizaciones con más impacto, explicadas en lenguaje claro</li>
-                  <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" /> Una estimación de horas semanales que se ahorrarían</li>
-                  <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" /> El informe completo por email, si lo quieres</li>
-                </ul>
-              </div>
-            )}
+            {phase === "idle" && <ScanResultCard result={sampleResult} url="voltia-instalaciones.es" sample />}
 
             {phase === "scanning" && (
               <div className="rounded-2xl border border-border bg-[#0D0E11] text-white p-8 md:p-10 min-h-[360px]">
@@ -221,105 +217,16 @@ const AutomationScan = () => {
             )}
 
             {phase === "result" && result && (
-              <div className="rounded-2xl border border-border bg-card shadow-xl shadow-black/5 overflow-hidden">
-                <div className="px-6 md:px-8 py-6 border-b border-border">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                        {result.source === "analysis" ? "Mapa de automatización" : "Estimación inicial"} · {domainFromUrl(url)}
-                      </p>
-                      <h3 className="text-2xl md:text-3xl font-medium text-foreground">{result.company}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">Sector detectado: {result.sector}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-3xl md:text-4xl font-semibold text-foreground" style={{ fontVariantNumeric: "tabular-nums" }}>{totalHours} h</p>
-                      <p className="text-xs text-muted-foreground">a la semana automatizables</p>
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground mt-4 leading-relaxed">{result.summary}</p>
-                </div>
-
-                <div className="px-6 md:px-8 py-6 border-b border-border">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-4">Potencial por área</p>
-                  <ul className="space-y-3">
-                    {result.areas.map((area, i) => (
-                      <li key={area.id} className="grid grid-cols-[130px_1fr_44px] items-center gap-3 text-sm">
-                        <span className={i < 2 ? "text-foreground font-medium" : "text-muted-foreground"}>{areaNames[area.id]}</span>
-                        <div className="h-2 rounded-full bg-muted overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${i < 2 ? "bg-primary" : "bg-primary/40"}`}
-                            style={{ width: `${area.score}%`, transition: "width 1.2s ease-out" }}
-                          />
-                        </div>
-                        <span className="text-right text-muted-foreground" style={{ fontVariantNumeric: "tabular-nums" }}>{area.score}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="px-6 md:px-8 py-6 space-y-4">
-                  {revealed.map((area) => (
-                    <article key={area.id} className="rounded-xl border border-primary/30 bg-primary/5 p-5">
-                      <div className="flex items-center justify-between gap-3 mb-2">
-                        <span className="text-xs font-medium text-primary">{areaNames[area.id]}</span>
-                        <span className="text-xs text-muted-foreground">≈ {area.hoursPerWeek} h/semana</span>
-                      </div>
-                      <h4 className="text-lg font-medium text-foreground mb-1">{area.title}</h4>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{area.description}</p>
-                    </article>
-                  ))}
-                  <div className="relative">
-                    <div className="space-y-3 select-none" aria-hidden="true">
-                      {locked.map((area) => (
-                        <div key={area.id} className="rounded-xl border border-border p-5 blur-[5px] opacity-60">
-                          <span className="text-xs font-medium text-primary">{areaNames[area.id]}</span>
-                          <p className="text-lg font-medium text-foreground mt-2">{area.title}</p>
-                          <p className="text-sm text-muted-foreground mt-1">{area.description.slice(0, 90)}…</p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="bg-background/95 backdrop-blur rounded-2xl border border-border shadow-xl p-6 max-w-sm w-full text-center">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                          <Lock className="w-5 h-5 text-primary" />
-                        </div>
-                        <p className="font-medium text-foreground mb-1">{locked.length} automatizaciones más en el informe completo</p>
-                        <p className="text-sm text-muted-foreground mb-4">Con la explicación de cada una, el orden recomendado y una estimación de coste.</p>
-                        {sent ? (
-                          <p className="inline-flex items-center gap-2 text-sm text-emerald-600"><CheckCircle2 className="w-4 h-4" /> Solicitud enviada</p>
-                        ) : (
-                          <form onSubmit={handleLead} className="space-y-2">
-                            <div className="relative">
-                              <Mail className="w-4 h-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
-                              <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="tu@empresa.es"
-                                aria-label="Email para recibir el informe"
-                                className={`w-full rounded-full border bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 ${emailError ? "border-red-500" : "border-border"}`}
-                              />
-                            </div>
-                            {emailError && <p className="text-xs text-red-500 text-left">{emailError}</p>}
-                            <button type="submit" disabled={sending} className="w-full inline-flex items-center justify-center gap-2 bg-primary text-white rounded-full px-4 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-70">
-                              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                              Recibir el informe completo
-                            </button>
-                          </form>
-                        )}
-                        <a
-                          href="https://cal.com/alpa-digital-studio/30min?user=alpa-digital-studio&overlayCalendar=true"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-sm text-primary mt-4 hover:underline"
-                        >
-                          <Calendar className="w-4 h-4" /> O coméntalo con nosotros en 30 minutos
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ScanResultCard
+                result={result}
+                url={url}
+                email={email}
+                emailError={emailError}
+                sending={sending}
+                sent={sent}
+                onEmailChange={(value) => setEmail(value)}
+                onSubmitLead={handleLead}
+              />
             )}
           </div>
         </div>
