@@ -38,3 +38,19 @@ Desplegadas con Netlify Functions desde `netlify/functions`:
 - `lead.mts` (`POST /api/lead`): envía el informe completo al email del visitante y un aviso a `LEAD_TO_EMAIL` usando Resend. Necesita `RESEND_API_KEY`.
 
 Las variables están descritas en `.env.example`. Se configuran en el panel de Netlify, nunca en el repositorio. Sin ellas, la web sigue funcionando: el analizador muestra una estimación por sector y el formulario abre el cliente de correo.
+
+## Despliegue en Netlify
+
+1. En Netlify, "Add new site" → "Import an existing project" → elegir este repositorio y la rama a publicar. La configuración de build la toma de `netlify.toml`.
+2. En "Site configuration" → "Environment variables", añadir `MISTRAL_API_KEY` y `RESEND_API_KEY` (y las demás de `.env.example` si se quieren cambiar los valores por defecto).
+3. Lanzar el deploy. Las funciones quedan en `https://<sitio>.netlify.app/api/analyze` y `/api/lead`.
+
+Prueba rápida del análisis desde un terminal:
+
+```sh
+curl -sS https://<sitio>.netlify.app/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://www.ejemplo.es"}'
+```
+
+Debe devolver un JSON con `company`, `sectorId`, `sector`, `summary`, `favicon` y seis `areas`.
