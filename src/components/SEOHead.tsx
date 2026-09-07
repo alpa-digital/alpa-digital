@@ -35,7 +35,7 @@ const SEOHead = () => {
           "name": "¿Cuánto cuesta automatizar un proceso con IA?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Cada automatización se presupuesta con alcance, precio y plazo cerrados antes de empezar, normalmente entre dos y seis semanas de trabajo."
+            "text": "El diagnóstico cuesta 490 €. Cada automatización parte de 1.500 € con alcance, precio y plazo cerrados antes de empezar. El acompañamiento mensual son 350 € al mes sin permanencia. Precios sin IVA."
           }
         }
       ]
@@ -55,6 +55,8 @@ const SEOHead = () => {
         "itemListElement": [
           {
             "@type": "Offer",
+            "price": "490",
+            "priceCurrency": "EUR",
             "itemOffered": {
               "@type": "Service",
               "name": "Diagnóstico de automatización",
@@ -63,6 +65,8 @@ const SEOHead = () => {
           },
           {
             "@type": "Offer",
+            "price": "1500",
+            "priceCurrency": "EUR",
             "itemOffered": {
               "@type": "Service",
               "name": "Automatización con IA",
@@ -71,6 +75,8 @@ const SEOHead = () => {
           },
           {
             "@type": "Offer",
+            "price": "350",
+            "priceCurrency": "EUR",
             "itemOffered": {
               "@type": "Service",
               "name": "Consultoría y acompañamiento en IA",

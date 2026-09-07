@@ -12,8 +12,8 @@ const services = [
     tagline: "Para saber por dónde empezar",
     description:
       "Analizamos cómo trabaja tu equipo, detectamos las tareas repetitivas que más tiempo cuestan y te entregamos un plan priorizado con lo que conviene automatizar primero y lo que no.",
-    price: "Precio cerrado",
-    priceNote: "Se descuenta si seguimos con la implementación",
+    price: "490 €",
+    priceNote: "Precio cerrado, IVA no incluido. Se descuenta si seguimos con la implementación",
     duration: "1 a 2 semanas",
     cta: "Pedir diagnóstico",
     includes: [
@@ -29,8 +29,8 @@ const services = [
     tagline: "Para quitarte trabajo de encima",
     description:
       "Diseñamos e implementamos automatizaciones concretas conectadas a las herramientas que ya usas: correo, WhatsApp, CRM, facturación, hojas de cálculo o tu ERP. Cada una con un objetivo medible.",
-    price: "Presupuesto cerrado por automatización",
-    priceNote: "Sin sorpresas: alcance, plazo y precio fijados antes de empezar",
+    price: "Desde 1.500 €",
+    priceNote: "Por automatización, IVA no incluido. Alcance, plazo y precio cerrados antes de empezar",
     duration: "2 a 6 semanas por proceso",
     cta: "Solicitar presupuesto",
     featured: true,
@@ -47,8 +47,8 @@ const services = [
     tagline: "Para tener un responsable de IA sin contratarlo",
     description:
       "Acompañamiento mensual para pymes que quieren adoptar la IA con criterio: qué herramientas usar, cómo usarlas con seguridad, formación del equipo y nuevas automatizaciones a medida que el negocio cambia.",
-    price: "Cuota mensual",
-    priceNote: "Sin permanencia, con horas de trabajo incluidas",
+    price: "350 €/mes",
+    priceNote: "IVA no incluido. Sin permanencia, con horas de trabajo incluidas",
     duration: "Mes a mes",
     cta: "Hablar con nosotros",
     includes: [
