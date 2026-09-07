@@ -129,3 +129,35 @@
     line-height: 1.1;
   }
 }
+
+/* Flujos de automatización animados */
+@keyframes flow-dash {
+  to { stroke-dashoffset: -28; }
+}
+@keyframes flow-node-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes flow-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+@keyframes flow-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+@keyframes scan-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.flow-edge {
+  stroke-dasharray: 8 6;
+  animation: flow-dash 1.1s linear infinite;
+}
+.flow-node {
+  animation: flow-node-in 0.6s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-edge { animation: none; }
+  .flow-node { animation: none; }
+}

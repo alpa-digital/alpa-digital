@@ -60,7 +60,7 @@ const Hero = ({ onContactClick }: HeroProps) => {
                 Reservar una llamada gratuita
               </button>
               <a
-                href="#servicios"
+                href="#automatizaciones"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base md:text-lg font-medium border border-border text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
               >
                 Ver qué automatizamos
