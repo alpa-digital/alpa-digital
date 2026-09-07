@@ -161,3 +161,26 @@
   .flow-edge { animation: none; }
   .flow-node { animation: none; }
 }
+@keyframes hub-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes flow-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes flow-node-pop {
+  0% { opacity: 0; transform: scale(0.92); }
+  60% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.flow-layer-in {
+  animation: flow-fade-in 0.8s ease-out both;
+}
+.flow-node-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: flow-node-pop 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-layer-in, .flow-node-pop { animation: none; }
+}
