@@ -34,7 +34,7 @@ Reglas de redacción: una intención por página, la palabra clave en título, H
 /servicios/consultoria-ia-pymes
 /zonas                              Índice por comunidad autónoma
 /automatizacion-ia/{provincia}      52 páginas de provincia
-/automatizacion-ia/{provincia}/{municipio}   375 páginas de municipio (capital + principales)
+/automatizacion-ia/{provincia}/{municipio}   423 páginas de municipio (capital + principales; más en nivel 1)
 /sectores/{sector}                  Fase 2: 8 a 12 sectores
 /blog/{articulo}                    Fase 2: guías y casos
 ```
@@ -45,14 +45,17 @@ Enlazado interno: cabecera (Servicios, Automatizaciones, Zonas), pie con los cua
 
 Qué diferencia una página local útil de una "página puerta" que Google penaliza: datos propios de la zona. Cada página de provincia lleva sus sectores dominantes con la automatización típica de cada uno, una frase sobre el tejido empresarial, preguntas frecuentes localizadas y datos estructurados `Service` con `areaServed`.
 
+Sede: Utrera (Sevilla). Nivel 1 con visita presencial: Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz. Estas seis provincias tienen más municipios en la web (Sevilla, 27), un bloque de "primera reunión presencial sin coste" en sus páginas, prioridad en el sitemap y campañas locales de Google Ads. El resto de España se trabaja en remoto.
+
 Acciones fuera de la web, por orden:
 
-1. Definir la sede y rellenar `src/data/site.ts` (dirección y teléfono). Sin dirección no hay ficha de Google Business Profile.
-2. Crear y verificar la ficha de Google Business Profile: categoría principal "Consultor informático" o "Empresa de software", categorías secundarias "Consultoría empresarial" y "Agencia de marketing" si aplica, zona de servicio con las provincias prioritarias, servicios con precios, fotos del equipo y publicaciones mensuales.
+1. Completar la dirección y el teléfono de la sede en `src/data/site.ts` (ya consta Utrera, 41710). Con ellos, los datos estructurados pasan a incluir la calle y el teléfono y la ficha de Google se puede verificar.
+2. Crear y verificar la ficha de Google Business Profile en Utrera: categoría principal "Consultor informático" o "Empresa de software", secundarias "Consultoría empresarial" y "Servicio de automatización", zona de servicio con Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, servicios con precios, fotos del equipo y del despacho, y una publicación al mes. Enlazar la ficha a `https://alpa.digital/automatizacion-ia/sevilla/utrera`.
 3. Reseñas: pedir una reseña al cerrar cada proyecto (el módulo de marketing de los flujos ya lo cuenta como práctica; aplicarlo a la propia agencia). Objetivo: 10 reseñas en 90 días.
 4. Citas locales coherentes (mismo nombre, dirección y teléfono): Páginas Amarillas, Cylex, Europages, Infoempresa, directorio de la Cámara de Comercio y del ayuntamiento de la sede.
-5. Prioridad por niveles: nivel 1 la provincia de la sede y las limítrofes (páginas ampliadas con casos reales y fotos, campañas SEM activas); nivel 2 el resto (páginas generadas, sin inversión SEM inicial). El campo `tier` en `locations.ts` está preparado para esto.
-6. Vigilar en Search Console qué páginas de municipio reciben impresiones a los 90 días. Las que no, se consolidan en su provincia (canonical) para no diluir autoridad.
+5. Prioridad por niveles: nivel 1 (Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz) con casos reales, fotos y campañas SEM; nivel 2 el resto, sin inversión SEM inicial. El campo `tier` en `locations.ts` ya lo refleja.
+6. Presencia local en Utrera y la Campiña: asociaciones de empresarios de Utrera, Dos Hermanas y Alcalá de Guadaíra, Cámara de Comercio de Sevilla, CADE de Utrera (Andalucía Emprende) y polígonos de la zona. Una charla práctica de "qué automatizar en tu empresa" en cada uno es la mejor fuente de enlaces locales y de reseñas.
+7. Vigilar en Search Console qué páginas de municipio reciben impresiones a los 90 días. Las que no, se consolidan en su provincia (canonical) para no diluir autoridad.
 
 ## 5. SEO técnico
 
@@ -106,7 +109,7 @@ Estructura de Google Ads:
 | Búsqueda · Agentes IA | agentes de IA, chatbot WhatsApp empresa, asistente IA | "agentes de IA para empresas", "chatbot whatsapp para empresas", "asistente virtual IA empresa" | `/servicios/agentes-ia-empresas` |
 | Búsqueda · Software a medida | software a medida, CRM a medida, app a medida | "desarrollo software a medida pymes", "crm a medida", "desarrollo de aplicaciones para empresas" | `/servicios/desarrollo-software-medida-ia` |
 | Búsqueda · Consultoría | consultoría IA, consultor IA | "consultoría inteligencia artificial pymes", "consultor ia empresas" | `/servicios/consultoria-ia-pymes` |
-| Búsqueda · Local nivel 1 | una por provincia prioritaria | "automatización ia {provincia}", "empresa inteligencia artificial {provincia}", "desarrollo software {provincia}" | `/automatizacion-ia/{provincia}` |
+| Búsqueda · Local (Sevilla, Cádiz, Huelva, Córdoba, Málaga, Badajoz) | una por provincia, segmentada geográficamente | "automatización ia sevilla", "empresa inteligencia artificial sevilla", "chatbot whatsapp sevilla", "desarrollo software sevilla" | `/automatizacion-ia/{provincia}` |
 | Búsqueda · Marca | alpa digital | "alpa digital", "alpa digital studio" | `/` |
 
 Ajustes:
@@ -114,7 +117,8 @@ Ajustes:
 - Negativas desde el primer día: gratis, curso, empleo, trabajo, máster, universidad, tutorial, pdf, plantilla, "qué es" (salvo en campañas informacionales).
 - Anuncios responsivos con 12 títulos que combinen servicio, precio cerrado, "desde 1.500 €", "diagnóstico 490 €", zona y llamada a la acción. Extensiones de enlaces (servicios, analizador, zonas), texto destacado (precio cerrado, un mes de soporte, sin permanencia) y llamada.
 - Puja: maximizar clics las dos primeras semanas; pasar a maximizar conversiones cuando haya 30 conversiones en 30 días.
-- Presupuesto inicial sugerido: 20 a 30 € al día repartidos entre Automatización IA y Agentes IA, más 10 € al día en la campaña local de la sede. Revisar cada dos semanas con el coste por lead.
+- Presupuesto inicial sugerido: 39 € al día activando Automatización IA (15 €), Agentes IA (12 €) y Local Sevilla (12 €). Las once campañas completas suman 76 € al día. Revisar cada dos semanas con el coste por lead.
+- Todo está preparado para importar en Google Ads Editor: `docs/google-ads/campanas.csv` (campañas, grupos, palabras clave y anuncios) y `docs/google-ads/negativas.csv`.
 - Conversiones ya medidas en la web: `lead_submit` (informe del analizador), `contact_submit` (formulario), `cal_click` (reserva de llamada) y `analyze_result` (análisis completado, como conversión secundaria). Los parámetros UTM y el `gclid` viajan con cada lead.
 - Remarketing: audiencia de GA4 "vio el analizador y no dejó email" y "vio una página de servicio", con anuncios de display y de YouTube de bajo coste.
 - Performance Max solo cuando la búsqueda lleve tres meses estable.
@@ -138,6 +142,6 @@ Semanas 7 a 12: páginas de sector, remarketing, colaboraciones con asesorías, 
 
 ## 10. Qué está hecho y qué falta
 
-Hecho en la web: arquitectura de servicios y zonas (427 páginas), prerenderizado, datos estructurados, sitemap, medición con consentimiento, captura de campañas en los leads, enlazado interno.
+Hecho en la web: arquitectura de servicios y zonas (475 páginas), prerenderizado, datos estructurados con la sede en Utrera, sitemap, medición con consentimiento, captura de campañas en los leads, enlazado interno, campañas de Google Ads listas para importar.
 
-Falta y depende de decisiones de negocio: sede y teléfono, ficha de Google Business Profile, identificadores de GA4 y Google Ads en las variables de entorno de Netlify, imagen social, contenido del blog y casos, campañas.
+Falta y depende de decisiones de negocio: calle y teléfono de la sede, ficha de Google Business Profile, identificadores de GA4 y Google Ads en las variables de entorno de Netlify, imagen social, contenido del blog y casos, activar las campañas.

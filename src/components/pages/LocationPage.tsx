@@ -6,6 +6,7 @@ import { getProvince, getMunicipality, provinces, slugify } from "@/data/locatio
 import { services } from "@/data/services";
 import { automationFlows } from "@/data/automationFlows";
 import { localFaqs, municipalityPath, provincePath, servicePath } from "@/lib/seo";
+import { site } from "@/data/site";
 
 const sectorAutomation: Record<string, string> = {
   turismo: "reservas y consultas respondidas 24 horas, reseñas contestadas y campañas de temporada",
@@ -84,6 +85,22 @@ const LocationPage = () => {
             </div>
           </section>
 
+          {province.tier === 1 && (
+            <section className="px-4 md:px-8 py-8 bg-primary/5 border-t border-border">
+              <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0"><MapPin className="w-6 h-6 text-primary" /></div>
+                <div>
+                  <p className="font-medium text-foreground">
+                    {municipality === site.homeMunicipality ? "Aquí está nuestra sede." : `A un paso de nuestra sede en ${site.homeMunicipality} (${site.address.region}).`}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Primera reunión presencial sin coste en toda la provincia de {province.name}. Diagnóstico con tu equipo en tus instalaciones y seguimiento en persona cuando el proyecto lo pide.
+                  </p>
+                </div>
+              </div>
+            </section>
+          )}
+
           <section className="px-4 md:px-8 py-12 border-t border-border">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Qué automatizan las empresas {placeIn}</h2>
@@ -105,7 +122,7 @@ const LocationPage = () => {
               <div className="grid md:grid-cols-3 gap-5">
                 {[
                   { t: "Primera llamada por videollamada", d: "30 minutos para entender qué tarea te quita más tiempo. Sin compromiso." },
-                  { t: "Diagnóstico con tu equipo", d: "Sesiones en remoto con las personas que hacen el trabajo. Visitamos la empresa cuando hace falta ver el proceso en sitio." },
+                  { t: "Diagnóstico con tu equipo", d: province.tier === 1 ? "Sesiones en tus instalaciones con las personas que hacen el trabajo, para ver el proceso en sitio." : "Sesiones en remoto con las personas que hacen el trabajo. Viajamos desde Utrera (Sevilla) cuando hace falta ver el proceso en sitio." },
                   { t: "Implantación y formación", d: "Automatización conectada a tus herramientas, probada con casos reales tuyos, y formación del equipo. Un mes de soporte incluido." },
                 ].map((step, i) => (
                   <div key={step.t} className="rounded-2xl border border-border bg-background p-6">

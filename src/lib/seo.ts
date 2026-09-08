@@ -22,10 +22,18 @@ export const organizationJsonLd = {
   email: site.email,
   logo: `${site.url}/alpa-logo.png`,
   description: "Consultoría, automatización y desarrollo con inteligencia artificial para pequeñas y medianas empresas en España.",
-  areaServed: { "@type": "Country", name: "España" },
-  ...(site.address
-    ? { address: { "@type": "PostalAddress", streetAddress: site.address.street, addressLocality: site.address.locality, addressRegion: site.address.region, postalCode: site.address.postalCode, addressCountry: "ES" } }
-    : { address: { "@type": "PostalAddress", addressCountry: "ES" } }),
+  areaServed: [
+    { "@type": "Country", name: "España" },
+    ...site.onSiteProvinces.map((slug) => ({ "@type": "AdministrativeArea", name: provinces.find((prov) => prov.slug === slug)?.name ?? slug })),
+  ],
+  address: {
+    "@type": "PostalAddress",
+    ...(site.address.street ? { streetAddress: site.address.street } : {}),
+    addressLocality: site.address.locality,
+    addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
+    addressCountry: site.address.country,
+  },
   ...(site.phone ? { telephone: site.phone } : {}),
   sameAs: [site.linkedin, site.instagram],
   priceRange: "€€",
@@ -49,7 +57,13 @@ export const municipalityPath = (province: Province, municipality: string) => `/
 
 export function localFaqs(place: string, province: Province) {
   return [
-    { question: `¿Trabajáis con empresas ${place}?`, answer: `Sí. Trabajamos con pymes de toda España, ${place} incluido. La mayor parte del trabajo se hace en remoto con reuniones por videollamada y, cuando el proyecto lo pide, visitamos la empresa.` },
+    {
+      question: `¿Trabajáis con empresas ${place}?`,
+      answer:
+        province.tier === 1
+          ? `Sí, y de forma presencial: nuestra sede está en Utrera (Sevilla) y visitamos empresas de ${province.name} sin coste para la primera reunión. El seguimiento se hace por videollamada y en persona cuando el proyecto lo pide.`
+          : `Sí. Trabajamos con pymes de toda España, ${place} incluido. La mayor parte del trabajo se hace en remoto con reuniones por videollamada y, cuando el proyecto lo pide, viajamos desde nuestra sede en Utrera (Sevilla).`,
+    },
     { question: `¿Qué tipo de empresas ${place} automatizan con IA?`, answer: `En ${province.name} vemos sobre todo ${province.sectors.slice(0, 3).map((s) => s.toLowerCase()).join(", ")}: negocios con mucha atención al cliente, presupuestos, pedidos y documentación que se puede automatizar.` },
     { question: "¿Cuánto cuesta y cuánto se tarda?", answer: "El diagnóstico cuesta 490 € y dura una o dos semanas. Cada automatización parte de 1.500 € con alcance, precio y plazo cerrados, normalmente entre dos y seis semanas. El acompañamiento mensual son 350 € sin permanencia." },
     { question: "¿Necesito cambiar mis programas?", answer: "No. Conectamos la automatización a lo que ya usas: correo, WhatsApp, tu CRM, tu programa de facturación o tu ERP." },

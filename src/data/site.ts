@@ -5,7 +5,11 @@ export const site = {
   calUrl: "https://cal.com/alpa-digital-studio/30min?user=alpa-digital-studio&overlayCalendar=true",
   linkedin: "https://www.linkedin.com/company/alpa-digital",
   instagram: "https://www.instagram.com/alpadigitalstudio/",
-  /** Rellenar cuando se decida la sede física: aparece en LocalBusiness y en la ficha de Google Business Profile. */
-  address: null as null | { street: string; locality: string; region: string; postalCode: string },
+  /** Sede. La calle y el teléfono se añaden cuando se publique la ficha de Google Business Profile. */
+  address: { street: "", locality: "Utrera", region: "Sevilla", postalCode: "41710", country: "ES" },
   phone: null as null | string,
+  /** Provincias con visita presencial (sede y limítrofes). */
+  onSiteProvinces: ["sevilla", "cadiz", "huelva", "cordoba", "malaga", "badajoz"],
+  homeProvince: "sevilla",
+  homeMunicipality: "Utrera",
 };

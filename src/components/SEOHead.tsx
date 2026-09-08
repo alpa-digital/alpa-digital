@@ -32,6 +32,14 @@ const SEOHead = () => {
         },
         {
           "@type": "Question",
+          "name": "¿Dónde está Alpa Digital?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La sede está en Utrera (Sevilla). Trabaja presencialmente con empresas de Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, y en remoto con pymes de toda España."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "¿Cuánto cuesta automatizar un proceso con IA?",
           "acceptedAnswer": {
             "@type": "Answer",
