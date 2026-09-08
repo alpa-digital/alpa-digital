@@ -68,3 +68,12 @@ Dos límites a tener en cuenta:
 
 - Netlify corta las funciones síncronas a los 10 segundos. La función reparte ese tiempo entre descargar la web y llamar al modelo, y responde 504 si no llega. `ANALYZE_DEADLINE_MS` (por defecto 9200) ajusta ese presupuesto si Netlify amplía el límite del sitio.
 - El plan gratuito de Mistral limita a 1 petición por segundo y a veces responde 429 "capacity exceeded" en modelos concretos. La función reintenta con pausa, pasa a JSON libre si el esquema falla y cambia a `MISTRAL_FALLBACK_MODEL` (por defecto `open-mistral-nemo`). Con un plan de pago desaparecen estos 429.
+- Un 429 con `"code":"1300"` ("Rate limit exceeded") en todas las llamadas significa que la clave o el workspace de Mistral está en su límite (plan sin activar, cuota mensual agotada). Se comprueba con una llamada directa:
+
+  ```sh
+  curl -sS https://api.mistral.ai/v1/chat/completions \
+    -H "Authorization: Bearer $MISTRAL_API_KEY" -H "Content-Type: application/json" \
+    -d '{"model":"mistral-small-latest","messages":[{"role":"user","content":"Di hola"}],"max_tokens":5}'
+  ```
+
+  Si responde 429, el problema está en la cuenta de Mistral. Para cambiar de proveedor sin tocar código, definir `LLM_BASE_URL`, `LLM_API_KEY` y `LLM_MODEL` (cualquier API compatible con OpenAI: OpenAI, Groq, OpenRouter...).

@@ -1,9 +1,13 @@
 import type { Config, Context } from "@netlify/functions";
 import { z } from "zod";
 
-const MISTRAL_URL = "https://api.mistral.ai/v1/chat/completions";
-const MODEL = process.env.MISTRAL_MODEL ?? "mistral-small-latest";
-const FALLBACK_MODEL = process.env.MISTRAL_FALLBACK_MODEL ?? "open-mistral-nemo";
+// Proveedor del modelo: cualquier API compatible con el formato de OpenAI (Mistral, OpenAI, Groq, OpenRouter...).
+// Por defecto, Mistral. Se cambia de proveedor solo con variables de entorno.
+const LLM_BASE_URL = (process.env.LLM_BASE_URL ?? "https://api.mistral.ai/v1").replace(/\/+$/, "");
+const MISTRAL_URL = `${LLM_BASE_URL}/chat/completions`;
+const LLM_API_KEY = process.env.LLM_API_KEY ?? process.env.MISTRAL_API_KEY;
+const MODEL = process.env.LLM_MODEL ?? process.env.MISTRAL_MODEL ?? "mistral-small-latest";
+const FALLBACK_MODEL = process.env.LLM_FALLBACK_MODEL ?? process.env.MISTRAL_FALLBACK_MODEL ?? "open-mistral-nemo";
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 // Netlify corta las funciones síncronas a los 10 s: toda la función debe responder antes.
 const DEADLINE_MS = Number(process.env.ANALYZE_DEADLINE_MS ?? 9200);
@@ -221,9 +225,9 @@ export default async (req: Request, _context: Context) => {
   const started = Date.now();
   const budgetLeft = () => DEADLINE_MS - (Date.now() - started);
   if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
-  const apiKey = process.env.MISTRAL_API_KEY;
+  const apiKey = LLM_API_KEY;
   if (!apiKey) {
-    console.error("analyze: falta MISTRAL_API_KEY");
+    console.error("analyze: falta LLM_API_KEY o MISTRAL_API_KEY");
     return json({ error: "analysis not configured" }, 503);
   }
 
