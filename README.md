@@ -43,7 +43,7 @@ Las variables están descritas en `.env.example`. Se configuran en el panel de N
 
 El analizador necesita código de servidor. Hay dos opciones:
 
-- **Netlify** (recomendada): las funciones de `netlify/functions` se despliegan con la web. Comprobar con `https://<sitio>/api/health`, que indica si `MISTRAL_API_KEY` y `RESEND_API_KEY` están configuradas.
+- **Netlify** (recomendada): las funciones de `netlify/functions` se despliegan con la web. Comprobar con `https://<sitio>/api/health`, que indica el proveedor y el modelo en uso y si las claves están configuradas.
 - **Cualquier otro hosting** (Lovable, GitHub Pages, estático): importar los workflows de `n8n/` y definir `VITE_ANALYZE_ENDPOINT` y `VITE_LEAD_ENDPOINT` en el build. Detalles en `n8n/README.md`.
 
 Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el aviso indica cuál de los dos pasos falla.
@@ -51,7 +51,7 @@ Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el avi
 ## Despliegue en Netlify
 
 1. En Netlify, "Add new site" → "Import an existing project" → elegir este repositorio y la rama a publicar. La configuración de build la toma de `netlify.toml`.
-2. En "Site configuration" → "Environment variables", añadir `MISTRAL_API_KEY` y `RESEND_API_KEY` (y las demás de `.env.example` si se quieren cambiar los valores por defecto).
+2. En "Site configuration" → "Environment variables", añadir `OPENAI_API_KEY` (o `MISTRAL_API_KEY`) y `RESEND_API_KEY`. Si están las dos claves de modelo, tiene prioridad OpenAI. Las demás variables de `.env.example` son opcionales.
 3. Lanzar el deploy. Las funciones quedan en `https://<sitio>.netlify.app/api/analyze` y `/api/lead`.
 
 Prueba rápida del análisis desde un terminal:
@@ -68,3 +68,12 @@ Dos límites a tener en cuenta:
 
 - Netlify corta las funciones síncronas a los 10 segundos. La función reparte ese tiempo entre descargar la web y llamar al modelo, y responde 504 si no llega. `ANALYZE_DEADLINE_MS` (por defecto 9200) ajusta ese presupuesto si Netlify amplía el límite del sitio.
 - El plan gratuito de Mistral limita a 1 petición por segundo y a veces responde 429 "capacity exceeded" en modelos concretos. La función reintenta con pausa, pasa a JSON libre si el esquema falla y cambia a `MISTRAL_FALLBACK_MODEL` (por defecto `open-mistral-nemo`). Con un plan de pago desaparecen estos 429.
+- Un 429 con `"code":"1300"` ("Rate limit exceeded") en todas las llamadas significa que la clave o el workspace de Mistral está en su límite (plan sin activar, cuota mensual agotada). Se comprueba con una llamada directa:
+
+  ```sh
+  curl -sS https://api.mistral.ai/v1/chat/completions \
+    -H "Authorization: Bearer $MISTRAL_API_KEY" -H "Content-Type: application/json" \
+    -d '{"model":"mistral-small-latest","messages":[{"role":"user","content":"Di hola"}],"max_tokens":5}'
+  ```
+
+  Si responde 429, el problema está en la cuenta de Mistral. Para cambiar de proveedor sin tocar código, definir `LLM_BASE_URL`, `LLM_API_KEY` y `LLM_MODEL` (cualquier API compatible con OpenAI: OpenAI, Groq, OpenRouter...).
