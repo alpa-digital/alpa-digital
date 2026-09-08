@@ -93,7 +93,7 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
       )}
       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* Izquierda: identidad + mapa */}
-        <div className="border-b lg:border-b-0 lg:border-r border-white/10">
+        <div className="border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col">
           <div className="px-5 pt-5 pb-3">
             <div className="flex items-center gap-3">
               <CompanyMark domain={domain} favicon={result.favicon} name={result.company} size={44} />
@@ -116,6 +116,7 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
 
           {!isWide && <AreaGrid ordered={ordered} />}
           {isWide && (
+          <div className="flex-1 flex items-center pb-2">
           <svg viewBox="0 0 600 366" className="w-full h-auto block" role="img" aria-label={`Mapa de automatización de ${result.company}`}>
             <defs>
               <pattern id="scan-grid" width="24" height="24" patternUnits="userSpaceOnUse">
@@ -186,6 +187,7 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
               );
             })}
           </svg>
+          </div>
           )}
         </div>
 
