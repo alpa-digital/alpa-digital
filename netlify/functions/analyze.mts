@@ -1,13 +1,64 @@
 import type { Config, Context } from "@netlify/functions";
 import { z } from "zod";
 
-// Proveedor del modelo: cualquier API compatible con el formato de OpenAI (Mistral, OpenAI, Groq, OpenRouter...).
-// Por defecto, Mistral. Se cambia de proveedor solo con variables de entorno.
-const LLM_BASE_URL = (process.env.LLM_BASE_URL ?? "https://api.mistral.ai/v1").replace(/\/+$/, "");
-const MISTRAL_URL = `${LLM_BASE_URL}/chat/completions`;
-const LLM_API_KEY = process.env.LLM_API_KEY ?? process.env.MISTRAL_API_KEY;
-const MODEL = process.env.LLM_MODEL ?? process.env.MISTRAL_MODEL ?? "mistral-small-latest";
-const FALLBACK_MODEL = process.env.LLM_FALLBACK_MODEL ?? process.env.MISTRAL_FALLBACK_MODEL ?? "open-mistral-nemo";
+// Proveedor del modelo, por prioridad:
+//   1. LLM_BASE_URL + LLM_API_KEY + LLM_MODEL (cualquier API compatible con OpenAI)
+//   2. OPENAI_API_KEY → OpenAI (gpt-4o-mini, alternativo gpt-4.1-mini)
+//   3. MISTRAL_API_KEY → Mistral (mistral-small-latest, alternativo open-mistral-nemo)
+type Provider = { name: "custom" | "openai" | "mistral"; baseUrl: string; apiKey?: string; model: string; fallbackModel: string };
+
+function resolveProvider(): Provider {
+  const env = process.env;
+  if (env.LLM_BASE_URL && env.LLM_API_KEY) {
+    return {
+      name: "custom",
+      baseUrl: env.LLM_BASE_URL.replace(/\/+$/, ""),
+      apiKey: env.LLM_API_KEY,
+      model: env.LLM_MODEL ?? "gpt-4o-mini",
+      fallbackModel: env.LLM_FALLBACK_MODEL ?? env.LLM_MODEL ?? "gpt-4o-mini",
+    };
+  }
+  if (env.OPENAI_API_KEY) {
+    return {
+      name: "openai",
+      baseUrl: "https://api.openai.com/v1",
+      apiKey: env.OPENAI_API_KEY,
+      model: env.OPENAI_MODEL ?? "gpt-4o-mini",
+      fallbackModel: env.OPENAI_FALLBACK_MODEL ?? "gpt-4.1-mini",
+    };
+  }
+  return {
+    name: "mistral",
+    baseUrl: "https://api.mistral.ai/v1",
+    apiKey: env.MISTRAL_API_KEY,
+    model: env.MISTRAL_MODEL ?? "mistral-small-latest",
+    fallbackModel: env.MISTRAL_FALLBACK_MODEL ?? "open-mistral-nemo",
+  };
+}
+
+const PROVIDER = resolveProvider();
+const MISTRAL_URL = `${PROVIDER.baseUrl}/chat/completions`;
+const LLM_API_KEY = PROVIDER.apiKey;
+const MODEL = PROVIDER.model;
+const FALLBACK_MODEL = PROVIDER.fallbackModel;
+
+/** El modo estricto de OpenAI no admite algunas restricciones numéricas; se eliminan del esquema para ese proveedor. */
+function schemaForProvider(schema: unknown): unknown {
+  if (PROVIDER.name === "mistral") return schema;
+  const strip = (node: unknown): unknown => {
+    if (Array.isArray(node)) return node.map(strip);
+    if (node && typeof node === "object") {
+      const out: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(node as Record<string, unknown>)) {
+        if (["minimum", "maximum", "minItems", "maxItems"].includes(key)) continue;
+        out[key] = strip(value);
+      }
+      return out;
+    }
+    return node;
+  };
+  return strip(schema);
+}
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 // Netlify corta las funciones síncronas a los 10 s: toda la función debe responder antes.
 const DEADLINE_MS = Number(process.env.ANALYZE_DEADLINE_MS ?? 9200);
@@ -198,7 +249,7 @@ interface MistralResponse {
 async function askMistral(apiKey: string, hostname: string, siteText: string, structured: boolean, model: string, timeoutMs: number): Promise<Response> {
   const userPrompt = `Web: ${hostname}\n\nTexto público de la web:\n"""\n${siteText}\n"""\n\nDevuelve el análisis de automatización para esta empresa.`;
   const responseFormat = structured
-    ? { type: "json_schema", json_schema: { name: "automation_analysis", strict: true, schema: outputJsonSchema } }
+    ? { type: "json_schema", json_schema: { name: "automation_analysis", strict: true, schema: schemaForProvider(outputJsonSchema) } }
     : { type: "json_object" };
   const messages = [
     { role: "system", content: structured ? systemPrompt : `${systemPrompt}\n\nEl JSON debe seguir este esquema:\n${JSON.stringify(outputJsonSchema)}` },
@@ -208,7 +259,13 @@ async function askMistral(apiKey: string, hostname: string, siteText: string, st
     method: "POST",
     signal: AbortSignal.timeout(timeoutMs),
     headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify({ model, temperature: 0.2, max_tokens: 1400, response_format: responseFormat, messages }),
+    body: JSON.stringify({
+      model,
+      temperature: 0.2,
+      ...(PROVIDER.name === "mistral" ? { max_tokens: 1400 } : { max_completion_tokens: 1400 }),
+      response_format: responseFormat,
+      messages,
+    }),
   });
 }
 
@@ -227,7 +284,7 @@ export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
   const apiKey = LLM_API_KEY;
   if (!apiKey) {
-    console.error("analyze: falta LLM_API_KEY o MISTRAL_API_KEY");
+    console.error("analyze: falta la clave del proveedor (OPENAI_API_KEY, MISTRAL_API_KEY o LLM_API_KEY)");
     return json({ error: "analysis not configured" }, 503);
   }
 

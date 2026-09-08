@@ -5,11 +5,10 @@ export default async (_req: Request, _context: Context) =>
   new Response(
     JSON.stringify({
       ok: true,
-      analysis: Boolean(process.env.LLM_API_KEY ?? process.env.MISTRAL_API_KEY),
+      analysis: Boolean(process.env.LLM_API_KEY || process.env.OPENAI_API_KEY || process.env.MISTRAL_API_KEY),
       email: Boolean(process.env.RESEND_API_KEY),
-      provider: new URL(process.env.LLM_BASE_URL ?? "https://api.mistral.ai/v1").hostname,
-      model: process.env.LLM_MODEL ?? process.env.MISTRAL_MODEL ?? "mistral-small-latest",
-      fallbackModel: process.env.LLM_FALLBACK_MODEL ?? process.env.MISTRAL_FALLBACK_MODEL ?? "open-mistral-nemo",
+      provider: process.env.LLM_BASE_URL && process.env.LLM_API_KEY ? new URL(process.env.LLM_BASE_URL).hostname : process.env.OPENAI_API_KEY ? "api.openai.com" : "api.mistral.ai",
+      model: process.env.LLM_BASE_URL && process.env.LLM_API_KEY ? process.env.LLM_MODEL ?? "gpt-4o-mini" : process.env.OPENAI_API_KEY ? process.env.OPENAI_MODEL ?? "gpt-4o-mini" : process.env.MISTRAL_MODEL ?? "mistral-small-latest",
     }),
     { headers: { "content-type": "application/json" } }
   );

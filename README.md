@@ -43,7 +43,7 @@ Las variables están descritas en `.env.example`. Se configuran en el panel de N
 
 El analizador necesita código de servidor. Hay dos opciones:
 
-- **Netlify** (recomendada): las funciones de `netlify/functions` se despliegan con la web. Comprobar con `https://<sitio>/api/health`, que indica si `MISTRAL_API_KEY` y `RESEND_API_KEY` están configuradas.
+- **Netlify** (recomendada): las funciones de `netlify/functions` se despliegan con la web. Comprobar con `https://<sitio>/api/health`, que indica el proveedor y el modelo en uso y si las claves están configuradas.
 - **Cualquier otro hosting** (Lovable, GitHub Pages, estático): importar los workflows de `n8n/` y definir `VITE_ANALYZE_ENDPOINT` y `VITE_LEAD_ENDPOINT` en el build. Detalles en `n8n/README.md`.
 
 Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el aviso indica cuál de los dos pasos falla.
@@ -51,7 +51,7 @@ Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el avi
 ## Despliegue en Netlify
 
 1. En Netlify, "Add new site" → "Import an existing project" → elegir este repositorio y la rama a publicar. La configuración de build la toma de `netlify.toml`.
-2. En "Site configuration" → "Environment variables", añadir `MISTRAL_API_KEY` y `RESEND_API_KEY` (y las demás de `.env.example` si se quieren cambiar los valores por defecto).
+2. En "Site configuration" → "Environment variables", añadir `OPENAI_API_KEY` (o `MISTRAL_API_KEY`) y `RESEND_API_KEY`. Si están las dos claves de modelo, tiene prioridad OpenAI. Las demás variables de `.env.example` son opcionales.
 3. Lanzar el deploy. Las funciones quedan en `https://<sitio>.netlify.app/api/analyze` y `/api/lead`.
 
 Prueba rápida del análisis desde un terminal:
