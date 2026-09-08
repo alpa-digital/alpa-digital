@@ -7,6 +7,8 @@ import { services } from "@/data/services";
 import { automationFlows } from "@/data/automationFlows";
 import { localFaqs, municipalityPath, provincePath, servicePath } from "@/lib/seo";
 import { site } from "@/data/site";
+import { sectorForLabel } from "@/data/sectors";
+import { sectorPath } from "@/lib/seo";
 
 const sectorAutomation: Record<string, string> = {
   turismo: "reservas y consultas respondidas 24 horas, reseñas contestadas y campañas de temporada",
@@ -106,12 +108,20 @@ const LocationPage = () => {
               <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Qué automatizan las empresas {placeIn}</h2>
               <p className="text-muted-foreground mb-8 max-w-3xl">Los sectores con más pymes en {province.name} y lo que suele dar mejor resultado en cada uno.</p>
               <div className="grid md:grid-cols-2 gap-5">
-                {shownSectors.map((sector) => (
-                  <div key={sector} className="rounded-2xl border border-border p-6">
-                    <h3 className="text-lg font-medium text-foreground mb-2">{sector}</h3>
-                    <p className="text-muted-foreground leading-relaxed">Automatizamos {automationFor(sector)}.</p>
-                  </div>
-                ))}
+                {shownSectors.map((sector) => {
+                  const page = sectorForLabel(sector);
+                  return (
+                    <div key={sector} className="rounded-2xl border border-border p-6">
+                      <h3 className="text-lg font-medium text-foreground mb-2">{sector}</h3>
+                      <p className="text-muted-foreground leading-relaxed">Automatizamos {automationFor(sector)}.</p>
+                      {page && (
+                        <Link to={sectorPath(page)} className="inline-flex items-center gap-1 text-sm text-primary mt-3 hover:underline">
+                          IA {page.forName} <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>

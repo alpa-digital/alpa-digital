@@ -1,6 +1,7 @@
 import { provinces, getProvince, getMunicipality, slugify, type Province } from "@/data/locations";
 import { services, getService, pillarOf, type ServiceDef } from "@/data/services";
 import { site } from "@/data/site";
+import { sectors, getSector, type SectorDef } from "@/data/sectors";
 
 export interface RouteSeo {
   path: string;
@@ -52,6 +53,7 @@ const faqJsonLd = (faqs: { question: string; answer: string }[]) => ({
 });
 
 export const servicePath = (service: ServiceDef) => `/servicios/${service.slug}`;
+export const sectorPath = (sector: SectorDef) => `/sectores/${sector.slug}`;
 export const provincePath = (province: Province) => `/automatizacion-ia/${province.slug}`;
 export const municipalityPath = (province: Province, municipality: string) => `/automatizacion-ia/${province.slug}/${slugify(municipality)}`;
 
@@ -124,6 +126,31 @@ function serviceSeo(service: ServiceDef): RouteSeo {
   };
 }
 
+function sectorSeo(sector: SectorDef): RouteSeo {
+  const path = sectorPath(sector);
+  return {
+    path,
+    title: sector.title,
+    description: sector.description,
+    canonical: `${site.url}${path}`,
+    priority: 0.8,
+    jsonLd: [
+      {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        name: sector.h1,
+        description: sector.description,
+        provider: { "@id": `${site.url}/#organization` },
+        audience: { "@type": "BusinessAudience", name: sector.name },
+        areaServed: { "@type": "Country", name: "España" },
+        url: `${site.url}${path}`,
+      },
+      breadcrumb([{ name: "Inicio", path: "/" }, { name: "Sectores", path: "/sectores" }, { name: sector.short, path }]),
+      faqJsonLd(sector.faqs),
+    ],
+  };
+}
+
 const staticRoutes: RouteSeo[] = [
   {
     path: "/",
@@ -140,6 +167,14 @@ const staticRoutes: RouteSeo[] = [
     canonical: `${site.url}/servicios`,
     priority: 0.8,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }])],
+  },
+  {
+    path: "/sectores",
+    title: "IA y automatización por sectores: instalaciones, clínicas, asesorías, distribución y más | Alpa Digital",
+    description: "Qué automatizan con IA las pymes de cada sector: instalaciones eléctricas, construcción, clínicas, asesorías, distribución, comercio, hostelería, inmobiliarias, industria, transporte y agroalimentario.",
+    canonical: `${site.url}/sectores`,
+    priority: 0.8,
+    jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Sectores", path: "/sectores" }])],
   },
   {
     path: "/zonas",
@@ -163,6 +198,7 @@ const staticRoutes: RouteSeo[] = [
 export function allRoutes(): RouteSeo[] {
   const routes: RouteSeo[] = [...staticRoutes];
   services.forEach((service) => routes.push(serviceSeo(service)));
+  sectors.forEach((sector) => routes.push(sectorSeo(sector)));
   provinces.forEach((province) => {
     routes.push(localSeo(province));
     [province.capital, ...province.municipalities].forEach((m) => routes.push(localSeo(province, m)));
@@ -179,6 +215,11 @@ export function getRouteSeo(path: string): RouteSeo | undefined {
   if (serviceMatch) {
     const service = getService(serviceMatch[1]);
     return service ? serviceSeo(service) : undefined;
+  }
+  const sectorMatch = clean.match(/^\/sectores\/([a-z0-9-]+)$/);
+  if (sectorMatch) {
+    const sector = getSector(sectorMatch[1]);
+    return sector ? sectorSeo(sector) : undefined;
   }
   const localMatch = clean.match(/^\/automatizacion-ia\/([a-z0-9-]+)(?:\/([a-z0-9-]+))?$/);
   if (localMatch) {

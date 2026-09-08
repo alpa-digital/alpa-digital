@@ -10,6 +10,8 @@ import ServicePage from "@/components/pages/ServicePage";
 import ServicesIndexPage from "@/components/pages/ServicesIndexPage";
 import ZonesPage from "@/components/pages/ZonesPage";
 import LocationPage from "@/components/pages/LocationPage";
+import SectorPage from "@/components/pages/SectorPage";
+import SectorsIndexPage from "@/components/pages/SectorsIndexPage";
 import CookieConsent from "@/components/CookieConsent";
 import { useRouteSeo } from "@/hooks/useRouteSeo";
 import { useAnalytics } from "@/lib/analytics";
@@ -33,6 +35,8 @@ const App = () => (
         <Route path="/" element={<Index />} />
         <Route path="/servicios" element={<ServicesIndexPage />} />
         <Route path="/servicios/:serviceSlug" element={<ServicePage />} />
+        <Route path="/sectores" element={<SectorsIndexPage />} />
+        <Route path="/sectores/:sectorSlug" element={<SectorPage />} />
         <Route path="/zonas" element={<ZonesPage />} />
         <Route path="/automatizacion-ia/:provinceSlug" element={<LocationPage />} />
         <Route path="/automatizacion-ia/:provinceSlug/:municipalitySlug" element={<LocationPage />} />

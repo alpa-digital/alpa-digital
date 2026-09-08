@@ -4,6 +4,7 @@ import Services from "@/components/Services";
 import AutomationFlows from "@/components/AutomationFlows";
 import AutomationScan from "@/components/AutomationScan";
 import Consulting from "@/components/Consulting";
+import Sectors from "@/components/Sectors";
 import Workflow from "@/components/Workflow";
 import Testimonials from "@/components/Testimonials";
 import ClientLogos from "@/components/ClientLogos";
@@ -35,6 +36,9 @@ const Index = () => {
           </section>
           <section aria-label="Líneas de servicio y precios">
             <Services onContactClick={openContactForm} />
+          </section>
+          <section aria-label="Sectores">
+            <Sectors />
           </section>
           <section aria-label="Proceso de trabajo">
             <Workflow />

@@ -35,7 +35,7 @@ const Header = ({ onContactClick }: HeaderProps) => {
         <nav className={`hidden md:flex items-center gap-5 text-sm ${isScrolled ? "text-white/70" : "text-muted-foreground"}`} aria-label="Principal">
           <a href="/servicios/sistemas-ia" className="hover:text-primary transition-colors">Sistemas de IA</a>
           <a href="/servicios/consultoria-ia-pymes" className="hover:text-primary transition-colors">Consultoría</a>
-          <a href="/#analiza-tu-empresa" className="hover:text-primary transition-colors">Analiza tu empresa</a>
+          <a href="/sectores" className="hover:text-primary transition-colors">Sectores</a>
           <a href="/zonas" className="hover:text-primary transition-colors">Zonas</a>
         </nav>
         <button

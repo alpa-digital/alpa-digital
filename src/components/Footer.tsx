@@ -2,6 +2,7 @@ import alpaLogoWhite from "@/assets/alpa-logo-white.png";
 import { families, pillarOf, servicesOf } from "@/data/services";
 import { site } from "@/data/site";
 import { communities, provincesByCommunity } from "@/data/locations";
+import { sectors } from "@/data/sectors";
 
 const Footer = () => {
   return (
@@ -54,6 +55,12 @@ const Footer = () => {
             })}
           </div>
           <div>
+            <a href="/sectores" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Sectores</a>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1.5 mb-8">
+              {sectors.map((s) => (
+                <li key={s.slug}><a href={`/sectores/${s.slug}`} className="text-xs text-white/60 hover:text-white transition-colors">{s.short}</a></li>
+              ))}
+            </ul>
             <p className="text-xs uppercase tracking-wide text-white/50 mb-3">Automatización con IA para pymes en toda España</p>
             <ul className="flex flex-wrap gap-x-4 gap-y-1.5">
               {communities.map((c) =>

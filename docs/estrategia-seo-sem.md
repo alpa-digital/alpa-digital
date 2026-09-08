@@ -20,7 +20,7 @@ Cuatro grupos, por intención. Los volúmenes exactos se validan en Google Keywo
 | Sistemas de IA (transaccional) | automatización con IA para pymes, automatizar procesos empresa, agencia automatización IA, agentes de IA para empresas, apps corporativas con IA, software a medida con IA, IA corporativa pymes, sistemas de IA para empresas | Contratar | Pilar `/servicios/sistemas-ia` y sus tres páginas de detalle |
 | Consultoría de IA (transaccional) | consultoría inteligencia artificial pymes, consultor IA empresas, diagnóstico automatización, roadmap IA empresa, estrategia inteligencia artificial pyme, prueba de concepto IA | Contratar | Pilar `/servicios/consultoria-ia-pymes` |
 | Local | automatización IA Murcia, empresa de inteligencia artificial en Sevilla, agencia IA Zaragoza, automatizar empresa Cartagena | Contratar cerca | Páginas de provincia y municipio (`/automatizacion-ia/...`) |
-| Sector | IA para clínicas dentales, automatizar presupuestos electricistas, chatbot WhatsApp restaurante, automatización facturas asesoría | Informarse y comparar | Páginas de sector (fase 2) y casos |
+| Sector | IA para clínicas dentales, automatizar presupuestos electricistas, chatbot WhatsApp restaurante, automatización facturas asesoría, pedidos por WhatsApp mayorista | Informarse y comparar | 11 páginas de sector (`/sectores/...`) y casos |
 | Informacional | qué es un agente de IA, cuánto cuesta automatizar con IA, Kit Digital inteligencia artificial, cómo automatizar facturas | Aprender | Blog y guías (fase 2), FAQ de cada página |
 
 Reglas de redacción: una intención por página, la palabra clave en título, H1, primer párrafo y URL, y siempre texto propio (los sectores y la nota económica de cada provincia existen para eso).
@@ -38,11 +38,12 @@ Reglas de redacción: una intención por página, la palabra clave en título, H
 /zonas                              Índice por comunidad autónoma
 /automatizacion-ia/{provincia}      52 páginas de provincia
 /automatizacion-ia/{provincia}/{municipio}   423 páginas de municipio (capital + principales; más en nivel 1)
-/sectores/{sector}                  Fase 2: 8 a 12 sectores
+/sectores                           Índice de sectores
+/sectores/{sector}                  11 sectores: instalaciones, construcción, clínicas, asesorías, distribución, comercio, hostelería, inmobiliarias, industria, transporte, agroalimentario
 /blog/{articulo}                    Fase 2: guías y casos
 ```
 
-Enlazado interno: cabecera (Sistemas de IA, Consultoría, Analiza tu empresa, Zonas), pie con las dos líneas y sus piezas y las 52 provincias, migas de pan en todas las interiores, cada provincia enlaza a sus municipios y a las provincias de su comunidad, cada municipio a su provincia y al resto de municipios.
+Enlazado interno: cabecera (Sistemas de IA, Consultoría, Sectores, Zonas), pie con las dos líneas, los sectores y las 52 provincias, tira de sectores en la home, cada tarjeta de sector de una página de provincia enlaza a su página de sector y cada sector enlaza a sus provincias con más peso, migas de pan en todas las interiores, cada provincia enlaza a sus municipios y a las provincias de su comunidad, cada municipio a su provincia y al resto de municipios.
 
 ## 4. SEO local
 
@@ -110,6 +111,7 @@ Estructura de Google Ads:
 |---|---|---|---|
 | Búsqueda · Sistemas IA | automatización, agentes de IA, apps corporativas, IA corporativa | "automatización con IA para pymes", "agentes de IA para empresas", "chatbot whatsapp para empresas", "desarrollo software a medida pymes", "apps corporativas", "sistemas de ia para empresas" | Pilar y páginas de detalle de sistemas |
 | Búsqueda · Consultoría IA | diagnóstico, roadmap y estrategia, I+D y pruebas de concepto | "consultoría inteligencia artificial pymes", "consultor ia empresas", "diagnóstico automatización", "roadmap ia", "prueba de concepto ia" | `/servicios/consultoria-ia-pymes` |
+| Búsqueda · Sectores | instalaciones, clínicas, asesorías, distribución, hostelería, inmobiliarias | "automatización para electricistas", "software citas clínica dental whatsapp", "automatizar asesoría", "pedidos por whatsapp mayorista", "reservas por whatsapp restaurante", "ia para inmobiliarias" | `/sectores/{sector}` |
 | Búsqueda · Local (Sevilla, Cádiz, Huelva, Córdoba, Málaga, Badajoz) | una por provincia, segmentada geográficamente | "automatización ia sevilla", "empresa inteligencia artificial sevilla", "chatbot whatsapp sevilla", "desarrollo software sevilla" | `/automatizacion-ia/{provincia}` |
 | Búsqueda · Marca | alpa digital | "alpa digital", "alpa digital studio" | `/` |
 
@@ -118,7 +120,7 @@ Ajustes:
 - Negativas desde el primer día: gratis, curso, empleo, trabajo, máster, universidad, tutorial, pdf, plantilla, "qué es" (salvo en campañas informacionales).
 - Anuncios responsivos con 12 títulos que combinen servicio, precio cerrado, "desde 1.500 €", "diagnóstico 490 €", zona y llamada a la acción. Extensiones de enlaces (servicios, analizador, zonas), texto destacado (precio cerrado, un mes de soporte, sin permanencia) y llamada.
 - Puja: maximizar clics las dos primeras semanas; pasar a maximizar conversiones cuando haya 30 conversiones en 30 días.
-- Presupuesto inicial sugerido: 42 € al día activando Sistemas IA (24 €, cuatro grupos), Consultoría IA (6 €) y Local Sevilla (12 €). Las nueve campañas completas suman 63 € al día. Revisar cada dos semanas con el coste por lead.
+- Presupuesto inicial sugerido: 52 € al día activando Sistemas IA (24 €, cuatro grupos), Consultoría IA (6 €), Sectores (10 €, seis grupos) y Local Sevilla (12 €). Las diez campañas completas suman 73 € al día. Revisar cada dos semanas con el coste por lead.
 - Todo está preparado para importar en Google Ads Editor: `docs/google-ads/campanas.csv` (campañas, grupos, palabras clave y anuncios) y `docs/google-ads/negativas.csv`.
 - Conversiones ya medidas en la web: `lead_submit` (informe del analizador), `contact_submit` (formulario), `cal_click` (reserva de llamada) y `analyze_result` (análisis completado, como conversión secundaria). Los parámetros UTM y el `gclid` viajan con cada lead.
 - Remarketing: audiencia de GA4 "vio el analizador y no dejó email" y "vio una página de servicio", con anuncios de display y de YouTube de bajo coste.
@@ -139,7 +141,7 @@ Objetivos orientativos: a 3 meses, 100 páginas indexadas y 5 leads al mes; a 6 
 
 Semanas 1 y 2: definir sede, ficha de Google Business Profile, Search Console y Analytics, imagen social, alta del sitemap, primeras campañas de búsqueda.
 Semanas 3 a 6: cuatro artículos, dos casos de éxito, citas locales, petición de reseñas, ajuste de anuncios con datos.
-Semanas 7 a 12: páginas de sector, remarketing, colaboraciones con asesorías, revisión de páginas locales en Search Console y consolidación de las que no reciben impresiones.
+Semanas 7 a 12: casos de éxito por sector, remarketing, colaboraciones con asesorías, revisión de páginas locales en Search Console y consolidación de las que no reciben impresiones.
 
 ## 10. Qué está hecho y qué falta
 
