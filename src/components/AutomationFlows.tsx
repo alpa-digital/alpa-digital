@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Pause, Play, Workflow, Boxes, Check } from "lucide-react";
 import { automationFlows } from "@/data/automationFlows";
 import { agentSystems } from "@/data/agentSystems";
-import FlowCanvas from "@/components/flows/FlowCanvas";
-import SystemCanvas from "@/components/flows/SystemCanvas";
+import FlowCanvas, { FlowStack } from "@/components/flows/FlowCanvas";
+import SystemCanvas, { SystemStack } from "@/components/flows/SystemCanvas";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type Mode = "automatizaciones" | "sistemas";
 
@@ -39,6 +40,7 @@ const modeCopy: Record<Mode, { eyebrow: string; title: string; intro: string }> 
 
 const AutomationFlows = () => {
   const reducedMotion = usePrefersReducedMotion();
+  const isWide = useMediaQuery("(min-width: 768px)");
   const [mode, setMode] = useState<Mode>("automatizaciones");
   const [flowIndex, setFlowIndex] = useState(0);
   const [systemIndex, setSystemIndex] = useState(0);
@@ -216,16 +218,15 @@ const AutomationFlows = () => {
               </span>
             </div>
 
-            <div className="overflow-x-auto">
-              <div key={isFlows ? flow.id : system.id} className="px-2 md:px-4 pt-2 max-w-[820px] mx-auto">
-                {isFlows ? (
-                  <FlowCanvas flow={flow} animate={animate} />
-                ) : (
-                  <SystemCanvas system={system} activeIndex={moduleIndex} animate={animate} onSelect={select} />
-                )}
-              </div>
+            <div key={`${isFlows ? flow.id : system.id}-${isWide ? "wide" : "stack"}`} className={isWide ? "px-4 pt-2 max-w-[860px] mx-auto" : ""}>
+              {isFlows ? (
+                isWide ? <FlowCanvas flow={flow} animate={animate} /> : <FlowStack flow={flow} animate={animate} />
+              ) : isWide ? (
+                <SystemCanvas system={system} activeIndex={moduleIndex} animate={animate} onSelect={select} />
+              ) : (
+                <SystemStack system={system} activeIndex={moduleIndex} animate={animate} onSelect={select} />
+              )}
             </div>
-            <p className="md:hidden px-5 pb-3 text-[11px] text-white/40">Desliza hacia la derecha para recorrer el esquema completo →</p>
 
             <div className="grid md:grid-cols-[1fr_200px] border-t border-white/10">
               <div className="px-5 py-3.5 font-mono text-[12px] leading-relaxed min-h-[132px]">

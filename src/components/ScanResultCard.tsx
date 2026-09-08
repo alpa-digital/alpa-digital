@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Lock, Mail, Calendar, CheckCircle2, Loader2, ArrowRight, Globe, Building2, Clock, Sparkles, AlertCircle } from "lucide-react";
-import { areaNames, domainFromUrl, type ScanResult } from "@/lib/scanFallback";
+import { areaNames, domainFromUrl, type ScanArea, type ScanResult } from "@/lib/scanFallback";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface Props {
   result: ScanResult;
@@ -45,7 +46,37 @@ const CompanyMark = ({ domain, favicon, name, size }: { domain: string; favicon?
   );
 };
 
+/** Versión móvil del mapa: rejilla de áreas con su anillo de puntuación. */
+const AreaGrid = ({ ordered }: { ordered: ScanArea[] }) => (
+  <div className="grid grid-cols-3 gap-2 px-4 pb-4">
+    {ordered.map((area, i) => {
+      const top = i < 2;
+      const r = 18;
+      const c = 2 * Math.PI * r;
+      return (
+        <div key={area.id} className={`rounded-xl border px-2 py-2.5 text-center ${top ? "border-blue-400/50 bg-blue-500/10" : "border-white/10 bg-white/[0.03]"}`}>
+          <div className="relative w-12 h-12 mx-auto">
+            <svg viewBox="0 0 48 48" className="w-12 h-12">
+              <circle cx="24" cy="24" r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
+              <circle cx="24" cy="24" r={r} fill="none" stroke={top ? "#60A5FA" : "rgba(255,255,255,0.35)"} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${(area.score / 100) * c} ${c}`} transform="rotate(-90 24 24)" />
+              <text x="24" y="28" fontSize="12" fontWeight="700" fill={top ? "#FFFFFF" : "rgba(255,255,255,0.75)"} textAnchor="middle">{area.score}</text>
+            </svg>
+            {top ? (
+              <span className="absolute -top-1 -right-1 rounded-full bg-blue-600 text-white text-[8px] font-bold px-1.5 py-0.5">Nº {i + 1}</span>
+            ) : (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#0D0E11] border border-white/20 flex items-center justify-center"><Lock className="w-2.5 h-2.5 text-white/60" /></span>
+            )}
+          </div>
+          <p className={`text-[11px] font-semibold leading-tight mt-1.5 ${top ? "text-white" : "text-white/60"}`}>{areaNames[area.id]}</p>
+          <p className={`text-[10px] mt-0.5 ${top ? "text-blue-300" : "text-white/40"}`}>{top ? `≈ ${area.hoursPerWeek} h/sem` : `${i + 1}ª prioridad`}</p>
+        </div>
+      );
+    })}
+  </div>
+);
+
 const ScanResultCard = ({ result, url, sample = false, email = "", emailError, sending, sent, onEmailChange, onSubmitLead }: Props) => {
+  const isWide = useMediaQuery("(min-width: 640px)");
   const domain = domainFromUrl(url);
   const ordered = [...result.areas].sort((a, b) => b.score - a.score);
   const revealed = ordered.slice(0, 2);
@@ -83,7 +114,9 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
             {isEstimate && result.note && <p className="text-[11px] text-amber-200/80 mt-2 leading-snug">{result.note}</p>}
           </div>
 
-          <svg viewBox="0 0 600 352" className="w-full h-auto block" role="img" aria-label={`Mapa de automatización de ${result.company}`}>
+          {!isWide && <AreaGrid ordered={ordered} />}
+          {isWide && (
+          <svg viewBox="0 0 600 366" className="w-full h-auto block" role="img" aria-label={`Mapa de automatización de ${result.company}`}>
             <defs>
               <pattern id="scan-grid" width="24" height="24" patternUnits="userSpaceOnUse">
                 <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.07)" />
@@ -99,7 +132,7 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
                 <circle cx={CX} cy={CY} r="23" />
               </clipPath>
             </defs>
-            <rect width="600" height="352" fill="url(#scan-grid)" />
+            <rect width="600" height="366" fill="url(#scan-grid)" />
 
             {ordered.map((area, i) => {
               const pos = positions[i];
@@ -153,6 +186,7 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
               );
             })}
           </svg>
+          )}
         </div>
 
         {/* Derecha: cifras, propuestas y captación */}
