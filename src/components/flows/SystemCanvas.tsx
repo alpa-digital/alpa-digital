@@ -1,21 +1,21 @@
 import { Bot } from "lucide-react";
-import type { CompanySystem } from "@/data/agentSystems";
+import type { CompanySystem, SystemModule } from "@/data/agentSystems";
 import { flowIcons, Packet } from "@/components/flows/icons";
 
-const W = 920;
+const W = 960;
 const H = 440;
-const HUB = { x: 460, y: 220, r: 58 };
-const NODE_W = 178;
-const NODE_H = 60;
+const HUB = { x: 480, y: 220, r: 58 };
+const NODE_W = 210;
+const NODE_H = 68;
 
 // Seis posiciones (centros) alrededor del agente.
 const slots = [
-  { x: 250, y: 68 },
-  { x: 670, y: 68 },
-  { x: 112, y: 220 },
-  { x: 808, y: 220 },
-  { x: 250, y: 372 },
-  { x: 670, y: 372 },
+  { x: 262, y: 66 },
+  { x: 698, y: 66 },
+  { x: 118, y: 220 },
+  { x: 842, y: 220 },
+  { x: 262, y: 374 },
+  { x: 698, y: 374 },
 ];
 
 function spoke(cx: number, cy: number) {
@@ -34,9 +34,22 @@ interface Props {
   onSelect: (index: number) => void;
 }
 
+const ModuleText = ({ module, active }: { module: SystemModule; active: boolean }) => (
+  <foreignObject x="54" y="0" width={NODE_W - 54 - 8} height={NODE_H}>
+    <div
+      // @ts-expect-error xmlns es necesario para foreignObject en algunos navegadores
+      xmlns="http://www.w3.org/1999/xhtml"
+      style={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", paddingTop: 8, paddingBottom: 2, overflow: "hidden", fontFamily: "inherit" }}
+    >
+      <div style={{ fontSize: 12, fontWeight: 600, lineHeight: "14px", color: "#FFFFFF", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{module.name}</div>
+      <div style={{ fontSize: 10, lineHeight: "12px", color: active ? "#BFDBFE" : "rgba(255,255,255,0.5)", marginTop: 2, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{module.short}</div>
+    </div>
+  </foreignObject>
+);
+
 const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto min-w-[760px] md:min-w-0" role="img" aria-label={`Sistema de agente IA y herramientas para ${system.company}`}>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block" role="img" aria-label={`Sistema de agente IA y herramientas para ${system.company}`}>
       <defs>
         <filter id="hub-glow" x="-60%" y="-60%" width="220%" height="220%">
           <feGaussianBlur stdDeviation="16" result="blur" />
@@ -55,7 +68,6 @@ const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
       </defs>
       <rect x="0" y="0" width={W} height={H} fill="url(#system-grid)" />
 
-      {/* Radios */}
       <g className={animate ? "flow-layer-in" : undefined} style={{ animationDelay: "0.3s" }}>
         {system.modules.map((module, i) => {
           const slot = slots[i];
@@ -64,15 +76,7 @@ const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
           return (
             <g key={`${system.id}-${module.id}-spoke`}>
               <path d={d} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
-              <path
-                d={d}
-                fill="none"
-                stroke={active ? "rgba(96,165,250,0.95)" : "rgba(59,130,246,0.28)"}
-                strokeWidth={active ? 1.8 : 1}
-                className={animate ? "flow-edge" : undefined}
-                strokeDasharray={animate ? undefined : "8 6"}
-                style={{ transition: "stroke 0.5s" }}
-              />
+              <path d={d} fill="none" stroke={active ? "rgba(96,165,250,0.95)" : "rgba(59,130,246,0.28)"} strokeWidth={active ? 1.8 : 1} className={animate ? "flow-edge" : undefined} strokeDasharray={animate ? undefined : "8 6"} style={{ transition: "stroke 0.5s" }} />
               {animate && active && (
                 <>
                   <Packet path={d} color="#60A5FA" delay={0} dur={1.8} />
@@ -85,7 +89,6 @@ const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
         })}
       </g>
 
-      {/* Agente central */}
       <g transform={`translate(${HUB.x} ${HUB.y})`}>
         <g className={animate ? "flow-node-pop" : undefined}>
           <circle r={HUB.r + 6} fill="rgba(59,130,246,0.35)" filter="url(#hub-glow)" />
@@ -104,12 +107,19 @@ const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
           <circle r={HUB.r + 16} fill="none" stroke="rgba(147,197,253,0.45)" strokeWidth="1" strokeDasharray="3 9" style={animate ? { animation: "hub-spin 28s linear infinite", transformOrigin: "0 0", transformBox: "view-box" } : undefined} />
           <circle r={HUB.r} fill="url(#hub-fill)" stroke="#60A5FA" strokeWidth="1.5" />
           <Bot x={-14} y={-30} width={28} height={28} stroke="#FFFFFF" strokeWidth={1.7} />
-          <text y="14" fontSize="12" fontWeight="600" fill="#FFFFFF" textAnchor="middle">{system.hub.label}</text>
-          <text y="29" fontSize="9.5" fill="#BFDBFE" textAnchor="middle">{system.hub.sub}</text>
+          <foreignObject x={-HUB.r} y="0" width={HUB.r * 2} height="50">
+            <div
+              // @ts-expect-error xmlns es necesario para foreignObject en algunos navegadores
+              xmlns="http://www.w3.org/1999/xhtml"
+              style={{ textAlign: "center", padding: "0 6px", fontFamily: "inherit" }}
+            >
+              <div style={{ fontSize: 11, fontWeight: 600, lineHeight: "13px", color: "#FFFFFF", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{system.hub.label}</div>
+              <div style={{ fontSize: 9, lineHeight: "11px", color: "#BFDBFE", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{system.hub.sub}</div>
+            </div>
+          </foreignObject>
         </g>
       </g>
 
-      {/* Módulos */}
       {system.modules.map((module, i) => {
         const slot = slots[i];
         const active = i === activeIndex;
@@ -120,18 +130,11 @@ const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
           <g key={`${system.id}-${module.id}`} transform={`translate(${x} ${y})`} onClick={() => onSelect(i)} style={{ cursor: "pointer" }} role="button" aria-label={module.name} aria-pressed={active}>
             <g className={animate ? "flow-node-pop" : undefined} style={{ animationDelay: `${0.15 + i * 0.08}s` }}>
               {active && <rect x="-4" y="-4" width={NODE_W + 8} height={NODE_H + 8} rx="16" fill="rgba(59,130,246,0.25)" filter="url(#hub-glow)" />}
-              <rect
-                x="0" y="0" width={NODE_W} height={NODE_H} rx="12"
-                fill={active ? "rgba(0,102,255,0.16)" : "#141518"}
-                stroke={active ? "#3B82F6" : "rgba(255,255,255,0.14)"}
-                strokeWidth={active ? 1.5 : 1}
-                style={{ transition: "fill 0.4s, stroke 0.4s" }}
-              />
-              <rect x="14" y={NODE_H / 2 - 16} width="32" height="32" rx="8" fill={active ? "rgba(59,130,246,0.35)" : "rgba(255,255,255,0.06)"} />
-              <Icon x="21" y={NODE_H / 2 - 9} width="18" height="18" stroke={active ? "#BFDBFE" : "#E5E7EB"} strokeWidth={1.8} />
-              <text x="56" y={NODE_H / 2 - 6} fontSize="12.5" fontWeight="600" fill="#FFFFFF">{module.name}</text>
-              <text x="56" y={NODE_H / 2 + 11} fontSize="10.5" fill={active ? "#BFDBFE" : "rgba(255,255,255,0.5)"}>{module.short}</text>
-              <text x={NODE_W - 10} y="14" fontSize="8.5" textAnchor="end" letterSpacing="0.6" fill={active ? "#93C5FD" : "rgba(255,255,255,0.35)"}>
+              <rect x="0" y="0" width={NODE_W} height={NODE_H} rx="12" fill={active ? "rgba(0,102,255,0.16)" : "#141518"} stroke={active ? "#3B82F6" : "rgba(255,255,255,0.14)"} strokeWidth={active ? 1.5 : 1} style={{ transition: "fill 0.4s, stroke 0.4s" }} />
+              <rect x="12" y={NODE_H / 2 - 16} width="32" height="32" rx="8" fill={active ? "rgba(59,130,246,0.35)" : "rgba(255,255,255,0.06)"} />
+              <Icon x="19" y={NODE_H / 2 - 9} width="18" height="18" stroke={active ? "#BFDBFE" : "#E5E7EB"} strokeWidth={1.8} />
+              <ModuleText module={module} active={active} />
+              <text x={NODE_W - 9} y="12" fontSize="8" textAnchor="end" letterSpacing="0.6" fill={active ? "#93C5FD" : "rgba(255,255,255,0.35)"}>
                 {active ? "EN USO" : "HERRAMIENTA"}
               </text>
             </g>
@@ -143,3 +146,49 @@ const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
 };
 
 export default SystemCanvas;
+
+/* ---------- Versión móvil: agente arriba y módulos en rejilla ---------- */
+
+export const SystemStack = ({ system, activeIndex, animate, onSelect }: Props) => {
+  return (
+    <div className="px-4 pt-3 pb-1">
+      <div className={`relative mx-auto max-w-[280px] rounded-2xl border border-blue-400 bg-blue-500/15 px-4 py-3 flex items-center gap-3 ${animate ? "shadow-[0_0_32px_rgba(59,130,246,0.4)]" : ""}`}>
+        <div className="w-10 h-10 rounded-full bg-blue-500/30 flex items-center justify-center flex-shrink-0">
+          <Bot className="w-5 h-5 text-white" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-white truncate">{system.hub.label}</p>
+          <p className="text-[11px] text-blue-200 truncate">{system.hub.sub}</p>
+        </div>
+        <span className="absolute top-1.5 right-2.5 text-[8px] tracking-wide text-blue-300">AGENTE IA</span>
+      </div>
+      <div className="relative h-7 flex justify-center" aria-hidden="true">
+        <div className="w-px h-full border-l border-dashed border-blue-400/60" />
+        {animate && <span className="absolute top-0 w-2 h-2 rounded-full bg-blue-400 flow-packet-down" style={{ boxShadow: "0 0 8px #60A5FA" }} />}
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {system.modules.map((module, i) => {
+          const active = i === activeIndex;
+          const Icon = flowIcons[module.icon];
+          return (
+            <button
+              key={module.id}
+              onClick={() => onSelect(i)}
+              aria-pressed={active}
+              className={`text-left rounded-xl border px-3 py-2.5 transition-all duration-300 ${active ? "border-blue-400 bg-blue-500/15 shadow-[0_0_20px_rgba(59,130,246,0.3)]" : "border-white/15 bg-[#141518]"}`}
+            >
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className={`w-7 h-7 rounded-md flex items-center justify-center ${active ? "bg-blue-500/35" : "bg-white/[0.06]"}`}>
+                  <Icon className={`w-4 h-4 ${active ? "text-blue-200" : "text-gray-200"}`} />
+                </div>
+                <span className={`text-[8px] tracking-wide ml-auto ${active ? "text-blue-300" : "text-white/35"}`}>{active ? "EN USO" : "HERRAMIENTA"}</span>
+              </div>
+              <p className="text-[12px] font-semibold text-white leading-tight">{module.name}</p>
+              <p className={`text-[10px] leading-snug mt-0.5 ${active ? "text-blue-200" : "text-white/50"}`}>{module.short}</p>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

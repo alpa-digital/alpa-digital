@@ -31,11 +31,11 @@ export interface AreaFlow {
   log: string[];
 }
 
-// Canvas: viewBox 0 0 920 380. Columns: trigger 20, agent 250, tools 500, output 730.
-const T = 20;
-const A = 250;
-const K = 500;
-const O = 730;
+// Canvas: viewBox 0 0 960 380. Columnas: disparador 16, agente 244, herramientas 496, resultado 744.
+const T = 16;
+const A = 244;
+const K = 496;
+const O = 744;
 
 export const automationFlows: AreaFlow[] = [
   {
