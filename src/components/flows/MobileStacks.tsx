@@ -4,9 +4,10 @@ import type { AreaFlow, FlowNode } from "@/data/automationFlows";
 import type { CompanySystem } from "@/data/agentSystems";
 import { flowIcons, Packet } from "@/components/flows/icons";
 import { nodeStyle, kindLabel } from "@/components/flows/FlowCanvas";
-import { useNodeBoxes, type Box } from "@/components/flows/useConnectors";
+import { useNodeBoxes } from "@/components/flows/useConnectors";
 
-const STEP_MS = 0.75;
+const STEP_S = 0.7;
+const SPINE_X = 18;
 
 const statusByKind: Record<FlowNode["kind"], string> = {
   trigger: "Recibido",
@@ -16,118 +17,100 @@ const statusByKind: Record<FlowNode["kind"], string> = {
   output: "Hecho",
 };
 
-const NodeCard = ({ node, animate, order }: { node: FlowNode; animate: boolean; order: number }) => {
+const StatusChip = ({ kind, animate, delay }: { kind: FlowNode["kind"]; animate: boolean; delay: number }) => {
+  const isAgent = kind === "agent";
+  const tone =
+    kind === "output" ? "bg-emerald-400/15 text-emerald-300" : kind === "human" ? "bg-amber-300/15 text-amber-200" : isAgent ? "bg-blue-500/25 text-blue-100" : "bg-white/[0.08] text-white/70";
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${tone} ${animate ? "chip-in" : ""}`} style={{ animationDelay: `${delay}s` }}>
+      {isAgent ? (
+        <>
+          {statusByKind.agent}
+          <span className="inline-flex gap-0.5 ml-0.5">
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="w-1 h-1 rounded-full bg-current thinking-dot" style={{ animationDelay: `${i * 0.18}s` }} />
+            ))}
+          </span>
+        </>
+      ) : (
+        <>
+          <Check className="w-3 h-3" /> {statusByKind[kind]}
+        </>
+      )}
+    </span>
+  );
+};
+
+const NodeCard = ({ node, animate, order, indent }: { node: FlowNode; animate: boolean; order: number; indent: boolean }) => {
   const style = nodeStyle[node.kind];
   const Icon = flowIcons[node.icon];
   const isAgent = node.kind === "agent";
-  const delay = `${order * STEP_MS}s`;
   return (
-    <div
-      data-node-id={node.id}
-      className={`relative z-10 flex items-center gap-3 rounded-xl border px-3.5 py-3 ${animate ? "card-activate" : ""} ${isAgent ? "shadow-[0_0_30px_rgba(59,130,246,0.35)]" : ""}`}
-      style={{ background: style.fill, borderColor: style.stroke, borderStyle: style.dash ? "dashed" : "solid", animationDelay: delay, backdropFilter: "blur(2px)" }}
-    >
-      {isAgent && animate && (
-        <>
-          <span className="absolute inset-0 rounded-xl border border-blue-400/60 hub-ring pointer-events-none" style={{ animationDelay: "0.2s" }} />
-          <span className="absolute inset-0 rounded-xl border border-blue-400/40 hub-ring pointer-events-none" style={{ animationDelay: "1.5s" }} />
-        </>
-      )}
-      <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: style.iconBg }}>
-        <Icon className="w-5 h-5" style={{ color: style.icon }} />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-semibold leading-tight" style={{ color: style.text }}>{node.label}</p>
-        {node.sub && <p className="text-[11px] leading-snug mt-0.5" style={{ color: style.sub }}>{node.sub}</p>}
-      </div>
-      <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-        <span className="text-[8px] tracking-wide" style={{ color: isAgent ? "#93C5FD" : "rgba(255,255,255,0.35)" }}>{kindLabel[node.kind].toUpperCase()}</span>
-        <span
-          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${animate ? "chip-in" : ""} ${
-            node.kind === "output" ? "bg-emerald-400/15 text-emerald-300" : node.kind === "human" ? "bg-amber-300/15 text-amber-200" : isAgent ? "bg-blue-500/25 text-blue-100" : "bg-white/[0.08] text-white/70"
-          }`}
-          style={{ animationDelay: `${order * STEP_MS + 0.45}s` }}
-        >
-          {isAgent ? (
-            <>
-              {statusByKind.agent}
-              <span className="inline-flex gap-0.5 ml-0.5">
-                {[0, 1, 2].map((i) => (
-                  <span key={i} className="w-1 h-1 rounded-full bg-current thinking-dot" style={{ animationDelay: `${i * 0.18}s` }} />
-                ))}
-              </span>
-            </>
-          ) : (
-            <>
-              <Check className="w-3 h-3" /> {statusByKind[node.kind]}
-            </>
-          )}
-        </span>
+    <div className={indent ? "pl-12" : "pl-8"}>
+      <div
+        data-node-id={node.id}
+        className={`relative flex items-center gap-3 rounded-xl border px-3 py-2.5 ${animate ? "card-glow" : ""} ${isAgent ? "shadow-[0_0_28px_rgba(59,130,246,0.35)]" : ""}`}
+        style={{ background: style.fill, borderColor: style.stroke, borderStyle: style.dash ? "dashed" : "solid", animationDelay: `${order * STEP_S}s` }}
+      >
+        {isAgent && animate && <span className="absolute inset-0 rounded-xl border border-blue-400/60 card-ring pointer-events-none" />}
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: style.iconBg }}>
+          <Icon className="w-4 h-4" style={{ color: style.icon }} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-semibold leading-tight" style={{ color: style.text }} title={kindLabel[node.kind]}>{node.label}</p>
+          {node.sub && <p className="text-[11px] leading-snug mt-0.5" style={{ color: style.sub }}>{node.sub}</p>}
+        </div>
+        <div className="flex-shrink-0">
+          <StatusChip kind={node.kind} animate={animate} delay={order * STEP_S + 0.35} />
+        </div>
       </div>
     </div>
   );
 };
 
-function railPath(src: Box, dst: Box, side: "left" | "right", rail: number) {
-  const r = 10;
-  if (side === "left") {
-    const x0 = src.left;
-    const x1 = dst.left;
-    const down = dst.cy > src.cy;
-    return `M ${x0} ${src.cy} H ${rail + r} Q ${rail} ${src.cy} ${rail} ${src.cy + (down ? r : -r)} V ${dst.cy - (down ? r : -r)} Q ${rail} ${dst.cy} ${rail + r} ${dst.cy} H ${x1}`;
-  }
-  const x0 = src.right;
-  const x1 = dst.right;
-  const down = dst.cy > src.cy;
-  return `M ${x0} ${src.cy} H ${rail - r} Q ${rail} ${src.cy} ${rail} ${src.cy + (down ? r : -r)} V ${dst.cy - (down ? r : -r)} Q ${rail} ${dst.cy} ${rail - r} ${dst.cy} H ${x1}`;
-}
-
 export const FlowStack = ({ flow, animate }: { flow: AreaFlow; animate: boolean }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { boxes, size } = useNodeBoxes(containerRef, [flow.id]);
-  const order: FlowNode["kind"][] = ["trigger", "agent", "tool", "human", "output"];
-  const nodes = useMemo(() => order.flatMap((kind) => flow.nodes.filter((n) => n.kind === kind)), [flow]); // eslint-disable-line react-hooks/exhaustive-deps
-  const byId = useMemo(() => Object.fromEntries(flow.nodes.map((n) => [n.id, n])), [flow]);
-
-  const edges = useMemo(() => {
-    let leftIdx = 0;
-    let rightIdx = 0;
-    return flow.edges.map((edge) => {
-      const src = byId[edge.from];
-      const dst = byId[edge.to];
-      const human = src.kind === "human" || dst.kind === "human";
-      if (src.kind === "trigger") return { ...edge, human, side: "center" as const, idx: 0 };
-      if (src.kind === "agent") return { ...edge, human, side: "left" as const, idx: leftIdx++ };
-      return { ...edge, human, side: "right" as const, idx: rightIdx++ };
-    });
-  }, [flow, byId]);
+  const nodes = useMemo(() => {
+    const order: FlowNode["kind"][] = ["trigger", "agent", "tool", "human", "output"];
+    return order.flatMap((kind) => flow.nodes.filter((n) => n.kind === kind));
+  }, [flow]);
+  const first = boxes[nodes[0]?.id];
+  const last = boxes[nodes[nodes.length - 1]?.id];
+  const spine = first && last ? `M ${SPINE_X} ${first.cy} V ${last.cy}` : null;
 
   return (
-    <div ref={containerRef} className="relative px-6 pt-4 pb-3">
-      {size.width > 0 && (
+    <div ref={containerRef} className="relative px-4 pt-4 pb-3">
+      {size.width > 0 && spine && (
         <svg className="absolute inset-0 w-full h-full pointer-events-none" width={size.width} height={size.height} aria-hidden="true">
-          {edges.map((edge, i) => {
-            const src = boxes[edge.from];
-            const dst = boxes[edge.to];
-            if (!src || !dst) return null;
-            const d =
-              edge.side === "center"
-                ? `M ${src.cx} ${src.bottom} L ${dst.cx} ${dst.top}`
-                : railPath(src, dst, edge.side, edge.side === "left" ? 10 + edge.idx * 5 : size.width - 10 - edge.idx * 5);
-            const color = edge.human ? "#FBBF24" : "#60A5FA";
+          <path d={spine} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+          <path d={spine} fill="none" stroke="rgba(96,165,250,0.7)" strokeWidth="1.5" className={animate ? "flow-edge" : undefined} strokeDasharray={animate ? undefined : "6 6"} />
+          {animate && (
+            <>
+              <Packet path={spine} color="#60A5FA" delay={0.3} dur={3.2} />
+              <Packet path={spine} color="#60A5FA" delay={1.9} dur={3.2} />
+            </>
+          )}
+          {nodes.map((node, i) => {
+            const box = boxes[node.id];
+            if (!box) return null;
+            const human = node.kind === "human";
+            const color = human ? "#FBBF24" : node.kind === "output" ? "#4ADE80" : "#60A5FA";
+            const stub = `M ${SPINE_X} ${box.cy} H ${box.left}`;
             return (
-              <g key={`${edge.from}-${edge.to}`}>
-                <path d={d} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
-                <path d={d} fill="none" stroke={color} strokeOpacity="0.6" strokeWidth="1.5" className={animate ? "flow-edge" : undefined} strokeDasharray={animate ? undefined : "6 6"} />
-                {animate && <Packet path={d} color={color} delay={0.5 + i * 0.4} dur={2.2} />}
+              <g key={node.id}>
+                <path d={stub} fill="none" stroke={color} strokeOpacity="0.55" strokeWidth="1.5" strokeDasharray={human ? "4 4" : undefined} />
+                <circle cx={SPINE_X} cy={box.cy} r="4.5" fill="#0D0E11" stroke={color} strokeWidth="1.5" />
+                {animate && <circle cx={SPINE_X} cy={box.cy} r="4.5" fill={color} opacity="0" style={{ animation: `flow-fade-in 0.5s ease-out ${i * STEP_S}s forwards` }} />}
+                {animate && <Packet path={stub} color={color} delay={i * STEP_S + 0.15} dur={0.9} />}
               </g>
             );
           })}
         </svg>
       )}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3">
         {nodes.map((node, i) => (
-          <NodeCard key={`${flow.id}-${node.id}`} node={node} animate={animate} order={i} />
+          <NodeCard key={`${flow.id}-${node.id}`} node={node} animate={animate} order={i} indent={node.kind === "tool" || node.kind === "human"} />
         ))}
       </div>
     </div>
@@ -145,42 +128,47 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
   const containerRef = useRef<HTMLDivElement>(null);
   const { boxes, size } = useNodeBoxes(containerRef, [system.id]);
   const hub = boxes.hub;
+  const lastRow = boxes[system.modules[system.modules.length - 1]?.id];
+  const trunkX = size.width / 2;
+  const trunk = hub && lastRow ? `M ${trunkX} ${hub.bottom} V ${lastRow.cy}` : null;
 
   return (
     <div ref={containerRef} className="relative px-4 pt-4 pb-3">
-      {size.width > 0 && hub && (
+      {size.width > 0 && trunk && (
         <svg className="absolute inset-0 w-full h-full pointer-events-none" width={size.width} height={size.height} aria-hidden="true">
+          <path d={trunk} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+          <path d={trunk} fill="none" stroke="rgba(96,165,250,0.7)" strokeWidth="1.5" className={animate ? "flow-edge" : undefined} strokeDasharray={animate ? undefined : "6 6"} />
+          {animate && <Packet path={trunk} color="#60A5FA" delay={0.2} dur={2.6} />}
           {system.modules.map((module, i) => {
             const box = boxes[module.id];
             if (!box) return null;
             const active = i === activeIndex;
-            const sx = hub.cx + (box.cx - hub.cx) * 0.18;
-            const d = `M ${sx} ${hub.bottom - 6} C ${sx} ${hub.bottom + 40}, ${box.cx} ${box.top - 40}, ${box.cx} ${box.top}`;
+            const leftSide = box.cx < trunkX;
+            const stub = `M ${trunkX} ${box.cy} H ${leftSide ? box.right : box.left}`;
             return (
               <g key={module.id}>
-                <path d={d} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
-                <path d={d} fill="none" stroke={active ? "rgba(96,165,250,0.95)" : "rgba(59,130,246,0.3)"} strokeWidth={active ? 1.8 : 1} className={animate ? "flow-edge" : undefined} strokeDasharray={animate ? undefined : "6 6"} style={{ transition: "stroke 0.5s" }} />
+                <path d={stub} fill="none" stroke={active ? "rgba(96,165,250,0.95)" : "rgba(96,165,250,0.35)"} strokeWidth={active ? 1.8 : 1.2} style={{ transition: "stroke 0.4s" }} />
+                <circle cx={trunkX} cy={box.cy} r="4.5" fill={active ? "#60A5FA" : "#0D0E11"} stroke="#60A5FA" strokeWidth="1.5" style={{ transition: "fill 0.4s" }} />
                 {animate && active && (
                   <>
-                    <Packet path={d} color="#60A5FA" delay={0} dur={1.6} />
-                    <Packet path={d} color="#86EFAC" delay={0.8} dur={1.6} reverse />
+                    <Packet path={stub} color="#60A5FA" delay={0} dur={1.2} />
+                    <Packet path={stub} color="#86EFAC" delay={0.6} dur={1.2} reverse />
                   </>
                 )}
-                {animate && !active && <Packet path={d} color="rgba(96,165,250,0.5)" delay={i * 0.6} dur={4} reverse={i % 2 === 1} />}
               </g>
             );
           })}
         </svg>
       )}
 
-      <div className="relative z-10 mx-auto w-fit mb-12">
+      <div className="relative z-10 mx-auto w-fit mb-8">
         {animate && (
           <>
             <span className="absolute inset-0 rounded-2xl border border-blue-400/60 hub-ring" />
             <span className="absolute inset-0 rounded-2xl border border-blue-400/40 hub-ring" style={{ animationDelay: "1.3s" }} />
           </>
         )}
-        <div data-node-id="hub" className="relative rounded-2xl border border-blue-400 bg-[#0D0E11] px-4 py-3 flex items-center gap-3 shadow-[0_0_36px_rgba(59,130,246,0.45)]" style={{ background: "linear-gradient(160deg, rgba(96,165,250,0.35), rgba(0,102,255,0.12) 70%, #0D0E11)" }}>
+        <div data-node-id="hub" className="relative rounded-2xl border border-blue-400 px-4 py-3 flex items-center gap-3 shadow-[0_0_36px_rgba(59,130,246,0.45)]" style={{ background: "linear-gradient(160deg, rgba(96,165,250,0.35), rgba(0,102,255,0.12) 70%, #0D0E11)" }}>
           <div className="w-10 h-10 rounded-full bg-blue-500/30 flex items-center justify-center flex-shrink-0">
             <Bot className="w-5 h-5 text-white" />
           </div>
@@ -193,7 +181,7 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
         </div>
       </div>
 
-      <div className="relative z-10 grid grid-cols-2 gap-x-3 gap-y-4">
+      <div className="relative z-10 grid grid-cols-2 gap-x-8 gap-y-4">
         {system.modules.map((module, i) => {
           const active = i === activeIndex;
           const Icon = flowIcons[module.icon];
@@ -203,10 +191,9 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
               data-node-id={module.id}
               onClick={() => onSelect(i)}
               aria-pressed={active}
-              className={`text-left rounded-xl border px-3 py-2.5 transition-all duration-300 ${animate ? "flow-node" : ""} ${
-                active ? "border-blue-400 bg-blue-500/15 shadow-[0_0_26px_rgba(59,130,246,0.4)] scale-[1.02]" : "border-white/15 bg-[#141518]"
+              className={`text-left rounded-xl border px-3 py-2.5 transition-all duration-300 ${
+                active ? "border-blue-400 bg-blue-500/15 shadow-[0_0_26px_rgba(59,130,246,0.4)]" : "border-white/15 bg-[#141518]"
               }`}
-              style={{ animationDelay: `${0.15 + i * 0.08}s` }}
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <div className={`w-7 h-7 rounded-md flex items-center justify-center ${active ? "bg-blue-500/35" : "bg-white/[0.06]"}`}>
