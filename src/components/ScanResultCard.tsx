@@ -54,11 +54,20 @@ const AreaGrid = ({ ordered }: { ordered: ScanArea[] }) => (
       const r = 18;
       const c = 2 * Math.PI * r;
       return (
-        <div key={area.id} className={`rounded-xl border px-2 py-2.5 text-center ${top ? "border-blue-400/50 bg-blue-500/10" : "border-white/10 bg-white/[0.03]"}`}>
+        <div
+          key={area.id}
+          className={`relative rounded-xl border px-2 py-2.5 text-center flow-node-pop ${top ? "border-blue-400/50 bg-blue-500/10 shadow-[0_0_22px_rgba(59,130,246,0.25)]" : "border-white/10 bg-white/[0.03]"}`}
+          style={{ animationDelay: `${i * 0.1}s` }}
+        >
           <div className="relative w-12 h-12 mx-auto">
+            {top && <span className="absolute inset-0 rounded-full border border-blue-400/50 hub-ring" style={{ animationDelay: `${i * 0.8}s` }} />}
             <svg viewBox="0 0 48 48" className="w-12 h-12">
               <circle cx="24" cy="24" r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
-              <circle cx="24" cy="24" r={r} fill="none" stroke={top ? "#60A5FA" : "rgba(255,255,255,0.35)"} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${(area.score / 100) * c} ${c}`} transform="rotate(-90 24 24)" />
+              <circle
+                cx="24" cy="24" r={r} fill="none" stroke={top ? "#60A5FA" : "rgba(255,255,255,0.35)"} strokeWidth="4" strokeLinecap="round"
+                strokeDasharray={c} strokeDashoffset={c - (area.score / 100) * c} transform="rotate(-90 24 24)"
+                className="ring-fill" style={{ ["--ring-c" as string]: c, ["--ring-off" as string]: c - (area.score / 100) * c, animationDelay: `${0.2 + i * 0.12}s` }}
+              />
               <text x="24" y="28" fontSize="12" fontWeight="700" fill={top ? "#FFFFFF" : "rgba(255,255,255,0.75)"} textAnchor="middle">{area.score}</text>
             </svg>
             {top ? (

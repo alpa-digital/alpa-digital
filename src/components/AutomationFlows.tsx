@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Pause, Play, Workflow, Boxes, Check } from "lucide-react";
 import { automationFlows } from "@/data/automationFlows";
 import { agentSystems } from "@/data/agentSystems";
-import FlowCanvas, { FlowStack } from "@/components/flows/FlowCanvas";
-import SystemCanvas, { SystemStack } from "@/components/flows/SystemCanvas";
+import FlowCanvas from "@/components/flows/FlowCanvas";
+import SystemCanvas from "@/components/flows/SystemCanvas";
+import { FlowStack, SystemStack } from "@/components/flows/MobileStacks";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type Mode = "automatizaciones" | "sistemas";
