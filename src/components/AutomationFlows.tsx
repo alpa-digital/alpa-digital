@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play, Workflow, Boxes, Check } from "lucide-react";
+import { Pause, Play, Workflow, Boxes, ArrowRight } from "lucide-react";
 import { automationFlows } from "@/data/automationFlows";
 import { agentSystems } from "@/data/agentSystems";
 import FlowCanvas from "@/components/flows/FlowCanvas";
@@ -11,6 +11,7 @@ type Mode = "automatizaciones" | "sistemas";
 
 const AUTOPLAY_MS = 7600;
 const LOG_STEP_MS = 1150;
+const LOG_VISIBLE = 3;
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -24,26 +25,9 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
-const modeCopy: Record<Mode, { eyebrow: string; title: string; intro: string }> = {
-  automatizaciones: {
-    eyebrow: "Lo que construimos · escala de un proceso",
-    title: "Sistemas de herramientas y automatizaciones con IA",
-    intro:
-      "Un mismo servicio a distintas escalas. A escala de proceso, un disparador, un agente que entiende, tus herramientas de siempre y una persona solo donde hace falta. Son flujos reales que montamos en empresas como la tuya.",
-  },
-  sistemas: {
-    eyebrow: "Lo que construimos · escala de empresa",
-    title: "Sistemas de herramientas y automatizaciones con IA",
-    intro:
-      "A escala de empresa, las mismas piezas se convierten en un sistema: apps corporativas interconectadas, agentes de IA y automatizaciones que comparten datos y un agente central al que tu equipo habla por WhatsApp o por voz. Lo desarrollamos a medida, por fases.",
-  },
-};
-
-const ladder = [
-  { step: "Automatización", text: "Una tarea repetitiva deja de hacerse a mano." },
-  { step: "Agente de IA", text: "Atiende, consulta tus datos y actúa por WhatsApp, email o voz." },
-  { step: "App corporativa", text: "La herramienta que no existía, hecha para tu forma de trabajar." },
-  { step: "Sistema gobernado por IA", text: "Apps, agentes y automatizaciones interconectados con supervisión." },
+const modes: { id: Mode; label: string; hint: string; Icon: typeof Workflow }[] = [
+  { id: "automatizaciones", label: "Una automatización", hint: "Un proceso concreto, de principio a fin.", Icon: Workflow },
+  { id: "sistemas", label: "Un sistema completo", hint: "Toda la empresa conectada a un agente central.", Icon: Boxes },
 ];
 
 const AutomationFlows = () => {
@@ -66,7 +50,6 @@ const AutomationFlows = () => {
   const isFlows = mode === "automatizaciones";
   const log = isFlows ? flow.log : module.log;
   const logKey = isFlows ? `flow-${flow.id}` : `sys-${system.id}-${module.id}`;
-  const itemCount = isFlows ? automationFlows.length : system.modules.length;
   const activeIndex = isFlows ? flowIndex : moduleIndex;
 
   useEffect(() => {
@@ -114,8 +97,13 @@ const AutomationFlows = () => {
     setPlaying(true);
   };
 
-  const copy = modeCopy[mode];
   const metric = isFlows ? flow.metric : module.metric;
+  const hook = isFlows ? flow.hook : module.description;
+  const shownLog = log.slice(Math.max(0, visibleLines - LOG_VISIBLE), visibleLines);
+  const shownOffset = Math.max(0, visibleLines - LOG_VISIBLE);
+  const rail = isFlows
+    ? automationFlows.map((f) => ({ id: f.id, title: f.area, sub: f.title }))
+    : system.modules.map((m) => ({ id: m.id, title: m.name, sub: m.short }));
 
   return (
     <section id="automatizaciones" ref={sectionRef} className="relative overflow-hidden bg-[#08090B] text-white py-16 md:py-20 px-4 md:px-8 scroll-mt-20">
@@ -125,56 +113,45 @@ const AutomationFlows = () => {
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Cabecera compacta con conmutador */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
-          <div key={mode} className="max-w-2xl flow-layer-in">
-            <p className="text-xs font-medium text-blue-300 uppercase tracking-wide mb-2">{copy.eyebrow}</p>
-            <h2 className="text-3xl md:text-4xl font-light leading-tight mb-3" style={{ textWrap: "balance" }}>{copy.title}</h2>
-            <p className="text-sm md:text-base text-white/60 leading-relaxed">{copy.intro}</p>
-          </div>
-          <div className="inline-flex self-start lg:self-auto rounded-full border border-white/15 bg-white/[0.04] p-1 flex-shrink-0" role="tablist" aria-label="Qué mostrar">
-            {(
-              [
-                { id: "automatizaciones", label: "Un proceso", Icon: Workflow },
-                { id: "sistemas", label: "Toda la empresa", Icon: Boxes },
-              ] as { id: Mode; label: string; Icon: typeof Workflow }[]
-            ).map(({ id, label, Icon }) => {
-              const active = mode === id;
-              return (
-                <button
-                  key={id}
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => switchMode(id)}
-                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap ${
-                    active ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-white/60 hover:text-white"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </button>
-              );
-            })}
-          </div>
+        <div className="max-w-2xl mb-6">
+          <p className="text-xs font-medium text-blue-300 uppercase tracking-wide mb-2">Lo que construimos</p>
+          <h2 className="text-3xl md:text-4xl font-light leading-tight mb-3" style={{ textWrap: "balance" }}>
+            Míralo funcionar antes de contratarlo
+          </h2>
+          <p className="text-sm md:text-base text-white/60 leading-relaxed">
+            Ejemplos reales de lo que montamos en pymes. Elige qué quieres ver y déjalo correr.
+          </p>
         </div>
 
-        <ol className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-8" aria-label="Escalas del mismo servicio">
-          {ladder.map((item, i) => {
-            const active = isFlows ? i === 0 : i >= 1;
+        {/* Un único conmutador, con explicación de cada opción */}
+        <div className="grid sm:grid-cols-2 gap-2 max-w-2xl mb-6" role="tablist" aria-label="Qué mostrar">
+          {modes.map(({ id, label, hint, Icon }) => {
+            const active = mode === id;
             return (
-              <li key={item.step} className={`relative rounded-xl border px-4 py-3 transition-colors duration-500 ${active ? "border-blue-400/50 bg-blue-500/10" : "border-white/10 bg-white/[0.02]"}`}>
-                <p className={`text-[10px] uppercase tracking-wide mb-1 ${active ? "text-blue-300" : "text-white/35"}`}>Escala {i + 1}</p>
-                <p className={`text-sm font-medium ${active ? "text-white" : "text-white/60"}`}>{item.step}</p>
-                <p className={`text-[11px] leading-snug mt-0.5 ${active ? "text-white/60" : "text-white/35"}`}>{item.text}</p>
-                {i < ladder.length - 1 && <span className="hidden lg:block absolute top-1/2 -right-2.5 -translate-y-1/2 text-white/25">→</span>}
-              </li>
+              <button
+                key={id}
+                role="tab"
+                aria-selected={active}
+                onClick={() => switchMode(id)}
+                className={`flex items-center gap-3 text-left rounded-xl border px-4 py-3 transition-all duration-300 ${
+                  active ? "border-blue-400/60 bg-blue-500/10 shadow-lg shadow-primary/20" : "border-white/10 bg-white/[0.03] hover:border-white/25"
+                }`}
+              >
+                <span className={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center ${active ? "bg-primary text-white" : "bg-white/10 text-white/60"}`}>
+                  <Icon className="w-4 h-4" />
+                </span>
+                <span className="min-w-0">
+                  <span className={`block text-sm font-medium ${active ? "text-white" : "text-white/70"}`}>{label}</span>
+                  <span className={`block text-[11px] leading-snug ${active ? "text-white/60" : "text-white/40"}`}>{hint}</span>
+                </span>
+              </button>
             );
           })}
-        </ol>
+        </div>
 
         {!isFlows && (
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="text-xs text-white/45 mr-2">Ejemplo de empresa:</span>
+            <span className="text-xs text-white/45 mr-1">Ejemplo:</span>
             {agentSystems.map((item, i) => (
               <button
                 key={item.id}
@@ -190,10 +167,10 @@ const AutomationFlows = () => {
           </div>
         )}
 
-        <div className="grid lg:grid-cols-[240px_1fr] gap-4 lg:gap-6 items-start">
-          {/* Selector */}
+        <div className="grid lg:grid-cols-[220px_1fr] gap-4 lg:gap-6 items-start">
+          {/* Selector de ejemplo */}
           <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0">
-            {(isFlows ? automationFlows.map((f) => ({ id: f.id, title: f.area, sub: f.title })) : system.modules.map((m) => ({ id: m.id, title: m.name, sub: m.short }))).map((item, i) => {
+            {rail.map((item, i) => {
               const active = i === activeIndex;
               return (
                 <button
@@ -218,11 +195,11 @@ const AutomationFlows = () => {
             {animate && (
               <button
                 onClick={() => setPlaying((p) => !p)}
-                className="flex-shrink-0 inline-flex items-center gap-2 text-xs text-white/50 hover:text-white px-4 py-2 lg:mt-2 transition-colors"
+                className="flex-shrink-0 inline-flex items-center gap-2 text-xs text-white/50 hover:text-white px-4 py-2 lg:mt-1 transition-colors"
                 aria-label={playing ? "Pausar recorrido automático" : "Reanudar recorrido automático"}
               >
                 {playing ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                {playing ? "Recorrido automático" : "Reanudar recorrido"}
+                {playing ? "Pasa solo" : "Reanudar"}
               </button>
             )}
           </div>
@@ -250,16 +227,18 @@ const AutomationFlows = () => {
               )}
             </div>
 
-            <div className="grid md:grid-cols-[1fr_200px] border-t border-white/10">
-              <div className="px-5 py-3.5 font-mono text-[12px] leading-relaxed min-h-[132px]">
-                <p className="text-white/35 mb-1.5 text-[10px] uppercase tracking-wide font-sans">Registro en directo</p>
+            <div className="grid md:grid-cols-[1fr_180px] border-t border-white/10">
+              <div className="px-5 py-3 font-mono text-[12px] leading-relaxed min-h-[84px]">
                 <ul aria-live="polite">
-                  {log.slice(0, visibleLines).map((line, i) => (
-                    <li key={`${logKey}-${i}`} className="flex gap-3 text-white/85 flow-node" style={{ animationDuration: "0.4s" }}>
-                      <span className="text-blue-400/80 flex-shrink-0">{String(i + 1).padStart(2, "0")}</span>
-                      <span className={i === log.length - 1 ? "text-emerald-300" : ""}>{line}</span>
-                    </li>
-                  ))}
+                  {shownLog.map((line, i) => {
+                    const idx = shownOffset + i;
+                    return (
+                      <li key={`${logKey}-${idx}`} className="flex gap-3 text-white/85 flow-node" style={{ animationDuration: "0.4s" }}>
+                        <span className="text-blue-400/80 flex-shrink-0">{String(idx + 1).padStart(2, "0")}</span>
+                        <span className={idx === log.length - 1 ? "text-emerald-300" : ""}>{line}</span>
+                      </li>
+                    );
+                  })}
                   {visibleLines < log.length && (
                     <li className="text-white/40 flex gap-3">
                       <span className="text-blue-400/50">{String(visibleLines + 1).padStart(2, "0")}</span>
@@ -268,44 +247,19 @@ const AutomationFlows = () => {
                   )}
                 </ul>
               </div>
-              <div className="border-t md:border-t-0 md:border-l border-white/10 px-5 py-3.5 flex flex-col justify-center">
-                <p key={`${logKey}-metric`} className="text-3xl md:text-4xl font-semibold text-white tracking-tight flow-layer-in" style={{ fontVariantNumeric: "tabular-nums" }}>{metric.value}</p>
-                <p className="text-xs text-white/50 mt-1.5">{metric.label}</p>
+              <div className="border-t md:border-t-0 md:border-l border-white/10 px-5 py-3 flex flex-col justify-center">
+                <p key={`${logKey}-metric`} className="text-2xl md:text-3xl font-semibold text-white tracking-tight flow-layer-in" style={{ fontVariantNumeric: "tabular-nums" }}>{metric.value}</p>
+                <p className="text-xs text-white/50 mt-1">{metric.label}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {isFlows ? (
-          <p className="mt-5 max-w-3xl text-sm md:text-base text-white/60 leading-relaxed">{flow.hook}</p>
-        ) : (
-          <div key={`${system.id}-${module.id}-detail`} className="mt-5 grid md:grid-cols-[1.2fr_1fr] gap-6 flow-layer-in">
-            <div>
-              <p className="text-[11px] uppercase tracking-wide text-white/40 mb-1.5">Lo usan: {module.users}</p>
-              <p className="text-sm md:text-base text-white/70 leading-relaxed">{module.description}</p>
-            </div>
-            <ul className="space-y-1.5">
-              {module.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-2.5 text-sm text-white/75">
-                  <Check className="w-4 h-4 text-blue-300 mt-0.5 flex-shrink-0" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <p className="mt-6 text-sm text-white/55">
-          Todo esto es una sola línea de servicio, con precio cerrado por fase.{" "}
-          <a href="/servicios/sistemas-ia" className="text-blue-300 hover:text-white underline underline-offset-2">Ver sistemas de IA</a>
-        </p>
-        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-white/45">
-          <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded border border-blue-400 bg-blue-500/20" /> Agente de IA</span>
-          <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded border border-white/25 bg-[#141518]" /> {isFlows ? "Tus herramientas de siempre" : "Herramienta desarrollada a medida"}</span>
-          {isFlows && <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded border border-dashed border-amber-300/70" /> Una persona decide</span>}
-          {isFlows && <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded border border-emerald-400/70 bg-emerald-500/10" /> Resultado en tu sistema</span>}
-          {!isFlows && <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-blue-400/80" /> Datos que entran y salen del agente</span>}
-          {!isFlows && <span className="text-white/30">Empresas de ejemplo. Los nombres son ficticios.</span>}
+        <div className="mt-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <p key={`${logKey}-hook`} className="max-w-3xl text-sm md:text-base text-white/60 leading-relaxed flow-layer-in">{hook}</p>
+          <a href="#servicios" className="inline-flex items-center gap-1.5 text-sm text-blue-300 hover:text-white whitespace-nowrap flex-shrink-0">
+            Escalas y precios <ArrowRight className="w-4 h-4" />
+          </a>
         </div>
       </div>
     </section>

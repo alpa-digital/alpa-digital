@@ -9,13 +9,6 @@ import { track, utmParams } from "@/lib/analytics";
 
 type Phase = "idle" | "scanning" | "result";
 
-const sampleResult: ScanResult = {
-  ...estimateScan("voltia-instalaciones.es", "construccion"),
-  company: "Voltia Instalaciones",
-  sector: "Instalaciones eléctricas y fotovoltaicas",
-  summary: "Ejemplo. En Voltia, presupuestos, certificaciones y facturas de obra concentran unas 28 horas semanales de trabajo repetitivo que un agente podría asumir.",
-  source: "analysis",
-};
 
 const scanSteps = ["Leyendo tu web", "Identificando a qué te dedicas", "Buscando tareas repetitivas por área", "Diseñando las automatizaciones", "Preparando tu mapa"];
 
@@ -212,7 +205,20 @@ const AutomationScan = () => {
         </div>
 
         <div ref={resultRef} className="scroll-mt-24">
-          {phase === "idle" && <ScanResultCard result={sampleResult} url="voltia-instalaciones.es" sample />}
+          {phase === "idle" && (
+            <div className="rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-8 md:px-10 md:py-10 grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-center">
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"><Sparkles className="w-6 h-6 text-primary" /></div>
+              <div>
+                <p className="font-medium text-foreground mb-3">Qué obtendrás en medio minuto</p>
+                <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-muted-foreground">
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Tu sector, leído de tu web</li>
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Un mapa de las seis áreas con su potencial de automatización</li>
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Las dos automatizaciones con más impacto, explicadas</li>
+                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Horas semanales que se ahorrarían</li>
+                </ul>
+              </div>
+            </div>
+          )}
 
           {phase === "scanning" && (
             <div className="rounded-2xl border border-white/10 bg-[#0D0E11] text-white p-6 md:p-8 min-h-[280px] grid md:grid-cols-2 gap-8 items-center">

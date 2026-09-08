@@ -1,12 +1,12 @@
 import alpaLogoWhite from "@/assets/alpa-logo-white.png";
 import { families, pillarOf, servicesOf } from "@/data/services";
 import { site } from "@/data/site";
-import { communities, provincesByCommunity } from "@/data/locations";
+import { provinces } from "@/data/locations";
 import { sectors } from "@/data/sectors";
 
 const Footer = () => {
   return (
-    <footer className="py-16 px-8 bg-black text-white relative">
+    <footer className="py-14 px-5 md:px-8 bg-black text-white relative">
       <div className="max-w-7xl mx-auto">
         {/* Main content area */}
         <div className="flex flex-col md:flex-row items-start justify-between min-h-[120px] gap-8">
@@ -22,54 +22,52 @@ const Footer = () => {
           </div>
 
           {/* Right side - Contact email */}
-          <div className="flex-1 flex justify-end">
-            <div className="text-right">
-              <a 
-                href="mailto:info@alpa.digital" 
-                className="text-xl hover:opacity-80 transition-opacity"
-              >
-                info@alpa.digital
+          <div className="flex-1 flex md:justify-end">
+            <div className="md:text-right">
+              <a href={`mailto:${site.email}`} className="text-xl hover:opacity-80 transition-opacity">
+                {site.email}
               </a>
+              <p className="text-sm text-white/55 mt-2">
+                {site.address.street} · {site.address.postalCode} {site.address.locality} ({site.address.region})
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Servicios y zonas */}
-        <div className="grid md:grid-cols-[1fr_2fr] gap-10 pt-10 mt-10 border-t border-white/10">
-          <div className="space-y-6">
-            {(["sistemas", "consultoria"] as const).map((familyId) => {
-              const pillar = pillarOf(familyId);
-              return (
-                <div key={familyId}>
-                  <a href={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-2 inline-block">{families[familyId].short}</a>
-                  <ul className="space-y-1.5">
-                    {(pillar.offerings ?? []).map((o) => (
-                      <li key={o.name}>
-                        {o.slug ? <a href={`/servicios/${o.slug}`} className="text-sm text-white/80 hover:text-white transition-colors">{o.name}</a> : <span className="text-sm text-white/60">{o.name}</span>}
-                      </li>
-                    ))}
-                    {servicesOf(familyId).length === 1 && null}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
+        {/* Servicios, sectores y zonas */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8 pt-10 mt-10 border-t border-white/10 text-sm">
+          {(["sistemas", "consultoria"] as const).map((familyId) => {
+            const pillar = pillarOf(familyId);
+            return (
+              <div key={familyId}>
+                <a href={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{families[familyId].short}</a>
+                <ul className="space-y-1.5">
+                  {(pillar.offerings ?? []).map((o) => (
+                    <li key={o.name}>
+                      {o.slug ? <a href={`/servicios/${o.slug}`} className="text-white/75 hover:text-white transition-colors">{o.name}</a> : <span className="text-white/55">{o.name}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
           <div>
             <a href="/sectores" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Sectores</a>
-            <ul className="flex flex-wrap gap-x-4 gap-y-1.5 mb-8">
-              {sectors.map((s) => (
-                <li key={s.slug}><a href={`/sectores/${s.slug}`} className="text-xs text-white/60 hover:text-white transition-colors">{s.short}</a></li>
+            <ul className="space-y-1.5">
+              {sectors.slice(0, 6).map((s) => (
+                <li key={s.slug}><a href={`/sectores/${s.slug}`} className="text-white/75 hover:text-white transition-colors">{s.short}</a></li>
               ))}
+              <li><a href="/sectores" className="text-white/50 hover:text-white underline underline-offset-2">Los {sectors.length} sectores</a></li>
             </ul>
-            <p className="text-xs uppercase tracking-wide text-white/50 mb-3">Automatización con IA para pymes en toda España</p>
-            <ul className="flex flex-wrap gap-x-4 gap-y-1.5">
-              {communities.map((c) =>
-                provincesByCommunity(c).map((prov) => (
-                  <li key={prov.slug}><a href={`/automatizacion-ia/${prov.slug}`} className="text-xs text-white/60 hover:text-white transition-colors">{prov.name}</a></li>
-                ))
-              )}
+          </div>
+          <div>
+            <a href="/zonas" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Zonas</a>
+            <ul className="space-y-1.5">
+              {provinces.filter((p) => p.tier === 1).map((p) => (
+                <li key={p.slug}><a href={`/automatizacion-ia/${p.slug}`} className="text-white/75 hover:text-white transition-colors">{p.name} · presencial</a></li>
+              ))}
+              <li><a href="/zonas" className="text-white/50 hover:text-white underline underline-offset-2">Las 52 provincias, en remoto</a></li>
             </ul>
-            <a href="/zonas" className="inline-block mt-3 text-xs text-white/70 underline hover:text-white">Ver todas las zonas y municipios</a>
           </div>
         </div>
 
