@@ -44,9 +44,10 @@ class AnalysisError extends Error {
 const reasonByStatus: Record<number, string> = {
   404: "el servicio de análisis no está desplegado en esta web",
   422: "no hemos podido descargar tu web (puede que bloquee robots o no tenga texto legible)",
-  429: "el servicio de análisis está saturado ahora mismo",
+  429: "el modelo de IA ha rechazado la petición por límite de uso; vuelve a intentarlo en unos segundos",
   502: "el modelo de IA no ha devuelto un análisis válido",
   503: "el servicio de análisis no está configurado (falta la clave de la IA)",
+  504: "el análisis ha tardado más de lo que permite el servidor; vuelve a intentarlo",
 };
 
 async function requestAnalysis(url: string): Promise<ScanResult> {

@@ -63,3 +63,8 @@ curl -sS https://<sitio>.netlify.app/api/analyze \
 ```
 
 Debe devolver un JSON con `company`, `sectorId`, `sector`, `summary`, `favicon` y seis `areas`.
+
+Dos límites a tener en cuenta:
+
+- Netlify corta las funciones síncronas a los 10 segundos. La función reparte ese tiempo entre descargar la web y llamar al modelo, y responde 504 si no llega. `ANALYZE_DEADLINE_MS` (por defecto 9200) ajusta ese presupuesto si Netlify amplía el límite del sitio.
+- El plan gratuito de Mistral limita a 1 petición por segundo y a veces responde 429 "capacity exceeded" en modelos concretos. La función reintenta con pausa, pasa a JSON libre si el esquema falla y cambia a `MISTRAL_FALLBACK_MODEL` (por defecto `open-mistral-nemo`). Con un plan de pago desaparecen estos 429.

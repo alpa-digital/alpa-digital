@@ -3,6 +3,10 @@ import { z } from "zod";
 
 const MISTRAL_URL = "https://api.mistral.ai/v1/chat/completions";
 const MODEL = process.env.MISTRAL_MODEL ?? "mistral-small-latest";
+const FALLBACK_MODEL = process.env.MISTRAL_FALLBACK_MODEL ?? "open-mistral-nemo";
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// Netlify corta las funciones síncronas a los 10 s: toda la función debe responder antes.
+const DEADLINE_MS = Number(process.env.ANALYZE_DEADLINE_MS ?? 9200);
 
 const sectorIds = ["servicios", "comercio", "industria", "salud", "inmobiliaria", "hosteleria", "construccion", "otro"] as const;
 const areaIds = ["atencion", "ventas", "admin", "rrhh", "marketing", "direccion"] as const;
@@ -133,10 +137,10 @@ function extractMeta(html: string): string {
   return [title && `Título: ${title}`, ogTitle && ogTitle !== title && `Nombre: ${ogTitle}`, description && `Descripción: ${description}`].filter(Boolean).join("\n");
 }
 
-async function fetchOnce(url: URL, userAgent: string): Promise<{ html: string; finalUrl: URL }> {
+async function fetchOnce(url: URL, userAgent: string, timeoutMs: number): Promise<{ html: string; finalUrl: URL }> {
   const response = await fetch(url, {
     redirect: "follow",
-    signal: AbortSignal.timeout(12000),
+    signal: AbortSignal.timeout(timeoutMs),
     headers: {
       "user-agent": userAgent,
       accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
@@ -148,7 +152,7 @@ async function fetchOnce(url: URL, userAgent: string): Promise<{ html: string; f
   return { html, finalUrl: response.url ? new URL(response.url) : url };
 }
 
-async function fetchSite(url: URL): Promise<{ text: string; favicon?: string }> {
+async function fetchSite(url: URL, budgetLeft: () => number): Promise<{ text: string; favicon?: string }> {
   const variants: URL[] = [url];
   const alt = new URL(url.toString());
   alt.hostname = url.hostname.startsWith("www.") ? url.hostname.slice(4) : `www.${url.hostname}`;
@@ -162,13 +166,19 @@ async function fetchSite(url: URL): Promise<{ text: string; favicon?: string }> 
   const errors: string[] = [];
   for (const candidate of variants) {
     for (const userAgent of ["Mozilla/5.0 (compatible; AlpaDigitalBot/1.0; +https://alpa.digital)", browserUA]) {
+      // Reservar al menos 4 s para la llamada al modelo.
+      const timeoutMs = Math.min(5000, budgetLeft() - 4000);
+      if (timeoutMs < 1000) {
+        errors.push("sin tiempo para más intentos");
+        break;
+      }
       try {
-        const { html, finalUrl } = await fetchOnce(candidate, userAgent);
+        const { html, finalUrl } = await fetchOnce(candidate, userAgent, timeoutMs);
         const meta = extractMeta(html);
         const body = htmlToText(html);
         const text = `${meta}\n\n${body}`.trim();
         if (body.length < 80 && meta.length < 40) throw new Error("contenido insuficiente (¿web generada solo con JavaScript?)");
-        return { text: text.slice(0, 14000), favicon: extractFavicon(html, finalUrl) ?? `https://www.google.com/s2/favicons?domain=${finalUrl.hostname}&sz=128` };
+        return { text: text.slice(0, 9000), favicon: extractFavicon(html, finalUrl) ?? `https://www.google.com/s2/favicons?domain=${finalUrl.hostname}&sz=128` };
       } catch (error) {
         errors.push(`${candidate.hostname}: ${error instanceof Error ? error.message : String(error)}`);
       }
@@ -181,7 +191,7 @@ interface MistralResponse {
   choices?: { message?: { content?: string | { type: string; text?: string }[] } }[];
 }
 
-async function askMistral(apiKey: string, hostname: string, siteText: string, structured: boolean): Promise<Response> {
+async function askMistral(apiKey: string, hostname: string, siteText: string, structured: boolean, model: string, timeoutMs: number): Promise<Response> {
   const userPrompt = `Web: ${hostname}\n\nTexto público de la web:\n"""\n${siteText}\n"""\n\nDevuelve el análisis de automatización para esta empresa.`;
   const responseFormat = structured
     ? { type: "json_schema", json_schema: { name: "automation_analysis", strict: true, schema: outputJsonSchema } }
@@ -192,9 +202,9 @@ async function askMistral(apiKey: string, hostname: string, siteText: string, st
   ];
   return fetch(MISTRAL_URL, {
     method: "POST",
-    signal: AbortSignal.timeout(45000),
+    signal: AbortSignal.timeout(timeoutMs),
     headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json", accept: "application/json" },
-    body: JSON.stringify({ model: MODEL, temperature: 0.2, max_tokens: 2000, response_format: responseFormat, messages }),
+    body: JSON.stringify({ model, temperature: 0.2, max_tokens: 1400, response_format: responseFormat, messages }),
   });
 }
 
@@ -208,6 +218,8 @@ function extractContent(payload: MistralResponse): string {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 
 export default async (req: Request, _context: Context) => {
+  const started = Date.now();
+  const budgetLeft = () => DEADLINE_MS - (Date.now() - started);
   if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
   const apiKey = process.env.MISTRAL_API_KEY;
   if (!apiKey) {
@@ -227,7 +239,7 @@ export default async (req: Request, _context: Context) => {
 
   let site: { text: string; favicon?: string };
   try {
-    site = await fetchSite(url);
+    site = await fetchSite(url, budgetLeft);
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
     console.error("analyze: no se pudo leer la web", url.hostname, detail);
@@ -235,12 +247,59 @@ export default async (req: Request, _context: Context) => {
   }
 
   try {
-    let response = await askMistral(apiKey, url.hostname, site.text, true);
-    // Si el modelo configurado no admite json_schema, se reintenta con json_object.
-    if (response.status === 400 || response.status === 422) {
-      response = await askMistral(apiKey, url.hostname, site.text, false);
+    // Plan de llamadas: esquema estricto → JSON libre si el modelo no lo admite → modelo alternativo.
+    // Ante un 429 (límite de peticiones o capacidad del plan) se espera y se reintenta.
+    const plan: { structured: boolean; model: string }[] = [
+      { structured: true, model: MODEL },
+      { structured: false, model: MODEL },
+      { structured: false, model: FALLBACK_MODEL },
+    ];
+    let response: Response | undefined;
+    let lastRateLimit = "";
+    let timedOut = false;
+    const call = async (step: { structured: boolean; model: string }) => {
+      const timeoutMs = budgetLeft() - 250;
+      if (timeoutMs < 1500) {
+        timedOut = true;
+        return undefined;
+      }
+      try {
+        return await askMistral(apiKey, url.hostname, site.text, step.structured, step.model, timeoutMs);
+      } catch (error) {
+        if (error instanceof Error && error.name === "TimeoutError") {
+          timedOut = true;
+          return undefined;
+        }
+        throw error;
+      }
+    };
+    for (const step of plan) {
+      response = await call(step);
+      if (!response) break;
+      if (response.status === 429) {
+        lastRateLimit = (await response.text()).slice(0, 300);
+        console.warn("analyze: Mistral 429", step.model, step.structured ? "json_schema" : "json_object", lastRateLimit);
+        // Un reintento tras una pausa corta (límite de 1 petición/segundo del plan gratuito) y, si no, siguiente paso.
+        if (budgetLeft() > 4000) {
+          await sleep(1300);
+          response = await call(step);
+          if (!response) break;
+          if (response.ok) break;
+          if (response.status === 429) lastRateLimit = (await response.text()).slice(0, 300);
+        }
+        continue;
+      }
+      if (response.ok) break;
+      const detail = (await response.clone().text()).slice(0, 300);
+      console.warn("analyze: Mistral respondió", response.status, "con", step.model, step.structured ? "json_schema" : "json_object", detail);
+      if (response.status !== 400 && response.status !== 422) break;
+      await sleep(1100);
     }
-    if (response.status === 429) return json({ error: "rate limited" }, 429);
+    if (timedOut || !response) {
+      console.error("analyze: sin tiempo antes del corte de Netlify", Date.now() - started, "ms", lastRateLimit);
+      return json({ error: "timeout", detail: lastRateLimit || "el modelo no respondió a tiempo" }, 504);
+    }
+    if (response.status === 429) return json({ error: "rate limited", detail: lastRateLimit }, 429);
     if (!response.ok) {
       const detail = (await response.text()).slice(0, 300);
       console.error("analyze: Mistral respondió", response.status, detail);
