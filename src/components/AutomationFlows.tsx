@@ -26,18 +26,25 @@ function usePrefersReducedMotion() {
 
 const modeCopy: Record<Mode, { eyebrow: string; title: string; intro: string }> = {
   automatizaciones: {
-    eyebrow: "Agentes de IA trabajando en cada área",
-    title: "Así se ve una pyme cuando la IA hace el trabajo repetitivo",
+    eyebrow: "Lo que construimos · escala de un proceso",
+    title: "Sistemas de herramientas y automatizaciones con IA",
     intro:
-      "No son ideas. Son flujos reales que montamos en empresas como la tuya: un disparador, un agente que entiende, tus herramientas de siempre y una persona solo donde hace falta.",
+      "Un mismo servicio a distintas escalas. A escala de proceso, un disparador, un agente que entiende, tus herramientas de siempre y una persona solo donde hace falta. Son flujos reales que montamos en empresas como la tuya.",
   },
   sistemas: {
-    eyebrow: "Sistemas de agentes IA y herramientas a medida",
-    title: "Un agente en el centro y las herramientas que tu empresa necesita, hechas a medida",
+    eyebrow: "Lo que construimos · escala de empresa",
+    title: "Sistemas de herramientas y automatizaciones con IA",
     intro:
-      "Cuando no existe un programa que encaje con cómo trabajas, lo desarrollamos: certificaciones, control de herramientas, CRM, fichaje, marketing o facturación. Todo conectado a un agente al que tu equipo habla por WhatsApp o por voz.",
+      "A escala de empresa, las mismas piezas se convierten en un sistema: apps corporativas interconectadas, agentes de IA y automatizaciones que comparten datos y un agente central al que tu equipo habla por WhatsApp o por voz. Lo desarrollamos a medida, por fases.",
   },
 };
+
+const ladder = [
+  { step: "Automatización", text: "Una tarea repetitiva deja de hacerse a mano." },
+  { step: "Agente de IA", text: "Atiende, consulta tus datos y actúa por WhatsApp, email o voz." },
+  { step: "App corporativa", text: "La herramienta que no existía, hecha para tu forma de trabajar." },
+  { step: "Sistema gobernado por IA", text: "Apps, agentes y automatizaciones interconectados con supervisión." },
+];
 
 const AutomationFlows = () => {
   const reducedMotion = usePrefersReducedMotion();
@@ -128,8 +135,8 @@ const AutomationFlows = () => {
           <div className="inline-flex self-start lg:self-auto rounded-full border border-white/15 bg-white/[0.04] p-1 flex-shrink-0" role="tablist" aria-label="Qué mostrar">
             {(
               [
-                { id: "automatizaciones", label: "Automatizaciones", Icon: Workflow },
-                { id: "sistemas", label: "Sistemas y herramientas", Icon: Boxes },
+                { id: "automatizaciones", label: "Un proceso", Icon: Workflow },
+                { id: "sistemas", label: "Toda la empresa", Icon: Boxes },
               ] as { id: Mode; label: string; Icon: typeof Workflow }[]
             ).map(({ id, label, Icon }) => {
               const active = mode === id;
@@ -150,6 +157,20 @@ const AutomationFlows = () => {
             })}
           </div>
         </div>
+
+        <ol className="grid grid-cols-2 lg:grid-cols-4 gap-2 mb-8" aria-label="Escalas del mismo servicio">
+          {ladder.map((item, i) => {
+            const active = isFlows ? i === 0 : i >= 1;
+            return (
+              <li key={item.step} className={`relative rounded-xl border px-4 py-3 transition-colors duration-500 ${active ? "border-blue-400/50 bg-blue-500/10" : "border-white/10 bg-white/[0.02]"}`}>
+                <p className={`text-[10px] uppercase tracking-wide mb-1 ${active ? "text-blue-300" : "text-white/35"}`}>Escala {i + 1}</p>
+                <p className={`text-sm font-medium ${active ? "text-white" : "text-white/60"}`}>{item.step}</p>
+                <p className={`text-[11px] leading-snug mt-0.5 ${active ? "text-white/60" : "text-white/35"}`}>{item.text}</p>
+                {i < ladder.length - 1 && <span className="hidden lg:block absolute top-1/2 -right-2.5 -translate-y-1/2 text-white/25">→</span>}
+              </li>
+            );
+          })}
+        </ol>
 
         {!isFlows && (
           <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -274,7 +295,11 @@ const AutomationFlows = () => {
           </div>
         )}
 
-        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-white/45">
+        <p className="mt-6 text-sm text-white/55">
+          Todo esto es una sola línea de servicio, con precio cerrado por fase.{" "}
+          <a href="/servicios/sistemas-ia" className="text-blue-300 hover:text-white underline underline-offset-2">Ver sistemas de IA</a>
+        </p>
+        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-[11px] text-white/45">
           <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded border border-blue-400 bg-blue-500/20" /> Agente de IA</span>
           <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded border border-white/25 bg-[#141518]" /> {isFlows ? "Tus herramientas de siempre" : "Herramienta desarrollada a medida"}</span>
           {isFlows && <span className="inline-flex items-center gap-2"><span className="w-3 h-3 rounded border border-dashed border-amber-300/70" /> Una persona decide</span>}

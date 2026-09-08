@@ -1,5 +1,6 @@
 import alpaLogoWhite from "@/assets/alpa-logo-white.png";
-import { services } from "@/data/services";
+import { families, pillarOf, servicesOf } from "@/data/services";
+import { site } from "@/data/site";
 import { communities, provincesByCommunity } from "@/data/locations";
 
 const Footer = () => {
@@ -34,13 +35,23 @@ const Footer = () => {
 
         {/* Servicios y zonas */}
         <div className="grid md:grid-cols-[1fr_2fr] gap-10 pt-10 mt-10 border-t border-white/10">
-          <div>
-            <p className="text-xs uppercase tracking-wide text-white/50 mb-3">Servicios</p>
-            <ul className="space-y-2">
-              {services.map((s) => (
-                <li key={s.slug}><a href={`/servicios/${s.slug}`} className="text-sm text-white/80 hover:text-white transition-colors">{s.name}</a></li>
-              ))}
-            </ul>
+          <div className="space-y-6">
+            {(["sistemas", "consultoria"] as const).map((familyId) => {
+              const pillar = pillarOf(familyId);
+              return (
+                <div key={familyId}>
+                  <a href={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-2 inline-block">{families[familyId].short}</a>
+                  <ul className="space-y-1.5">
+                    {(pillar.offerings ?? []).map((o) => (
+                      <li key={o.name}>
+                        {o.slug ? <a href={`/servicios/${o.slug}`} className="text-sm text-white/80 hover:text-white transition-colors">{o.name}</a> : <span className="text-sm text-white/60">{o.name}</span>}
+                      </li>
+                    ))}
+                    {servicesOf(familyId).length === 1 && null}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
           <div>
             <p className="text-xs uppercase tracking-wide text-white/50 mb-3">Automatización con IA para pymes en toda España</p>

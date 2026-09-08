@@ -1,6 +1,6 @@
 # Campañas de Google Ads
 
-`campanas.csv` se importa en Google Ads Editor: Cuenta → Importar → Desde archivo. Contiene 11 campañas de búsqueda con sus grupos, palabras clave (concordancia de frase y exacta), anuncios responsivos de búsqueda y presupuestos diarios sugeridos (76 € al día en total; se puede empezar activando solo Automatización IA, Agentes IA y Local Sevilla, 39 € al día).
+`campanas.csv` se importa en Google Ads Editor: Cuenta → Importar → Desde archivo. Contiene 9 campañas de búsqueda (Sistemas IA con cuatro grupos, Consultoría IA con dos, seis locales y marca) con sus grupos, palabras clave (concordancia de frase y exacta), anuncios responsivos de búsqueda y presupuestos diarios sugeridos (63 € al día en total; se puede empezar activando Sistemas IA, Consultoría IA y Local Sevilla, 42 € al día).
 
 `negativas.csv` es la lista de palabras negativas a nivel de cuenta (Herramientas → Listas de palabras clave negativas).
 

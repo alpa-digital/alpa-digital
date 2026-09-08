@@ -49,7 +49,7 @@ const Hero = ({ onContactClick }: HeroProps) => {
               Tu pyme trabajando mientras tú te ocupas del negocio
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-3xl animate-fade-in" style={{ animationDelay: '0.4s', lineHeight: '1.8' }}>
-              Automatizamos con inteligencia artificial las tareas que hoy te roban horas: atención al cliente, presupuestos, facturación, seguimiento comercial y administración. Sin proyectos eternos ni tecnología que nadie entiende. Empezamos por un proceso, medimos el resultado y seguimos.
+              Construimos los sistemas de IA que tu pyme necesita, desde una automatización que quita una tarea hasta apps corporativas y agentes interconectados, y te ayudamos a decidir con criterio qué construir y en qué orden. Precio cerrado, sin proyectos eternos ni tecnología que nadie entiende.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mt-10 animate-fade-in" style={{ animationDelay: '0.6s' }}>
@@ -63,7 +63,7 @@ const Hero = ({ onContactClick }: HeroProps) => {
                 href="#automatizaciones"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base md:text-lg font-medium border border-border text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
               >
-                Ver qué automatizamos
+                Ver qué construimos
               </a>
             </div>
 

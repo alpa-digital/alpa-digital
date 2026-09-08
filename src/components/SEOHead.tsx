@@ -59,36 +59,28 @@ const SEOHead = () => {
       "areaServed": { "@type": "Country", "name": "ES" },
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
-        "name": "Servicios de automatización e IA para pymes",
+        "name": "Líneas de servicio",
         "itemListElement": [
-          {
-            "@type": "Offer",
-            "price": "490",
-            "priceCurrency": "EUR",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Diagnóstico de automatización",
-              "description": "Análisis de procesos y plan priorizado de automatizaciones con IA para una pyme."
-            }
-          },
           {
             "@type": "Offer",
             "price": "1500",
             "priceCurrency": "EUR",
             "itemOffered": {
               "@type": "Service",
-              "name": "Automatización con IA",
-              "description": "Diseño e implementación de automatizaciones con inteligencia artificial integradas en las herramientas de la empresa."
+              "name": "Sistemas de herramientas y automatizaciones con IA",
+              "description": "Automatizaciones de procesos, agentes de IA, apps corporativas a medida y sistemas completos interconectados y gobernados por IA. Precio cerrado por fase.",
+              "url": "https://alpa.digital/servicios/sistemas-ia"
             }
           },
           {
             "@type": "Offer",
-            "price": "350",
+            "price": "490",
             "priceCurrency": "EUR",
             "itemOffered": {
               "@type": "Service",
-              "name": "Consultoría y acompañamiento en IA",
-              "description": "Acompañamiento mensual, formación del equipo y mantenimiento de automatizaciones."
+              "name": "Consultoría de IA",
+              "description": "Diagnóstico de automatización, I+D y pruebas de concepto, diseño de producto y roadmap corporativo de IA, con acompañamiento mensual opcional.",
+              "url": "https://alpa.digital/servicios/consultoria-ia-pymes"
             }
           }
         ]

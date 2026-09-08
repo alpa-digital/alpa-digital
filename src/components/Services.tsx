@@ -1,61 +1,38 @@
 import { useEffect, useRef, useState } from "react";
-import { Search, Workflow, Compass, Check } from "lucide-react";
+import { Boxes, Compass, Check, ArrowRight } from "lucide-react";
+import { families, pillarOf, type ServiceFamily } from "@/data/services";
 
 interface ServicesProps {
   onContactClick: () => void;
 }
 
-const services = [
+const lines: { id: ServiceFamily; icon: typeof Boxes; cta: string; price: string; priceNote: string; includes: string[] }[] = [
   {
-    icon: Search,
-    name: "Diagnóstico de automatización",
-    tagline: "Para saber por dónde empezar",
-    description:
-      "Analizamos cómo trabaja tu equipo, detectamos las tareas repetitivas que más tiempo cuestan y te entregamos un plan priorizado con lo que conviene automatizar primero y lo que no.",
-    price: "490 €",
-    priceNote: "Precio cerrado, IVA no incluido. Se descuenta si seguimos con la implementación",
-    duration: "1 a 2 semanas",
-    cta: "Pedir diagnóstico",
-    includes: [
-      "Sesiones de trabajo con las personas que hacen las tareas",
-      "Mapa de procesos y tiempo que consume cada uno",
-      "Plan priorizado por impacto, coste y riesgo",
-      "Estimación cerrada de cada automatización propuesta",
-    ],
-  },
-  {
-    icon: Workflow,
-    name: "Automatización con IA",
-    tagline: "Para quitarte trabajo de encima",
-    description:
-      "Diseñamos e implementamos automatizaciones concretas conectadas a las herramientas que ya usas: correo, WhatsApp, CRM, facturación, hojas de cálculo o tu ERP. Cada una con un objetivo medible.",
-    price: "Desde 1.500 €",
-    priceNote: "Por automatización, IVA no incluido. Alcance, plazo y precio cerrados antes de empezar",
-    duration: "2 a 6 semanas por proceso",
+    id: "sistemas",
+    icon: Boxes,
     cta: "Solicitar presupuesto",
-    featured: true,
+    price: "Desde 1.500 €",
+    priceNote: "por automatización, IVA no incluido. Apps y sistemas con presupuesto cerrado por fase antes de empezar",
     includes: [
-      "Asistentes de IA para atención al cliente y ventas",
-      "Presupuestos, facturas y documentos generados automáticamente",
-      "Integración con tus herramientas actuales, sin cambiar de sistema",
+      "Automatizaciones de procesos conectadas a tus herramientas",
+      "Agentes de IA por WhatsApp, email, web y voz",
+      "Apps corporativas a medida, interconectadas",
+      "Sistema completo con agente central y supervisión",
       "Formación de tu equipo y 1 mes de soporte incluido",
     ],
   },
   {
+    id: "consultoria",
     icon: Compass,
-    name: "Consultoría y acompañamiento",
-    tagline: "Para tener un responsable de IA sin contratarlo",
-    description:
-      "Acompañamiento mensual para pymes que quieren adoptar la IA con criterio: qué herramientas usar, cómo usarlas con seguridad, formación del equipo y nuevas automatizaciones a medida que el negocio cambia.",
-    price: "350 €/mes",
-    priceNote: "IVA no incluido. Sin permanencia, con horas de trabajo incluidas",
-    duration: "Mes a mes",
-    cta: "Hablar con nosotros",
+    cta: "Pedir diagnóstico",
+    price: "490 €",
+    priceNote: "el diagnóstico, IVA no incluido, se descuenta si seguimos. Acompañamiento 350 €/mes sin permanencia. I+D, diseño de producto y roadmap con precio cerrado",
     includes: [
-      "Reunión mensual de seguimiento y prioridades",
-      "Formación práctica del equipo en herramientas de IA",
-      "Mantenimiento y mejora de las automatizaciones en marcha",
-      "Política de uso responsable de datos e IA en tu empresa",
+      "Diagnóstico de automatización con las personas que hacen el trabajo",
+      "I+D y pruebas de concepto con tus datos reales",
+      "Diseño de producto listo para construir",
+      "Roadmap corporativo de IA a 12 meses",
+      "Acompañamiento mensual con horas de trabajo incluidas",
     ],
   },
 ];
@@ -67,64 +44,52 @@ const Services = ({ onContactClick }: ServicesProps) => {
   useEffect(() => {
     const node = sectionRef.current;
     if (!node) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setIsVisible(true);
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -80px 0px" }
-    );
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && setIsVisible(true)), { threshold: 0.15, rootMargin: "0px 0px -80px 0px" });
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section id="servicios" ref={sectionRef} className="py-24 px-8 bg-background relative overflow-hidden scroll-mt-24">
+    <section id="servicios" ref={sectionRef} className="py-20 md:py-24 px-4 md:px-8 bg-background relative overflow-hidden scroll-mt-20">
       <div className="absolute top-0 left-0 w-full h-px bg-border"></div>
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="max-w-3xl mb-16">
-          <h2 className="text-4xl md:text-6xl font-light text-foreground mb-6">
-            Tres formas de trabajar con nosotros
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-3xl mb-12">
+          <h2 className="text-4xl md:text-5xl font-light text-foreground mb-5" style={{ textWrap: "balance" }}>
+            Dos líneas de servicio, precio cerrado en todo
           </h2>
-          <p className="text-xl text-muted-foreground font-light" style={{ lineHeight: '1.8' }}>
-            Empieza por entender qué merece la pena automatizar, sigue con una automatización concreta y, si te encaja, cuenta con nosotros cada mes.
+          <p className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed">
+            Construimos los sistemas de IA que tu empresa necesita, y te ayudamos a decidir con criterio qué construir y en qué orden. Puedes empezar por cualquiera de las dos.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
-          {services.map((service, index) => {
-            const Icon = service.icon;
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-8 items-stretch">
+          {lines.map((line, index) => {
+            const family = families[line.id];
+            const pillar = pillarOf(line.id);
+            const Icon = line.icon;
+            const featured = line.id === "sistemas";
             return (
               <div
-                key={service.name}
+                key={line.id}
                 className={`relative flex flex-col rounded-2xl border p-8 md:p-10 transition-all duration-700 ease-out ${
-                  service.featured
-                    ? 'border-primary/40 bg-primary/5 shadow-lg shadow-primary/10'
-                    : 'border-border/60 bg-card/50 hover:border-primary/30'
-                } ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                  featured ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/10" : "border-border/60 bg-card/50 hover:border-primary/30"
+                } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
                 style={{ transitionDelay: `${index * 0.15}s` }}
               >
-                {service.featured && (
-                  <span className="absolute -top-3 left-8 text-xs font-medium text-white bg-primary px-3 py-1 rounded-full">
-                    Lo más solicitado
-                  </span>
-                )}
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-5">
                   <Icon className="w-6 h-6 text-primary" />
                 </div>
-                <p className="text-sm text-primary font-medium mb-2">{service.tagline}</p>
-                <h3 className="text-2xl md:text-3xl font-medium text-foreground mb-4">{service.name}</h3>
-                <p className="text-muted-foreground leading-relaxed mb-8">{service.description}</p>
+                <p className="text-sm text-primary font-medium mb-2">{family.tagline}</p>
+                <h3 className="text-2xl md:text-3xl font-medium text-foreground mb-3" style={{ textWrap: "balance" }}>{family.name}</h3>
+                <p className="text-muted-foreground leading-relaxed mb-6">{family.description}</p>
 
-                <div className="mb-8">
-                  <p className="text-2xl font-semibold text-foreground">{service.price}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{service.priceNote}</p>
-                  <p className="text-sm text-muted-foreground mt-1">Duración: {service.duration}</p>
+                <div className="mb-6">
+                  <p className="text-3xl font-semibold text-foreground">{line.price}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{line.priceNote}</p>
                 </div>
 
-                <ul className="space-y-3 mb-10 flex-1">
-                  {service.includes.map((item) => (
+                <ul className="space-y-2.5 mb-8 flex-1">
+                  {line.includes.map((item) => (
                     <li key={item} className="flex items-start gap-3 text-sm md:text-base text-foreground/90">
                       <Check className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
                       <span>{item}</span>
@@ -132,16 +97,19 @@ const Services = ({ onContactClick }: ServicesProps) => {
                   ))}
                 </ul>
 
-                <button
-                  onClick={onContactClick}
-                  className={`w-full rounded-full px-6 py-3 text-base font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95 ${
-                    service.featured
-                      ? 'bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25'
-                      : 'border border-border text-foreground hover:border-primary/40 hover:bg-primary/5'
-                  }`}
-                >
-                  {service.cta}
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={onContactClick}
+                    className={`flex-1 rounded-full px-6 py-3 text-base font-medium transition-all duration-300 hover:scale-[1.02] active:scale-95 ${
+                      featured ? "bg-primary text-white hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25" : "border border-border text-foreground hover:border-primary/40 hover:bg-primary/5"
+                    }`}
+                  >
+                    {line.cta}
+                  </button>
+                  <a href={`/servicios/${pillar.slug}`} className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-primary hover:underline">
+                    Ver detalle <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
             );
           })}

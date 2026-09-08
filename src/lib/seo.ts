@@ -1,5 +1,5 @@
 import { provinces, getProvince, getMunicipality, slugify, type Province } from "@/data/locations";
-import { services, getService, type ServiceDef } from "@/data/services";
+import { services, getService, pillarOf, type ServiceDef } from "@/data/services";
 import { site } from "@/data/site";
 
 export interface RouteSeo {
@@ -114,7 +114,11 @@ function serviceSeo(service: ServiceDef): RouteSeo {
     priority: 0.9,
     jsonLd: [
       { "@context": "https://schema.org", "@type": "Service", name: service.name, description: service.description, provider: { "@id": `${site.url}/#organization` }, areaServed: { "@type": "Country", name: "España" }, url: `${site.url}${path}` },
-      breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }, { name: service.short, path }]),
+      breadcrumb(
+        service.pillar
+          ? [{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }, { name: service.short, path }]
+          : [{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }, { name: pillarOf(service.family).short, path: servicePath(pillarOf(service.family)) }, { name: service.short, path }]
+      ),
       faqJsonLd(service.faqs),
     ],
   };
@@ -131,8 +135,8 @@ const staticRoutes: RouteSeo[] = [
   },
   {
     path: "/servicios",
-    title: "Servicios de automatización, agentes de IA y software a medida | Alpa Digital",
-    description: "Automatización con IA, agentes de inteligencia artificial, desarrollo de software a medida y consultoría para pymes. Precios cerrados y resultados medibles.",
+    title: "Servicios: sistemas de IA y consultoría de IA para pymes | Alpa Digital",
+    description: "Dos líneas de servicio: construimos sistemas de herramientas y automatizaciones con IA (automatizaciones, agentes, apps corporativas, IA corporativa) y hacemos consultoría de IA (diagnóstico, I+D, diseño de producto, roadmap). Precio cerrado.",
     canonical: `${site.url}/servicios`,
     priority: 0.8,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }])],

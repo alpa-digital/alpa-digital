@@ -21,7 +21,7 @@ const Header = ({ onContactClick }: HeaderProps) => {
       <div
         className={`mx-auto flex items-center justify-between transition-all duration-500 ease-out pointer-events-auto ${
           isScrolled
-            ? "mt-3 w-[calc(100%-1.5rem)] max-w-[560px] rounded-full border border-white/10 bg-[#0D0E11]/80 text-white shadow-lg shadow-black/30 backdrop-blur-xl px-3 py-1.5 md:px-4"
+            ? "mt-3 w-[calc(100%-1.5rem)] max-w-[640px] rounded-full border border-white/10 bg-[#0D0E11]/80 text-white shadow-lg shadow-black/30 backdrop-blur-xl px-3 py-1.5 md:px-4"
             : "mt-0 w-full max-w-7xl bg-transparent px-6 py-4 md:px-8 md:py-5"
         }`}
       >
@@ -33,8 +33,9 @@ const Header = ({ onContactClick }: HeaderProps) => {
           />
         </a>
         <nav className={`hidden md:flex items-center gap-5 text-sm ${isScrolled ? "text-white/70" : "text-muted-foreground"}`} aria-label="Principal">
-          <a href="/servicios" className="hover:text-primary transition-colors">Servicios</a>
-          <a href="/#automatizaciones" className="hover:text-primary transition-colors">Automatizaciones</a>
+          <a href="/servicios/sistemas-ia" className="hover:text-primary transition-colors">Sistemas de IA</a>
+          <a href="/servicios/consultoria-ia-pymes" className="hover:text-primary transition-colors">Consultoría</a>
+          <a href="/#analiza-tu-empresa" className="hover:text-primary transition-colors">Analiza tu empresa</a>
           <a href="/zonas" className="hover:text-primary transition-colors">Zonas</a>
         </nav>
         <button
