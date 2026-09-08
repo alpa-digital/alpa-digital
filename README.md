@@ -39,6 +39,15 @@ Desplegadas con Netlify Functions desde `netlify/functions`:
 
 Las variables están descritas en `.env.example`. Se configuran en el panel de Netlify, nunca en el repositorio. Sin ellas, la web sigue funcionando: el analizador muestra una estimación por sector y el formulario abre el cliente de correo.
 
+## ¿Dónde se ejecuta el análisis?
+
+El analizador necesita código de servidor. Hay dos opciones:
+
+- **Netlify** (recomendada): las funciones de `netlify/functions` se despliegan con la web. Comprobar con `https://<sitio>/api/health`, que indica si `MISTRAL_API_KEY` y `RESEND_API_KEY` están configuradas.
+- **Cualquier otro hosting** (Lovable, GitHub Pages, estático): importar los workflows de `n8n/` y definir `VITE_ANALYZE_ENDPOINT` y `VITE_LEAD_ENDPOINT` en el build. Detalles en `n8n/README.md`.
+
+Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el aviso indica cuál de los dos pasos falla.
+
 ## Despliegue en Netlify
 
 1. En Netlify, "Add new site" → "Import an existing project" → elegir este repositorio y la rama a publicar. La configuración de build la toma de `netlify.toml`.

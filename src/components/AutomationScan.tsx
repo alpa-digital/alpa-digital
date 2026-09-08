@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import ScanResultCard from "@/components/ScanResultCard";
 import { estimateScan, domainFromUrl, guessSectorFromDomain, type ScanResult } from "@/lib/scanFallback";
+import { ANALYZE_ENDPOINT, LEAD_ENDPOINT } from "@/config/endpoints";
 
 type Phase = "idle" | "scanning" | "result";
 
@@ -52,7 +53,7 @@ async function requestAnalysis(url: string): Promise<ScanResult> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 45000);
   try {
-    const response = await fetch("/api/analyze", {
+    const response = await fetch(ANALYZE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url }),
@@ -66,6 +67,10 @@ async function requestAnalysis(url: string): Promise<ScanResult> {
         /* sin detalle */
       }
       throw new AnalysisError(`${reasonByStatus[response.status] ?? `error ${response.status} del servicio`}${detail ? ` · ${detail.slice(0, 120)}` : ""}`);
+    }
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!contentType.includes("json")) {
+      throw new AnalysisError("la ruta del análisis devuelve la propia web en lugar de datos: este hosting no ejecuta las funciones de servidor");
     }
     const parsed = resultSchema.parse(await response.json());
     parsed.areas.sort((a, b) => b.score - a.score);
@@ -142,7 +147,7 @@ const AutomationScan = () => {
     setSending(true);
     const payload = { email: parsed.data, url: url.trim(), sector: result?.sector, analysis: result };
     try {
-      const response = await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const response = await fetch(LEAD_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!response.ok) throw new Error(`lead ${response.status}`);
       setSent(true);
       toast({ title: "Informe en camino", description: "Te llega al email en unos minutos. Revisa la carpeta de spam si no lo ves." });
