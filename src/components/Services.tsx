@@ -1,52 +1,64 @@
-import { Check, ArrowRight } from "lucide-react";
-import { pillarOf } from "@/data/services";
+import { Compass, Blocks, ArrowRight } from "lucide-react";
 
 interface ServicesProps {
   onContactClick: () => void;
 }
 
-/** Línea 2: construcción. Continúa la sección de consultoría bajo el mismo título. */
-const Services = ({ onContactClick }: ServicesProps) => {
-  const pillar = pillarOf("sistemas");
-  const offerings = pillar.offerings ?? [];
-  return (
-    <section id="servicios" className="pt-12 md:pt-14 pb-20 md:pb-24 px-4 md:px-8 bg-background relative scroll-mt-20">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-8 lg:gap-12 items-start">
-          <div>
-            <p className="text-xs font-medium text-primary uppercase tracking-wide mb-2">Línea 2 · Sistemas de herramientas y automatizaciones con IA</p>
-            <h3 className="text-2xl md:text-3xl font-medium text-foreground mb-3" style={{ textWrap: "balance" }}>Construirlo, por fases y con precio cerrado</h3>
-            <p className="text-muted-foreground leading-relaxed mb-5">
-              Un mismo servicio a cuatro escalas. Se empieza por la tarea que más duele y se crece hasta un sistema completo de apps y agentes interconectados, sin cambiar de proveedor ni de tecnología. Cada fase se presupuesta cerrada antes de empezar.
-            </p>
-            <ul className="space-y-2 mb-6">
-              {["Con las herramientas que ya usas: correo, WhatsApp, CRM, facturación, ERP", "Una persona aprueba lo importante; la IA prepara", "Formación del equipo y un mes de soporte incluidos"].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-foreground/90"><Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" /> {item}</li>
+const lines = [
+  {
+    id: "consultoria",
+    Icon: Compass,
+    name: "Consultoría de IA",
+    claim: "Decidir qué construir",
+    text: "Miramos cómo trabaja tu equipo y te decimos qué merece la pena automatizar y en qué orden. Si hay dudas, lo probamos en pequeño antes.",
+    items: ["Diagnóstico", "Pruebas de concepto", "Roadmap de IA"],
+    href: "/servicios/consultoria-ia-pymes",
+    cta: "Pedir diagnóstico",
+  },
+  {
+    id: "sistemas",
+    Icon: Blocks,
+    name: "Sistemas y automatizaciones con IA",
+    claim: "Construirlo",
+    text: "Empezamos por la tarea que más duele y crecemos hasta un sistema completo, con las herramientas que ya usas y una persona al mando.",
+    items: ["Automatizaciones", "Agentes de IA", "Apps a medida"],
+    href: "/servicios/sistemas-ia",
+    cta: "Hablar de tu caso",
+  },
+];
+
+/** Las dos líneas de servicio, en dos tarjetas. Sin importes: eso vive en las páginas de servicio. */
+const Services = ({ onContactClick }: ServicesProps) => (
+  <section id="servicios" className="py-20 md:py-24 px-4 md:px-8 bg-background relative scroll-mt-20">
+    <div className="absolute top-0 left-0 w-full h-px bg-border" />
+    <div className="max-w-6xl mx-auto">
+      <div className="max-w-2xl mb-10 md:mb-12">
+        <h2 className="text-4xl md:text-5xl font-light text-foreground mb-3" style={{ textWrap: "balance" }}>Dos líneas de servicio, precio cerrado en todo</h2>
+        <p className="text-lg text-muted-foreground font-light">Primero decidir, después construir. Puedes empezar por cualquiera.</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+        {lines.map(({ id, Icon, name, claim, text, items, href, cta }) => (
+          <div key={id} id={id} className="rounded-3xl border border-border bg-card p-7 md:p-9 flex flex-col scroll-mt-24">
+            <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><Icon className="w-5 h-5 text-primary" /></div>
+            <p className="text-xs font-medium text-primary uppercase tracking-wide mb-1">{name}</p>
+            <h3 className="text-2xl md:text-3xl font-medium text-foreground mb-3">{claim}</h3>
+            <p className="text-muted-foreground leading-relaxed mb-6">{text}</p>
+            <ul className="flex flex-wrap gap-2 mb-8">
+              {items.map((item) => (
+                <li key={item} className="rounded-full border border-border px-3 py-1 text-sm text-foreground/80">{item}</li>
               ))}
             </ul>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={onContactClick} className="bg-primary text-white px-6 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95">Solicitar presupuesto</button>
-              <a href="/servicios/sistemas-ia" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-border text-sm md:text-base font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors">Ver sistemas de IA <ArrowRight className="w-4 h-4" /></a>
+            <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-3">
+              <button onClick={onContactClick} className="bg-primary text-white px-6 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95">{cta}</button>
+              <a href={href} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">Saber más <ArrowRight className="w-4 h-4" /></a>
             </div>
           </div>
-
-          <ol className="rounded-2xl border border-border divide-y divide-border overflow-hidden">
-            {offerings.map((o, i) => (
-              <li key={o.name} className={`grid sm:grid-cols-[auto_1fr_auto] gap-x-5 gap-y-1 items-center px-5 md:px-6 py-4 ${i === 0 ? "bg-primary/5" : ""}`}>
-                <span className="text-xs font-medium text-primary sm:w-16">Escala {i + 1}</span>
-                <div>
-                  <p className="font-medium text-foreground">{o.slug ? <a href={`/servicios/${o.slug}`} className="hover:text-primary transition-colors">{o.name}</a> : o.name}</p>
-                  <p className="text-sm text-muted-foreground leading-snug">{o.text}</p>
-                </div>
-                <span className="text-sm font-medium text-foreground sm:text-right whitespace-nowrap">{o.price}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
+        ))}
       </div>
-      <div className="absolute bottom-0 left-0 w-full h-px bg-border" />
-    </section>
-  );
-};
+    </div>
+    <div className="absolute bottom-0 left-0 w-full h-px bg-border" />
+  </section>
+);
 
 export default Services;

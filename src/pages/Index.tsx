@@ -3,7 +3,6 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import AutomationFlows from "@/components/AutomationFlows";
 import AutomationScan from "@/components/AutomationScan";
-import Consulting from "@/components/Consulting";
 import Sectors from "@/components/Sectors";
 import Workflow from "@/components/Workflow";
 import Testimonials from "@/components/Testimonials";
@@ -31,10 +30,7 @@ const Index = () => {
           <section aria-label="Analiza qué automatizar en tu empresa">
             <AutomationScan />
           </section>
-          <section aria-label="Consultoría de IA">
-            <Consulting onContactClick={openContactForm} />
-          </section>
-          <section aria-label="Líneas de servicio y precios">
+          <section aria-label="Líneas de servicio">
             <Services onContactClick={openContactForm} />
           </section>
           <section aria-label="Sectores">

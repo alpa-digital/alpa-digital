@@ -164,7 +164,7 @@ const AutomationScan = () => {
     <section id="analiza-tu-empresa" className="py-16 md:py-20 px-4 md:px-8 bg-background relative overflow-hidden scroll-mt-20">
       <div className="absolute top-0 left-0 w-full h-px bg-border" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 lg:gap-10 items-end mb-6">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 lg:gap-10 items-end">
           <div>
             <p className="text-xs font-medium text-primary uppercase tracking-wide mb-2">Pruébalo con tu empresa</p>
             <h2 className="text-3xl md:text-4xl font-light text-foreground leading-tight mb-3" style={{ textWrap: "balance" }}>
@@ -205,21 +205,6 @@ const AutomationScan = () => {
         </div>
 
         <div ref={resultRef} className="scroll-mt-24">
-          {phase === "idle" && (
-            <div className="rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-8 md:px-10 md:py-10 grid md:grid-cols-[auto_1fr] gap-6 md:gap-10 items-center">
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"><Sparkles className="w-6 h-6 text-primary" /></div>
-              <div>
-                <p className="font-medium text-foreground mb-3">Qué obtendrás en medio minuto</p>
-                <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm text-muted-foreground">
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Tu sector, leído de tu web</li>
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Un mapa de las seis áreas con su potencial de automatización</li>
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Las dos automatizaciones con más impacto, explicadas</li>
-                  <li className="flex gap-2"><CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" /> Horas semanales que se ahorrarían</li>
-                </ul>
-              </div>
-            </div>
-          )}
-
           {phase === "scanning" && (
             <div className="rounded-2xl border border-white/10 bg-[#0D0E11] text-white p-6 md:p-8 min-h-[280px] grid md:grid-cols-2 gap-8 items-center">
               <div className="flex items-center gap-4">
