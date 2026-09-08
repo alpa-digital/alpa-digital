@@ -124,21 +124,57 @@ function extractFavicon(html: string, base: URL): string | undefined {
   return undefined;
 }
 
-async function fetchSite(url: URL): Promise<{ text: string; favicon?: string }> {
+const browserUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+
+function extractMeta(html: string): string {
+  const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? "";
+  const description = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i)?.[1] ?? html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i)?.[1] ?? "";
+  const ogTitle = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']*)["']/i)?.[1] ?? "";
+  return [title && `Título: ${title}`, ogTitle && ogTitle !== title && `Nombre: ${ogTitle}`, description && `Descripción: ${description}`].filter(Boolean).join("\n");
+}
+
+async function fetchOnce(url: URL, userAgent: string): Promise<{ html: string; finalUrl: URL }> {
   const response = await fetch(url, {
     redirect: "follow",
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(12000),
     headers: {
-      "user-agent": "Mozilla/5.0 (compatible; AlpaDigitalBot/1.0; +https://alpa.digital)",
-      accept: "text/html,application/xhtml+xml",
+      "user-agent": userAgent,
+      accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
+      "accept-language": "es-ES,es;q=0.9,en;q=0.7",
     },
   });
-  if (!response.ok) throw new Error(`site responded ${response.status}`);
-  const html = (await response.text()).slice(0, 400000);
-  const text = htmlToText(html);
-  if (text.length < 200) throw new Error("site text too short");
-  const finalUrl = response.url ? new URL(response.url) : url;
-  return { text: text.slice(0, 14000), favicon: extractFavicon(html, finalUrl) ?? `https://www.google.com/s2/favicons?domain=${finalUrl.hostname}&sz=128` };
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const html = (await response.text()).slice(0, 500000);
+  return { html, finalUrl: response.url ? new URL(response.url) : url };
+}
+
+async function fetchSite(url: URL): Promise<{ text: string; favicon?: string }> {
+  const variants: URL[] = [url];
+  const alt = new URL(url.toString());
+  alt.hostname = url.hostname.startsWith("www.") ? url.hostname.slice(4) : `www.${url.hostname}`;
+  variants.push(alt);
+  if (url.protocol === "https:") {
+    const insecure = new URL(url.toString());
+    insecure.protocol = "http:";
+    variants.push(insecure);
+  }
+
+  const errors: string[] = [];
+  for (const candidate of variants) {
+    for (const userAgent of ["Mozilla/5.0 (compatible; AlpaDigitalBot/1.0; +https://alpa.digital)", browserUA]) {
+      try {
+        const { html, finalUrl } = await fetchOnce(candidate, userAgent);
+        const meta = extractMeta(html);
+        const body = htmlToText(html);
+        const text = `${meta}\n\n${body}`.trim();
+        if (body.length < 80 && meta.length < 40) throw new Error("contenido insuficiente (¿web generada solo con JavaScript?)");
+        return { text: text.slice(0, 14000), favicon: extractFavicon(html, finalUrl) ?? `https://www.google.com/s2/favicons?domain=${finalUrl.hostname}&sz=128` };
+      } catch (error) {
+        errors.push(`${candidate.hostname}: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  }
+  throw new Error(errors.join(" | "));
 }
 
 interface MistralResponse {
@@ -174,7 +210,10 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") return json({ error: "method not allowed" }, 405);
   const apiKey = process.env.MISTRAL_API_KEY;
-  if (!apiKey) return json({ error: "analysis not configured" }, 503);
+  if (!apiKey) {
+    console.error("analyze: falta MISTRAL_API_KEY");
+    return json({ error: "analysis not configured" }, 503);
+  }
 
   let input: z.infer<typeof requestSchema>;
   try {
@@ -190,7 +229,9 @@ export default async (req: Request, _context: Context) => {
   try {
     site = await fetchSite(url);
   } catch (error) {
-    return json({ error: "site unreachable", detail: error instanceof Error ? error.message : String(error) }, 422);
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error("analyze: no se pudo leer la web", url.hostname, detail);
+    return json({ error: "site unreachable", detail }, 422);
   }
 
   try {
@@ -200,15 +241,24 @@ export default async (req: Request, _context: Context) => {
       response = await askMistral(apiKey, url.hostname, site.text, false);
     }
     if (response.status === 429) return json({ error: "rate limited" }, 429);
-    if (!response.ok) return json({ error: "analysis failed", status: response.status, detail: (await response.text()).slice(0, 300) }, 502);
+    if (!response.ok) {
+      const detail = (await response.text()).slice(0, 300);
+      console.error("analyze: Mistral respondió", response.status, detail);
+      return json({ error: "analysis failed", status: response.status, detail }, 502);
+    }
 
     const content = extractContent((await response.json()) as MistralResponse);
     const cleaned = content.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
     const parsed = analysisSchema.safeParse(JSON.parse(cleaned));
-    if (!parsed.success) return json({ error: "analysis malformed", issues: parsed.error.issues.slice(0, 3) }, 502);
+    if (!parsed.success) {
+      console.error("analyze: JSON no válido", parsed.error.issues.slice(0, 3));
+      return json({ error: "analysis malformed", issues: parsed.error.issues.slice(0, 3) }, 502);
+    }
     return json({ ...parsed.data, favicon: site.favicon });
   } catch (error) {
-    return json({ error: "analysis failed", detail: error instanceof Error ? error.message : String(error) }, 502);
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error("analyze: fallo", detail);
+    return json({ error: "analysis failed", detail }, 502);
   }
 };
 
