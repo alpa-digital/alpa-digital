@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import alpaLogoWhite from "@/assets/alpa-logo-white.png";
 import { families, pillarOf, servicesOf } from "@/data/services";
 import { site } from "@/data/site";
@@ -40,11 +41,11 @@ const Footer = () => {
             const pillar = pillarOf(familyId);
             return (
               <div key={familyId}>
-                <a href={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{families[familyId].short}</a>
+                <Link to={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{families[familyId].short}</Link>
                 <ul className="space-y-1.5">
                   {(pillar.offerings ?? []).map((o) => (
                     <li key={o.name}>
-                      {o.slug ? <a href={`/servicios/${o.slug}`} className="text-white/75 hover:text-white transition-colors">{o.name}</a> : <span className="text-white/55">{o.name}</span>}
+                      {o.slug ? <Link to={`/servicios/${o.slug}`} className="text-white/75 hover:text-white transition-colors">{o.name}</Link> : <span className="text-white/55">{o.name}</span>}
                     </li>
                   ))}
                 </ul>
@@ -52,21 +53,21 @@ const Footer = () => {
             );
           })}
           <div>
-            <a href="/sectores" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Sectores</a>
+            <Link to="/sectores" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Sectores</Link>
             <ul className="space-y-1.5">
               {sectors.slice(0, 6).map((s) => (
-                <li key={s.slug}><a href={`/sectores/${s.slug}`} className="text-white/75 hover:text-white transition-colors">{s.short}</a></li>
+                <li key={s.slug}><Link to={`/sectores/${s.slug}`} className="text-white/75 hover:text-white transition-colors">{s.short}</Link></li>
               ))}
-              <li><a href="/sectores" className="text-white/50 hover:text-white underline underline-offset-2">Los {sectors.length} sectores</a></li>
+              <li><Link to="/sectores" className="text-white/50 hover:text-white underline underline-offset-2">Los {sectors.length} sectores</Link></li>
             </ul>
           </div>
           <div>
-            <a href="/zonas" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Zonas</a>
+            <Link to="/zonas" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Zonas</Link>
             <ul className="space-y-1.5">
               {provinces.filter((p) => p.tier === 1).map((p) => (
-                <li key={p.slug}><a href={`/automatizacion-ia/${p.slug}`} className="text-white/75 hover:text-white transition-colors">{p.name} · presencial</a></li>
+                <li key={p.slug}><Link to={`/automatizacion-ia/${p.slug}`} className="text-white/75 hover:text-white transition-colors">{p.name} · presencial</Link></li>
               ))}
-              <li><a href="/zonas" className="text-white/50 hover:text-white underline underline-offset-2">Las 52 provincias, en remoto</a></li>
+              <li><Link to="/zonas" className="text-white/50 hover:text-white underline underline-offset-2">Las 52 provincias, en remoto</Link></li>
             </ul>
           </div>
         </div>
@@ -75,9 +76,9 @@ const Footer = () => {
         <div className="flex items-center justify-between pt-8 mt-8">
           {/* Cookie policy */}
           <div>
-            <a href="/politica-cookies" className="text-sm hover:opacity-80 transition-opacity">
+            <Link to="/politica-cookies" className="text-sm hover:opacity-80 transition-opacity">
               Política de Cookies
-            </a>
+            </Link>
           </div>
 
           {/* Social icons */}

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import alpaLogo from "@/assets/alpa-logo.png";
 import alpaLogoWhite from "@/assets/alpa-logo-white.png";
@@ -25,18 +26,18 @@ const Header = ({ onContactClick }: HeaderProps) => {
             : "mt-0 w-full max-w-7xl bg-transparent px-6 py-4 md:px-8 md:py-5"
         }`}
       >
-        <a href="/" className="flex items-center hover:opacity-80 transition-opacity" aria-label="Alpa Digital, inicio">
+        <Link to="/" className="flex items-center hover:opacity-80 transition-opacity" aria-label="Alpa Digital, inicio">
           <img
             src={isScrolled ? alpaLogoWhite : alpaLogo}
             alt="Alpa Digital - Automatización e IA para pymes"
             className={`transition-all duration-500 ${isScrolled ? "h-4 md:h-5 ml-2" : "h-6 md:h-8"}`}
           />
-        </a>
+        </Link>
         <nav className={`hidden md:flex items-center gap-5 text-sm ${isScrolled ? "text-white/70" : "text-muted-foreground"}`} aria-label="Principal">
-          <a href="/servicios/sistemas-ia" className="hover:text-primary transition-colors">Sistemas de IA</a>
-          <a href="/servicios/consultoria-ia-pymes" className="hover:text-primary transition-colors">Consultoría</a>
-          <a href="/sectores" className="hover:text-primary transition-colors">Sectores</a>
-          <a href="/zonas" className="hover:text-primary transition-colors">Zonas</a>
+          <Link to="/servicios/sistemas-ia" className="hover:text-primary transition-colors">Sistemas de IA</Link>
+          <Link to="/servicios/consultoria-ia-pymes" className="hover:text-primary transition-colors">Consultoría</Link>
+          <Link to="/sectores" className="hover:text-primary transition-colors">Sectores</Link>
+          <Link to="/zonas" className="hover:text-primary transition-colors">Zonas</Link>
         </nav>
         <button
           onClick={onContactClick}
