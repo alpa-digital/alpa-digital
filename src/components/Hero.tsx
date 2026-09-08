@@ -39,7 +39,7 @@ const Hero = ({ onContactClick }: HeroProps) => {
         <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
       </div>
 
-      <section className="flex items-center pt-32 pb-20 relative z-10">
+      <section className="flex items-center pt-28 md:pt-32 pb-20 relative z-10">
         <div className="max-w-7xl mx-auto px-8 w-full">
           <div className={`max-w-6xl transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <p className="text-sm md:text-base font-medium text-primary mb-6 animate-fade-in tracking-wide uppercase">

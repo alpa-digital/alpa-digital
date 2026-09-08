@@ -1,0 +1,287 @@
+{
+  "name": "Alpa · Analizador de webs (Mistral)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpa-analyze",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "alpa-analyze"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = String($json.body?.url ?? '').trim();\nif (!raw) throw new Error('Falta la URL');\nconst withProto = raw.includes('://') ? raw : `https://${raw}`;\nconst url = new URL(withProto);\nif (!['http:', 'https:'].includes(url.protocol) || !url.hostname.includes('.') || url.hostname === 'localhost' || /^(\\d{1,3}\\.){3}\\d{1,3}$/.test(url.hostname)) {\n  throw new Error('URL no válida');\n}\nreturn [{ json: { url: url.toString(), hostname: url.hostname.replace(/^www\\./, '') } }];"
+      },
+      "name": "Preparar URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "es-ES,es;q=0.9"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 15000,
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "name": "Descargar web",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = String($input.first().json.data ?? $input.first().json.body ?? '');\nconst hostname = $('Preparar URL').first().json.hostname;\nconst base = $('Preparar URL').first().json.url;\nconst meta = [];\nconst title = html.match(/<title[^>]*>([\\s\\S]*?)<\\/title>/i)?.[1]?.trim();\nconst desc = html.match(/<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']*)[\"']/i)?.[1];\nif (title) meta.push(`Título: ${title}`);\nif (desc) meta.push(`Descripción: ${desc}`);\nconst text = html\n  .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')\n  .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')\n  .replace(/<\\/(p|div|li|h[1-6]|tr|section|article|br)>/gi, '\\n')\n  .replace(/<[^>]+>/g, ' ')\n  .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&[a-z]+;/gi, ' ')\n  .replace(/[ \\t]+/g, ' ').replace(/\\n\\s*\\n+/g, '\\n').trim();\nlet favicon = `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`;\nconst icon = html.match(/<link[^>]+rel=[\"'][^\"']*icon[^\"']*[\"'][^>]*href=[\"']([^\"']+)[\"']/i)?.[1] || html.match(/<link[^>]+href=[\"']([^\"']+)[\"'][^>]*rel=[\"'][^\"']*icon[^\"']*[\"']/i)?.[1];\nif (icon && !icon.startsWith('data:')) { try { favicon = new URL(icon, base).toString(); } catch (e) {} }\nif (text.length < 80 && meta.length === 0) throw new Error('La web no tiene texto legible');\nreturn [{ json: { hostname, favicon, siteText: `${meta.join('\\n')}\\n\\n${text}`.trim().slice(0, 14000) } }];"
+      },
+      "name": "Extraer texto y favicon",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"model\": \"mistral-small-latest\", \"temperature\": 0.2, \"response_format\": {\"type\": \"json_schema\", \"json_schema\": {\"name\": \"automation_analysis\", \"strict\": true, \"schema\": {\"type\": \"object\", \"properties\": {\"company\": {\"type\": \"string\"}, \"sectorId\": {\"type\": \"string\", \"enum\": [\"servicios\", \"comercio\", \"industria\", \"salud\", \"inmobiliaria\", \"hosteleria\", \"construccion\", \"otro\"]}, \"sector\": {\"type\": \"string\"}, \"summary\": {\"type\": \"string\"}, \"areas\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"properties\": {\"id\": {\"type\": \"string\", \"enum\": [\"atencion\", \"ventas\", \"admin\", \"rrhh\", \"marketing\", \"direccion\"]}, \"score\": {\"type\": \"integer\"}, \"title\": {\"type\": \"string\"}, \"description\": {\"type\": \"string\"}, \"hoursPerWeek\": {\"type\": \"integer\"}}, \"required\": [\"id\", \"score\", \"title\", \"description\", \"hoursPerWeek\"], \"additionalProperties\": false}}}, \"required\": [\"company\", \"sectorId\", \"sector\", \"summary\", \"areas\"], \"additionalProperties\": false}}}, \"messages\": [{\"role\": \"system\", \"content\": \"Eres consultor de automatización con IA para pymes en España. A partir del texto público de la web de una empresa, identificas tareas repetitivas y propones automatizaciones concretas por área.\\n\\nReglas:\\n- Basa cada propuesta en lo que la web muestra. Si la web no da información sobre un área, propón algo típico del sector con puntuación más baja.\\n- Escribe para el dueño de una pyme sin conocimientos técnicos: nada de jerga ni nombres de herramientas.\\n- Sé concreto. Las horas semanales deben ser realistas para una empresa de 5 a 50 personas.\\n- Devuelve exactamente seis áreas: atencion, ventas, admin, rrhh, marketing y direccion. sectorId es la categoría más cercana; sector es una descripción corta en español; summary son dos frases dirigidas a quien dirige la empresa.\"}, {\"role\": \"user\", \"content\": 'Web: ' + $json.hostname + '\\n\\nTexto público de la web:\\n' + $json.siteText + '\\n\\nDevuelve el análisis de automatización para esta empresa.'}]} }}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "name": "Mistral",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Mistral API (Authorization: Bearer ...)"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const res = $input.first().json;\nconst content = res.choices?.[0]?.message?.content;\nif (!content) throw new Error('Mistral no devolvió contenido');\nconst data = typeof content === 'string' ? JSON.parse(content) : content;\ndata.favicon = $('Extraer texto y favicon').first().json.favicon;\ndata.areas = (data.areas || []).sort((a, b) => b.score - a.score);\nreturn [{ json: data }];"
+      },
+      "name": "Formatear respuesta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1320,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ error: 'analysis failed', detail: $json.error?.message || $json.message || 'error' }) }}",
+        "options": {
+          "responseCode": 422,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Responder error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Preparar URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar URL": {
+      "main": [
+        [
+          {
+            "node": "Descargar web",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar web": {
+      "main": [
+        [
+          {
+            "node": "Extraer texto y favicon",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer texto y favicon": {
+      "main": [
+        [
+          {
+            "node": "Mistral",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral": {
+      "main": [
+        [
+          {
+            "node": "Formatear respuesta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear respuesta": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -39,6 +39,15 @@ Desplegadas con Netlify Functions desde `netlify/functions`:
 
 Las variables están descritas en `.env.example`. Se configuran en el panel de Netlify, nunca en el repositorio. Sin ellas, la web sigue funcionando: el analizador muestra una estimación por sector y el formulario abre el cliente de correo.
 
+## ¿Dónde se ejecuta el análisis?
+
+El analizador necesita código de servidor. Hay dos opciones:
+
+- **Netlify** (recomendada): las funciones de `netlify/functions` se despliegan con la web. Comprobar con `https://<sitio>/api/health`, que indica si `MISTRAL_API_KEY` y `RESEND_API_KEY` están configuradas.
+- **Cualquier otro hosting** (Lovable, GitHub Pages, estático): importar los workflows de `n8n/` y definir `VITE_ANALYZE_ENDPOINT` y `VITE_LEAD_ENDPOINT` en el build. Detalles en `n8n/README.md`.
+
+Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el aviso indica cuál de los dos pasos falla.
+
 ## Despliegue en Netlify
 
 1. En Netlify, "Add new site" → "Import an existing project" → elegir este repositorio y la rama a publicar. La configuración de build la toma de `netlify.toml`.
@@ -54,3 +63,8 @@ curl -sS https://<sitio>.netlify.app/api/analyze \
 ```
 
 Debe devolver un JSON con `company`, `sectorId`, `sector`, `summary`, `favicon` y seis `areas`.
+
+Dos límites a tener en cuenta:
+
+- Netlify corta las funciones síncronas a los 10 segundos. La función reparte ese tiempo entre descargar la web y llamar al modelo, y responde 504 si no llega. `ANALYZE_DEADLINE_MS` (por defecto 9200) ajusta ese presupuesto si Netlify amplía el límite del sitio.
+- El plan gratuito de Mistral limita a 1 petición por segundo y a veces responde 429 "capacity exceeded" en modelos concretos. La función reintenta con pausa, pasa a JSON libre si el esquema falla y cambia a `MISTRAL_FALLBACK_MODEL` (por defecto `open-mistral-nemo`). Con un plan de pago desaparecen estos 429.

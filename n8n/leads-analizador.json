@@ -1,0 +1,211 @@
+{
+  "name": "Alpa · Leads del analizador (Resend)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alpa-lead",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "alpa-lead"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $json.body || $json;\nconst names = { atencion: 'Atención al cliente', ventas: 'Ventas', admin: 'Administración', rrhh: 'Recursos humanos', marketing: 'Marketing', direccion: 'Dirección' };\nconst esc = (v) => String(v ?? '').replace(/[&<>\"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c]));\nconst a = lead.analysis;\nconst rows = (a?.areas || []).map((x) => `<tr><td style=\"padding:10px 0;border-top:1px solid #e5e7eb;width:140px;color:#0066ff;font-weight:600;vertical-align:top\">${esc(names[x.id] || x.id)}</td><td style=\"padding:10px 0;border-top:1px solid #e5e7eb\"><strong>${esc(x.title)}</strong><br><span style=\"color:#4b5563\">${esc(x.description)}</span><br><span style=\"color:#6b7280;font-size:13px\">Potencial ${x.score}/100 · ≈ ${x.hoursPerWeek} h/semana</span></td></tr>`).join('');\nconst total = (a?.areas || []).reduce((s, x) => s + (x.hoursPerWeek || 0), 0);\nconst domain = String(lead.url || '').replace(/^https?:\\/\\//i, '').replace(/^www\\./i, '').split('/')[0];\nconst html = `<div style=\"font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:0 auto;color:#111827;line-height:1.6\"><h1 style=\"font-size:22px\">Tu mapa de automatización${a ? ' · ' + esc(a.company) : ''}</h1>${a ? `<p style=\"color:#4b5563\">${esc(a.summary)}</p><p><strong>${total} horas a la semana</strong> de trabajo repetitivo que podrían automatizarse.</p>` : ''}<table style=\"width:100%;border-collapse:collapse;font-size:15px\">${rows}</table><p style=\"margin-top:24px\">Si quieres que revisemos juntos por dónde empezar, reserva 30 minutos: <a href=\"https://cal.com/alpa-digital-studio/30min\" style=\"color:#0066ff\">cal.com/alpa-digital-studio/30min</a></p><p style=\"color:#6b7280;font-size:13px;margin-top:32px\">Alpa Digital · Automatización e IA para pymes · info@alpa.digital</p></div>`;\nif (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(String(lead.email || ''))) throw new Error('Email no válido');\nreturn [{ json: { email: lead.email, url: lead.url, sector: lead.sector || a?.sector || 'sin determinar', domain, html, source: a?.source || 'sin análisis' } }];"
+      },
+      "name": "Preparar informe",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ from: 'Alpa Digital <info@alpa.digital>', to: [$json.email], reply_to: 'info@alpa.digital', subject: 'Tu mapa de automatización para ' + $json.domain, html: $json.html }) }}",
+        "options": {}
+      },
+      "name": "Enviar informe al visitante",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Resend API (Authorization: Bearer ...)"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.resend.com/emails",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ from: 'Alpa Digital <info@alpa.digital>', to: ['info@alpa.digital'], reply_to: $('Preparar informe').first().json.email, subject: 'Nuevo lead del analizador: ' + $('Preparar informe').first().json.domain, html: '<p><strong>Email:</strong> ' + $('Preparar informe').first().json.email + '<br><strong>Web:</strong> ' + $('Preparar informe').first().json.url + '<br><strong>Sector:</strong> ' + $('Preparar informe').first().json.sector + '<br><strong>Origen:</strong> ' + $('Preparar informe').first().json.source + '</p>' + $('Preparar informe').first().json.html }) }}",
+        "options": {}
+      },
+      "name": "Aviso interno",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Resend API (Authorization: Bearer ...)"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true }) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Responder",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ error: 'send failed', detail: $json.error?.message || $json.message || 'error' }) }}",
+        "options": {
+          "responseCode": 422,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Responder error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Preparar informe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar informe": {
+      "main": [
+        [
+          {
+            "node": "Enviar informe al visitante",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar informe al visitante": {
+      "main": [
+        [
+          {
+            "node": "Aviso interno",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aviso interno": {
+      "main": [
+        [
+          {
+            "node": "Responder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
