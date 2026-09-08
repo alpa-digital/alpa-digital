@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import ScanResultCard from "@/components/ScanResultCard";
 import { estimateScan, domainFromUrl, guessSectorFromDomain, type ScanResult } from "@/lib/scanFallback";
 import { ANALYZE_ENDPOINT, LEAD_ENDPOINT } from "@/config/endpoints";
+import { track, utmParams } from "@/lib/analytics";
 
 type Phase = "idle" | "scanning" | "result";
 
@@ -121,6 +122,7 @@ const AutomationScan = () => {
     setSent(false);
     setEmail("");
     setPhase("scanning");
+    track("analyze_start", { domain: domainFromUrl(clean) });
     const started = Date.now();
     let analysis: ScanResult;
     try {
@@ -135,6 +137,7 @@ const AutomationScan = () => {
     if (elapsed < minimum) await new Promise((r) => window.setTimeout(r, minimum - elapsed));
     setResult(analysis);
     setPhase("result");
+    track("analyze_result", { domain: domainFromUrl(clean), source: analysis.source, sector: analysis.sectorId });
   };
 
   const handleLead = async (e: React.FormEvent) => {
@@ -146,7 +149,8 @@ const AutomationScan = () => {
     }
     setEmailError(null);
     setSending(true);
-    const payload = { email: parsed.data, url: url.trim(), sector: result?.sector, analysis: result };
+    const payload = { email: parsed.data, url: url.trim(), sector: result?.sector, analysis: result, utm: utmParams() };
+    track("lead_submit", { domain: domainFromUrl(url), source: result?.source });
     try {
       const response = await fetch(LEAD_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!response.ok) throw new Error(`lead ${response.status}`);

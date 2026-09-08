@@ -1,21 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap
 Sitemap: https://alpa.digital/sitemap.xml
-
-# Crawl-delay
-Crawl-delay: 1
-
-# Specific bot permissions
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot  
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /

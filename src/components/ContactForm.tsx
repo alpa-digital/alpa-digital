@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { track, utmParams } from "@/lib/analytics";
 
 // Validation schema
 const contactSchema = z.object({
@@ -101,7 +102,10 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
         `Mensaje:\n${formData.message}`
       );
       
-      const mailtoLink = `mailto:info@alpa.digital?subject=${subject}&body=${body}`;
+      const utm = utmParams();
+      const campaign = utm.utm_campaign ? encodeURIComponent(`\n\nOrigen: ${utm.utm_source ?? ""} / ${utm.utm_campaign}`) : "";
+      const mailtoLink = `mailto:info@alpa.digital?subject=${subject}&body=${body}${campaign}`;
+      track("contact_submit", { method: "mailto" });
       
       // Open default email client
       window.location.href = mailtoLink;
@@ -288,6 +292,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
               href="https://cal.com/alpa-digital-studio/30min?user=alpa-digital-studio&overlayCalendar=true"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track("cal_click", { place: "contact_form" })}
               className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-primary bg-primary/10 border border-primary/20 rounded-full hover:bg-primary/20 transition-all duration-300 hover:scale-105"
             >
               <Calendar className="w-4 h-4 mr-2" />

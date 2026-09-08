@@ -1,4 +1,6 @@
 import alpaLogoWhite from "@/assets/alpa-logo-white.png";
+import { services } from "@/data/services";
+import { communities, provincesByCommunity } from "@/data/locations";
 
 const Footer = () => {
   return (
@@ -27,6 +29,29 @@ const Footer = () => {
                 info@alpa.digital
               </a>
             </div>
+          </div>
+        </div>
+
+        {/* Servicios y zonas */}
+        <div className="grid md:grid-cols-[1fr_2fr] gap-10 pt-10 mt-10 border-t border-white/10">
+          <div>
+            <p className="text-xs uppercase tracking-wide text-white/50 mb-3">Servicios</p>
+            <ul className="space-y-2">
+              {services.map((s) => (
+                <li key={s.slug}><a href={`/servicios/${s.slug}`} className="text-sm text-white/80 hover:text-white transition-colors">{s.name}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wide text-white/50 mb-3">Automatización con IA para pymes en toda España</p>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1.5">
+              {communities.map((c) =>
+                provincesByCommunity(c).map((prov) => (
+                  <li key={prov.slug}><a href={`/automatizacion-ia/${prov.slug}`} className="text-xs text-white/60 hover:text-white transition-colors">{prov.name}</a></li>
+                ))
+              )}
+            </ul>
+            <a href="/zonas" className="inline-block mt-3 text-xs text-white/70 underline hover:text-white">Ver todas las zonas y municipios</a>
           </div>
         </div>
 

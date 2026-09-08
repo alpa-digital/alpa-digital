@@ -21,7 +21,7 @@ const Header = ({ onContactClick }: HeaderProps) => {
       <div
         className={`mx-auto flex items-center justify-between transition-all duration-500 ease-out pointer-events-auto ${
           isScrolled
-            ? "mt-3 w-[calc(100%-1.5rem)] max-w-[380px] rounded-full border border-white/10 bg-[#0D0E11]/80 text-white shadow-lg shadow-black/30 backdrop-blur-xl px-3 py-1.5 md:px-4"
+            ? "mt-3 w-[calc(100%-1.5rem)] max-w-[560px] rounded-full border border-white/10 bg-[#0D0E11]/80 text-white shadow-lg shadow-black/30 backdrop-blur-xl px-3 py-1.5 md:px-4"
             : "mt-0 w-full max-w-7xl bg-transparent px-6 py-4 md:px-8 md:py-5"
         }`}
       >
@@ -32,6 +32,11 @@ const Header = ({ onContactClick }: HeaderProps) => {
             className={`transition-all duration-500 ${isScrolled ? "h-4 md:h-5 ml-2" : "h-6 md:h-8"}`}
           />
         </a>
+        <nav className={`hidden md:flex items-center gap-5 text-sm ${isScrolled ? "text-white/70" : "text-muted-foreground"}`} aria-label="Principal">
+          <a href="/servicios" className="hover:text-primary transition-colors">Servicios</a>
+          <a href="/#automatizaciones" className="hover:text-primary transition-colors">Automatizaciones</a>
+          <a href="/zonas" className="hover:text-primary transition-colors">Zonas</a>
+        </nav>
         <button
           onClick={onContactClick}
           className={`bg-primary hover:bg-primary/90 text-white rounded-full font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 active:scale-95 ${
