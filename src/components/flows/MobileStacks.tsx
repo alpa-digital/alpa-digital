@@ -130,7 +130,8 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
   const hub = boxes.hub;
   const lastRow = boxes[system.modules[system.modules.length - 1]?.id];
   const trunkX = size.width / 2;
-  const trunk = hub && lastRow ? `M ${trunkX} ${hub.bottom} V ${lastRow.cy}` : null;
+  const lastCentered = !!lastRow && Math.abs(lastRow.cx - trunkX) < 6;
+  const trunk = hub && lastRow ? `M ${trunkX} ${hub.bottom} V ${lastCentered ? lastRow.top : lastRow.cy}` : null;
 
   return (
     <div ref={containerRef} className="relative px-4 pt-4 pb-3">
@@ -143,12 +144,14 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
             const box = boxes[module.id];
             if (!box) return null;
             const active = i === activeIndex;
+            const centered = Math.abs(box.cx - trunkX) < 6;
             const leftSide = box.cx < trunkX;
-            const stub = `M ${trunkX} ${box.cy} H ${leftSide ? box.right : box.left}`;
+            const joinY = centered ? box.top : box.cy;
+            const stub = centered ? `M ${trunkX} ${joinY - 14} V ${joinY}` : `M ${trunkX} ${box.cy} H ${leftSide ? box.right : box.left}`;
             return (
               <g key={module.id}>
                 <path d={stub} fill="none" stroke={active ? "rgba(96,165,250,0.95)" : "rgba(96,165,250,0.35)"} strokeWidth={active ? 1.8 : 1.2} style={{ transition: "stroke 0.4s" }} />
-                <circle cx={trunkX} cy={box.cy} r="4.5" fill={active ? "#60A5FA" : "#0D0E11"} stroke="#60A5FA" strokeWidth="1.5" style={{ transition: "fill 0.4s" }} />
+                <circle cx={trunkX} cy={joinY} r="4.5" fill={active ? "#60A5FA" : "#0D0E11"} stroke="#60A5FA" strokeWidth="1.5" style={{ transition: "fill 0.4s" }} />
                 {animate && active && (
                   <>
                     <Packet path={stub} color="#60A5FA" delay={0} dur={1.2} />
@@ -193,7 +196,7 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
               aria-pressed={active}
               className={`text-left rounded-xl border px-3 py-2.5 transition-all duration-300 ${
                 active ? "border-blue-400 bg-blue-500/15 shadow-[0_0_26px_rgba(59,130,246,0.4)]" : "border-white/15 bg-[#141518]"
-              }`}
+              } ${i === system.modules.length - 1 && system.modules.length % 2 === 1 ? "col-span-2 max-w-[calc(50%-1rem)] mx-auto w-full" : ""}`}
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <div className={`w-7 h-7 rounded-md flex items-center justify-center ${active ? "bg-blue-500/35" : "bg-white/[0.06]"}`}>

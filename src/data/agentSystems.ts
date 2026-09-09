@@ -134,6 +134,23 @@ export const agentSystems: CompanySystem[] = [
           "Asiento preparado en contabilidad · vencimiento 60 días",
         ],
       },
+      {
+        id: "datos",
+        name: "Cuadro de mando de obras",
+        short: "Rentabilidad y desvíos",
+        icon: "gauge",
+        users: "Gerencia",
+        description:
+          "Margen real por obra, horas frente a presupuesto y material imputado, en un cuadro de mando que se actualiza solo. El gerente pregunta al agente «¿qué obras pierden dinero este mes?» y tiene la respuesta con datos.",
+        features: ["Margen por obra en tiempo real", "Horas y material frente a presupuesto", "Preguntas en lenguaje normal al agente", "Alertas cuando una obra se desvía"],
+        metric: { value: "+9 pts", label: "de margen medio por obra" },
+        log: [
+          "Datos de fichaje, compras y certificaciones cruzados esta noche",
+          "Gerente (WhatsApp): «¿Qué obras pierden dinero este mes?»",
+          "Agente: Polígono Sur al 112 % de horas · causa: 2 visitas extra por cambios del cliente",
+          "Alerta enviada al encargado · presupuesto adicional preparado",
+        ],
+      },
     ],
   },
   {
@@ -247,6 +264,23 @@ export const agentSystems: CompanySystem[] = [
           "Aviso: 2 facturas pendientes de más de 30 días",
         ],
       },
+      {
+        id: "datos",
+        name: "Analítica de la clínica",
+        short: "Ocupación, tratamientos e ingresos",
+        icon: "gauge",
+        users: "Dirección de la clínica",
+        description:
+          "Ocupación de cada sillón, citas no presentadas, ingresos por tratamiento y presupuestos aceptados, en un cuadro de mando que se rellena solo desde la agenda y la facturación.",
+        features: ["Ocupación por sillón y profesional", "Ingresos por tratamiento y aseguradora", "Presupuestos aceptados frente a emitidos", "Preguntas al agente: «¿qué mes flojea?»"],
+        metric: { value: "92 %", label: "de ocupación de agenda, antes 74 %" },
+        log: [
+          "Agenda, facturación y presupuestos cruzados esta noche",
+          "Cuadro de mando: martes por la tarde al 61 % · huecos recurrentes",
+          "Directora (WhatsApp): «¿Qué tratamientos crecen?» → ortodoncia invisible +34 %",
+          "Propuesta del agente: campaña de recall para huecos de martes",
+        ],
+      },
     ],
   },
   {
@@ -358,6 +392,23 @@ export const agentSystems: CompanySystem[] = [
           "Agente: 3 facturas vencen mañana · recordatorio enviado",
           "Cliente con riesgo alto · pedido retenido hasta aprobación",
           "Cobro recibido · conciliado con el banco",
+        ],
+      },
+      {
+        id: "datos",
+        name: "Analítica de ventas y stock",
+        short: "Rotación, márgenes y previsión",
+        icon: "gauge",
+        users: "Gerencia y compras",
+        description:
+          "Ventas por cliente y familia, margen real por pedido, rotación de cada referencia y previsión de demanda, en un cuadro de mando que se alimenta de los pedidos, el almacén y los cobros.",
+        features: ["Margen real por pedido y cliente", "Rotación y stock inmovilizado por referencia", "Previsión de demanda para compras", "Alertas de clientes que dejan de pedir"],
+        metric: { value: "-23 %", label: "de stock inmovilizado" },
+        log: [
+          "Pedidos, almacén y cobros cruzados esta noche",
+          "Agente: 14 referencias sin rotación en 90 días · 18.400 € inmovilizados",
+          "Gerente (voz): «¿Qué clientes han dejado de pedir?» → 6 clientes, lista enviada a comercial",
+          "Previsión de compras de la semana preparada para revisión",
         ],
       },
     ],
