@@ -62,7 +62,7 @@ const ClientLogos = () => {
           {clients.map((client, index) => (
             <li
               key={client.slug}
-              className={`flex items-center justify-center h-20 md:h-24 lg:h-28 px-4 rounded-2xl border border-border bg-card hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all ${
+              className={`flex items-center justify-center h-20 md:h-24 lg:h-28 px-4 rounded-2xl bg-card hover:bg-secondary/40 transition-all ${
                 isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
               }`}
               style={{ transitionDelay: `${index * 0.06}s`, transitionDuration: "600ms" }}
