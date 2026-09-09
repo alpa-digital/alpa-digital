@@ -13,8 +13,8 @@ const tree = (
   </StrictMode>
 );
 
-// Las páginas prerenderizadas ya traen HTML: se hidrata. En desarrollo el contenedor está vacío.
-if (container.hasChildNodes()) {
+// Las páginas prerenderizadas ya traen HTML: se hidrata. En desarrollo el contenedor solo tiene el comentario marcador.
+if (container.firstElementChild) {
   hydrateRoot(container, tree);
 } else {
   createRoot(container).render(tree);

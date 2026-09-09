@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from "react";
 import { X, Send, Mail, User, MessageSquare, Calendar, ExternalLink, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +14,18 @@ const CalEmbed = lazy(() => import("@calcom/embed-react"));
 
 /** Enlace de Cal.com sin dominio ni parámetros, p. ej. "alpa-digital-studio/30min". */
 const CAL_LINK = site.calUrl.replace(/^https?:\/\/cal\.com\//, "").replace(/\?.*$/, "");
+const CAL_CONFIG = { layout: "month_view", theme: "light" } as const;
+
+/** Si el embed falla por lo que sea, se muestra el enlace de respaldo en vez de tumbar la página. */
+class CalBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? this.props.fallback : this.props.children;
+  }
+}
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, { message: "El nombre es obligatorio" }).max(100, { message: "El nombre debe tener menos de 100 caracteres" }),
@@ -173,9 +185,20 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 Cargando el calendario…
               </div>
-              <Suspense fallback={null}>
-                <CalEmbed calLink={CAL_LINK} config={{ layout: "month_view", theme: "light" }} className="relative z-10" style={{ width: "100%", height: "100%", minHeight: 520, overflow: "auto" }} />
-              </Suspense>
+              <CalBoundary
+                fallback={
+                  <div className="relative z-10 min-h-[520px] flex flex-col items-center justify-center gap-4 bg-background text-center px-6">
+                    <p className="text-sm text-muted-foreground">El calendario no se ha podido cargar aquí. Puedes reservar en una pestaña nueva.</p>
+                    <a href={site.calUrl} target="_blank" rel="noopener noreferrer" onClick={() => track("cal_click", { place: "contact_modal_fallback" })} className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full text-sm font-medium">
+                      <Calendar className="w-4 h-4" /> Reservar llamada en Cal.com
+                    </a>
+                  </div>
+                }
+              >
+                <Suspense fallback={null}>
+                  <CalEmbed calLink={CAL_LINK} config={CAL_CONFIG} className="relative z-10" style={{ width: "100%", height: "100%", overflow: "auto" }} />
+                </Suspense>
+              </CalBoundary>
             </div>
             <p className="px-5 sm:px-6 py-3 border-t border-border text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
               <span>Si el calendario no carga, puedes abrirlo en una pestaña nueva.</span>
