@@ -6,7 +6,7 @@ Este documento define la estrategia y señala qué parte ya está implementada e
 
 ## 1. Posicionamiento y mensaje
 
-- Dos líneas de servicio y así se comunican en toda la web: **Sistemas de herramientas y automatizaciones con IA** (lo que construimos: automatizaciones, agentes, apps corporativas y sistemas completos gobernados por IA, un mismo servicio a distintas escalas) y **Consultoría de IA** (cómo decidimos qué construir: diagnóstico, I+D, diseño de producto y roadmap corporativo). La consultoría tiene sección propia en la home, página pilar y aparece en precios, cabecera y pie.
+- Dos líneas de servicio y así se comunican en toda la web: **Sistemas de herramientas y automatizaciones con IA** (lo que construimos: automatizaciones, agentes, apps corporativas y sistemas completos gobernados por IA, un mismo servicio a distintas escalas) y **Consultoría de IA** (cómo decidimos qué construir: diagnóstico, I+D, diseño de producto y roadmap corporativo). La consultoría tiene sección propia en la home, página pilar y aparece en cabecera y pie.
 - Categoría a conquistar en buscadores: "automatización con IA para pymes" como puerta de entrada (búsqueda con intención de compra y poco disputada), y desde ahí "sistemas de IA para empresas", "apps corporativas con IA" y "consultoría de IA".
 - Diferenciadores que deben aparecer en todas las páginas: alcance y plazo cerrados antes de empezar (sin importes en la web: el presupuesto se da en la primera llamada), empezar por un proceso, trabajar con las herramientas que la empresa ya usa, una persona decide, resultados medidos en horas.
 - Prueba: el analizador de webs es el activo más diferencial. Cada página local y de servicio enlaza a él.
@@ -54,7 +54,7 @@ Sede: Utrera (Sevilla). Nivel 1 con visita presencial: Sevilla, Cádiz, Huelva, 
 Acciones fuera de la web, por orden:
 
 1. Completar el teléfono de la sede en `src/data/site.ts` (la dirección, Calle Molares 18A, 41710 Utrera, ya está en los datos estructurados y en el pie). Con él, la ficha de Google se puede verificar y se activa la extensión de llamada en los anuncios.
-2. Crear y verificar la ficha de Google Business Profile en Utrera: categoría principal "Consultor informático" o "Empresa de software", secundarias "Consultoría empresarial" y "Servicio de automatización", zona de servicio con Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, servicios con precios, fotos del equipo y del despacho, y una publicación al mes. Enlazar la ficha a `https://alpa.digital/automatizacion-ia/sevilla/utrera`.
+2. Crear y verificar la ficha de Google Business Profile en Utrera: categoría principal "Consultor informático" o "Empresa de software", secundarias "Consultoría empresarial" y "Servicio de automatización", zona de servicio con Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, servicios, fotos del equipo y del despacho, y una publicación al mes. Enlazar la ficha a `https://alpa.digital/automatizacion-ia/sevilla/utrera`.
 3. Reseñas: pedir una reseña al cerrar cada proyecto (el módulo de marketing de los flujos ya lo cuenta como práctica; aplicarlo a la propia agencia). Objetivo: 10 reseñas en 90 días.
 4. Citas locales coherentes (mismo nombre, dirección y teléfono): Páginas Amarillas, Cylex, Europages, Infoempresa, directorio de la Cámara de Comercio y del ayuntamiento de la sede.
 5. Prioridad por niveles: nivel 1 (Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz) con casos reales, fotos y campañas SEM; nivel 2 el resto, sin inversión SEM inicial. El campo `tier` en `locations.ts` ya lo refleja.
