@@ -1,8 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="112" fill="#2C2C2C"/>
-  <g transform="translate(96 140) scale(1.68)">
-    <path fill="#FFFFFF" fill-rule="evenodd" d="M69 0a69 69 0 1 0 0 138a69 69 0 1 0 0-138zm0 36a33 33 0 1 1 0 66a33 33 0 1 1 0-66z"/>
-    <rect fill="#FFFFFF" x="102" y="69" width="36" height="69"/>
-    <circle fill="#0066FF" cx="172.5" cy="119.5" r="18.5"/>
+  <rect width="512" height="512" rx="112" fill="#FFFFFF"/>
+  <g fill="#2C2C2C" transform="translate(36 150) scale(0.768)">
+    <path fill-rule="evenodd" d="M69 56a69 69 0 1 0 0 138a69 69 0 1 0 0-138zm0 36a33 33 0 1 1 0 66a33 33 0 1 1 0-66z"/>
+    <rect x="102" y="125" width="36" height="69"/>
+    <rect x="162" y="0" width="36" height="194"/>
+    <path fill-rule="evenodd" d="M290 55a69 69 0 1 0 0 138a69 69 0 1 0 0-138zm0 36a33 33 0 1 1 0 66a33 33 0 1 1 0-66z"/>
+    <path d="M221 124h36v117a36 36 0 0 1-36 36z"/>
+    <path fill-rule="evenodd" d="M446 56a69 69 0 1 0 0 138a69 69 0 1 0 0-138zm0 36a33 33 0 1 1 0 66a33 33 0 1 1 0-66z"/>
+    <rect x="479" y="125" width="36" height="69"/>
+    <circle cx="554.5" cy="175.5" r="18.5"/>
   </g>
 </svg>
