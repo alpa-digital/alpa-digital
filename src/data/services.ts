@@ -21,8 +21,7 @@ export interface ServiceDef {
   deliverables: string[];
   faqs: ServiceFaq[];
   /** Piezas de la línea (solo en pilares): se muestran como bloques dentro de la página. */
-  offerings?: { name: string; text: string; price?: string; slug?: string }[];
-  price?: string;
+  offerings?: { name: string; text: string; slug?: string }[];
 }
 
 export const families: Record<ServiceFamily, { name: string; short: string; tagline: string; description: string }> = {
@@ -48,11 +47,10 @@ export const services: ServiceDef[] = [
     name: "Sistemas de herramientas y automatizaciones con IA",
     short: "Sistemas de IA",
     title: "Sistemas de herramientas y automatizaciones con IA para pymes | Alpa Digital",
-    description: "Construimos automatizaciones, agentes de IA, apps corporativas y sistemas completos de herramientas interconectadas gobernadas por inteligencia artificial. Precio cerrado por fase.",
+    description: "Construimos automatizaciones, agentes de IA, apps corporativas y sistemas completos de herramientas interconectadas gobernadas por inteligencia artificial.",
     h1: "Sistemas de herramientas y automatizaciones con IA",
-    intro: "Un mismo servicio a distintas escalas. Puede ser una automatización que quita una tarea concreta, un agente de IA que atiende clientes, una app corporativa hecha a medida o un sistema completo de herramientas interconectadas y gobernadas por IA. Se empieza por lo que más duele y se crece por fases, con precio cerrado en cada una.",
+    intro: "Un mismo servicio a distintas escalas. Puede ser una automatización que quita una tarea concreta, un agente de IA que atiende clientes, una app corporativa hecha a medida o un sistema completo de herramientas interconectadas y gobernadas por IA. Se empieza por lo que más duele y se crece por fases, con alcance y plazo cerrados en cada una.",
     keywords: ["sistemas de IA para empresas", "IA corporativa pymes", "apps corporativas con inteligencia artificial", "automatización con IA para pymes"],
-    price: "Automatizaciones desde 1.500 €. Apps y sistemas con presupuesto cerrado por fase.",
     benefits: [
       { title: "Una sola arquitectura", text: "Automatizaciones, agentes y apps comparten datos, permisos y un agente central. No son piezas sueltas que luego hay que pegar." },
       { title: "Crece por fases", text: "Primero un proceso, luego un agente, después la app que faltaba. Cada fase se paga y se usa antes de empezar la siguiente." },
@@ -61,15 +59,15 @@ export const services: ServiceDef[] = [
     ],
     deliverables: ["Automatizaciones de procesos conectadas a tus herramientas", "Agentes de IA por WhatsApp, email, web y voz", "Apps corporativas a medida: CRM, fichaje, certificaciones, portales de pedidos, control de material", "Sistema completo: datos compartidos, agente central, panel de supervisión y permisos"],
     offerings: [
-      { name: "Automatizaciones de procesos", text: "Una tarea repetitiva que deja de hacerse a mano: facturas, presupuestos, pedidos, seguimiento.", price: "Desde 1.500 €", slug: "automatizacion-ia-pymes" },
-      { name: "Agentes de IA", text: "Un agente que atiende, prepara, consulta tus datos y actúa por WhatsApp, email o voz, con una persona detrás cuando toca.", price: "Presupuesto cerrado", slug: "agentes-ia-empresas" },
-      { name: "Apps corporativas a medida", text: "La herramienta que tu empresa necesita y no existe, construida para tu forma de trabajar y conectada al agente.", price: "Presupuesto cerrado por fase", slug: "desarrollo-software-medida-ia" },
-      { name: "IA corporativa: el sistema completo", text: "Varias apps, agentes y automatizaciones interconectados y gobernados por IA, con datos compartidos, permisos y supervisión.", price: "Presupuesto cerrado por fases" },
+      { name: "Automatizaciones de procesos", text: "Una tarea repetitiva que deja de hacerse a mano: facturas, presupuestos, pedidos, seguimiento.", slug: "automatizacion-ia-pymes" },
+      { name: "Agentes de IA", text: "Un agente que atiende, prepara, consulta tus datos y actúa por WhatsApp, email o voz, con una persona detrás cuando toca.", slug: "agentes-ia-empresas" },
+      { name: "Apps corporativas a medida", text: "La herramienta que tu empresa necesita y no existe, construida para tu forma de trabajar y conectada al agente.", slug: "desarrollo-software-medida-ia" },
+      { name: "IA corporativa: el sistema completo", text: "Varias apps, agentes y automatizaciones interconectados y gobernados por IA, con datos compartidos, permisos y supervisión." },
     ],
     faqs: [
       { question: "¿Es lo mismo una automatización que un sistema de IA corporativo?", answer: "Es la misma línea de servicio a distinta escala. Una automatización resuelve una tarea; un sistema conecta varias apps, agentes y automatizaciones con datos compartidos y un agente central. Se empieza por una automatización y se crece si tiene sentido." },
       { question: "¿Podéis hacer una app corporativa completa?", answer: "Sí. Desarrollamos apps a medida (CRM, fichaje, certificaciones, portales de pedidos, control de material) y las conectamos entre sí y con un agente de IA. Se entregan por fases usables." },
-      { question: "¿Cómo se presupuesta?", answer: "Cada automatización parte de 1.500 € con precio cerrado. Las apps y los sistemas se presupuestan por fases, cada una con alcance, precio y plazo cerrados antes de empezar." },
+      { question: "¿Cómo se contrata?", answer: "Cada automatización se contrata suelta. Las apps y los sistemas se planifican por fases, cada una con alcance y plazo cerrados antes de empezar. El presupuesto concreto te lo damos tras la primera llamada." },
     ],
   },
   {
@@ -78,11 +76,10 @@ export const services: ServiceDef[] = [
     name: "Automatización con IA para pymes",
     short: "Automatización con IA",
     title: "Automatización con IA para pymes | Alpa Digital",
-    description: "Automatizamos con inteligencia artificial las tareas repetitivas de tu pyme: atención al cliente, presupuestos, facturas y seguimiento comercial. Presupuesto cerrado desde 1.500 €.",
+    description: "Automatizamos con inteligencia artificial las tareas repetitivas de tu pyme: atención al cliente, presupuestos, facturas y seguimiento comercial.",
     h1: "Automatización con IA para pymes",
-    intro: "Quitamos de encima a tu equipo el trabajo repetitivo: responder consultas, preparar presupuestos, registrar facturas, hacer seguimiento. Cada automatización conectada a las herramientas que ya usas, con alcance, precio y plazo cerrados antes de empezar. Es la primera escala de nuestros sistemas de IA.",
+    intro: "Quitamos de encima a tu equipo el trabajo repetitivo: responder consultas, preparar presupuestos, registrar facturas, hacer seguimiento. Cada automatización conectada a las herramientas que ya usas, con alcance y plazo cerrados antes de empezar. Es la primera escala de nuestros sistemas de IA.",
     keywords: ["automatización con IA para pymes", "automatizar procesos empresa", "automatización inteligencia artificial pymes"],
-    price: "Desde 1.500 € por automatización",
     benefits: [
       { title: "Empieza por un proceso", text: "No hace falta cambiar la empresa entera. Elegimos la tarea que más tiempo quita y la automatizamos en dos a seis semanas." },
       { title: "Con tus herramientas", text: "Correo, WhatsApp, Google Workspace o Microsoft 365, tu CRM, tu programa de facturación o tu ERP. Sin migraciones." },
@@ -92,7 +89,7 @@ export const services: ServiceDef[] = [
     deliverables: ["Automatización implantada y probada con casos reales tuyos", "Integración con tus herramientas actuales", "Formación del equipo y documentación", "Un mes de soporte incluido"],
     faqs: [
       { question: "¿Qué tareas se pueden automatizar con IA en una pyme?", answer: "Las que se repiten y siguen reglas parecidas: responder consultas frecuentes, preparar presupuestos, leer y registrar facturas, hacer seguimiento a clientes, cribar candidaturas, redactar contenido o preparar informes." },
-      { question: "¿Cuánto cuesta automatizar un proceso?", answer: "Cada automatización parte de 1.500 € y se presupuesta con alcance, precio y plazo cerrados. El diagnóstico previo cuesta 490 € y se descuenta si seguimos." },
+      { question: "¿Cuánto se tarda en automatizar un proceso?", answer: "Normalmente entre dos y seis semanas, con alcance y plazo cerrados antes de empezar. El diagnóstico previo dura una o dos semanas." },
       { question: "¿Tengo que cambiar mis programas?", answer: "No. Conectamos la automatización a lo que ya usas. Solo recomendamos cambiar de herramienta cuando la actual es el problema." },
     ],
   },
@@ -106,7 +103,6 @@ export const services: ServiceDef[] = [
     h1: "Agentes de IA para empresas",
     intro: "Un agente de IA no es un chatbot con respuestas enlatadas. Es un sistema que entiende lo que pide un cliente o un compañero, consulta tus datos reales, usa tus herramientas y devuelve un resultado: una respuesta, un presupuesto, una cita, un pedido creado. Es la pieza central de nuestros sistemas de IA.",
     keywords: ["agentes de IA para empresas", "agente inteligencia artificial atención al cliente", "asistente IA WhatsApp empresa"],
-    price: "Presupuesto cerrado",
     benefits: [
       { title: "Habla con tus datos", text: "Catálogo, tarifas, stock, expedientes, agenda. El agente responde con información real y actualizada, no inventada." },
       { title: "Por los canales de tu cliente", text: "WhatsApp, email, web, teléfono o voz para el equipo en obra o en ruta." },
@@ -130,7 +126,6 @@ export const services: ServiceDef[] = [
     h1: "Apps corporativas y software a medida con IA",
     intro: "Cuando no existe un programa que encaje con cómo trabajas, lo construimos: CRM de obras, control de herramientas, fichaje desde el móvil, certificaciones de proyectos, portales de pedidos. Cada app se conecta con las demás y con un agente al que tu equipo habla por WhatsApp o por voz. Es la escala de app y de sistema de nuestros sistemas de IA.",
     keywords: ["apps corporativas pymes", "desarrollo software a medida pymes", "desarrollo aplicaciones con inteligencia artificial", "CRM a medida pyme"],
-    price: "Presupuesto cerrado por fase",
     benefits: [
       { title: "Hecho para tu forma de trabajar", text: "Sin adaptarte a un programa genérico ni pagar por funciones que no usas." },
       { title: "Interconectadas", text: "Las apps comparten datos, usuarios y permisos. Lo que pasa en una lo sabe la otra." },
@@ -151,16 +146,15 @@ export const services: ServiceDef[] = [
     name: "Consultoría de IA para pymes",
     short: "Consultoría de IA",
     title: "Consultoría de IA para pymes: diagnóstico, I+D, diseño de producto y roadmap | Alpa Digital",
-    description: "Diagnóstico de automatización por 490 €, I+D y pruebas de concepto, diseño de producto y roadmap corporativo de IA. Acompañamiento mensual desde 350 €. Decide con criterio qué automatizar y qué construir.",
+    description: "Diagnóstico de automatización, I+D y pruebas de concepto, diseño de producto y roadmap corporativo de IA, con acompañamiento mensual si lo quieres. Decide con criterio qué automatizar y qué construir.",
     h1: "Consultoría de IA para pymes",
     intro: "Antes de construir, decidir. Y después de construir, seguir mejorando. La consultoría es la parte de nuestro trabajo que responde a qué merece la pena automatizar, qué herramienta hace falta, cómo probar una idea antes de gastar en ella y en qué orden avanzar. Cuatro piezas que se contratan sueltas o como acompañamiento.",
     keywords: ["consultoría inteligencia artificial pymes", "consultor IA empresas", "diagnóstico automatización empresa", "roadmap IA empresa", "estrategia inteligencia artificial pymes"],
-    price: "Diagnóstico 490 € · Acompañamiento 350 €/mes",
     offerings: [
-      { name: "Diagnóstico de automatización", text: "Una o dos semanas con las personas que hacen el trabajo. Mapa de procesos, tiempo que consume cada uno y plan priorizado por impacto, coste y riesgo, con estimación cerrada de cada automatización.", price: "490 €, se descuenta si seguimos" },
-      { name: "I+D y pruebas de concepto", text: "Cuando no está claro si la IA puede hacer algo con tus datos, lo probamos en pequeño antes de invertir: un prototipo con casos reales y un informe con lo que funciona, lo que no y a qué coste.", price: "Presupuesto cerrado" },
-      { name: "Diseño de producto", text: "Definimos la herramienta o el agente con quien lo va a usar: flujos, pantallas, reglas, límites de la IA y criterios de éxito. Sale un diseño listo para construir, por nosotros o por quien elijas.", price: "Presupuesto cerrado" },
-      { name: "Roadmap corporativo de IA", text: "Plan a 12 meses: qué automatizar, qué desarrollar, en qué orden, con qué herramientas y con qué política de datos y uso responsable. Con seguimiento mensual si lo quieres.", price: "Presupuesto cerrado · Acompañamiento 350 €/mes" },
+      { name: "Diagnóstico de automatización", text: "Una o dos semanas con las personas que hacen el trabajo. Mapa de procesos, tiempo que consume cada uno y plan priorizado por impacto, coste y riesgo, con estimación cerrada de cada automatización." },
+      { name: "I+D y pruebas de concepto", text: "Cuando no está claro si la IA puede hacer algo con tus datos, lo probamos en pequeño antes de invertir: un prototipo con casos reales y un informe con lo que funciona, lo que no y a qué coste." },
+      { name: "Diseño de producto", text: "Definimos la herramienta o el agente con quien lo va a usar: flujos, pantallas, reglas, límites de la IA y criterios de éxito. Sale un diseño listo para construir, por nosotros o por quien elijas." },
+      { name: "Roadmap corporativo de IA", text: "Plan a 12 meses: qué automatizar, qué desarrollar, en qué orden, con qué herramientas y con qué política de datos y uso responsable. Con seguimiento mensual si lo quieres." },
     ],
     benefits: [
       { title: "Con las personas que hacen el trabajo", text: "No solo con dirección. Vemos qué se repite, cuánto cuesta y dónde se atasca." },
@@ -170,7 +164,7 @@ export const services: ServiceDef[] = [
     ],
     deliverables: ["Mapa de procesos y tiempos", "Plan de automatización priorizado con estimaciones cerradas", "Prototipos e informes de I+D", "Diseño de producto listo para construir", "Roadmap de IA a 12 meses y política de uso responsable"],
     faqs: [
-      { question: "¿Qué incluye el diagnóstico de 490 €?", answer: "Sesiones con el equipo, mapa de procesos, plan priorizado y estimación cerrada de cada automatización. Se descuenta si seguimos con la implementación." },
+      { question: "¿Qué incluye el diagnóstico?", answer: "Sesiones con el equipo, mapa de procesos, plan priorizado y estimación cerrada de cada automatización. Dura una o dos semanas." },
       { question: "¿Qué es una prueba de concepto y cuándo hace falta?", answer: "Un prototipo pequeño con tus datos reales para comprobar si la IA resuelve algo antes de invertir en construirlo. Hace falta cuando el caso no es habitual o los datos son complicados." },
       { question: "¿Puedo contratar solo el diseño o el roadmap y construir con otro?", answer: "Sí. El diseño de producto y el roadmap se entregan documentados y son tuyos." },
       { question: "¿Necesito conocimientos técnicos?", answer: "No. Hablamos en el lenguaje de tu negocio y nos ocupamos de la parte técnica." },

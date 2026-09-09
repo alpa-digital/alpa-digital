@@ -28,7 +28,6 @@ const ServicePage = () => {
               <p className="text-xs md:text-sm font-medium text-primary uppercase tracking-wide mt-6 mb-2">{family.tagline} · {family.short}</p>
               <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mb-6" style={{ textWrap: "balance" }}>{service.h1}</h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">{service.intro}</p>
-              {service.price && <p className="mt-4 inline-block rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">{service.price}</p>}
               <div className="flex flex-col sm:flex-row gap-3 mt-8">
                 <button onClick={openContact} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Reservar una llamada gratuita</button>
                 <Link to="/#analiza-tu-empresa" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-border font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors">
@@ -49,7 +48,6 @@ const ServicePage = () => {
                       <h3 className="text-lg font-medium text-foreground mb-2">{o.name}</h3>
                       <p className="text-muted-foreground leading-relaxed flex-1">{o.text}</p>
                       <div className="flex items-center justify-between gap-3 mt-4">
-                        {o.price && <span className="text-sm font-medium text-foreground">{o.price}</span>}
                         {o.slug && <Link to={`/servicios/${o.slug}`} className="text-sm text-primary inline-flex items-center gap-1 hover:underline">Ver detalle <ArrowRight className="w-3.5 h-3.5" /></Link>}
                       </div>
                     </li>
@@ -119,7 +117,7 @@ const ServicePage = () => {
 
           <CtaBand
             title={service.family === "consultoria" ? "Empieza por el diagnóstico" : "¿Qué tarea te gustaría dejar de hacer a mano?"}
-            text={service.family === "consultoria" ? "490 €, una o dos semanas, y sabrás qué automatizar primero con estimación cerrada. Se descuenta si seguimos." : "Cuéntanosla en una llamada de 30 minutos. Te diremos con franqueza si merece la pena automatizarla, cuánto costaría y cuánto tiempo ahorrarías."}
+            text={service.family === "consultoria" ? "Una o dos semanas con tu equipo y sabrás qué automatizar primero, con estimación cerrada." : "Cuéntanosla en una llamada de 30 minutos. Te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías."}
             onContactClick={openContact}
             buttonLabel={service.family === "consultoria" ? "Pedir diagnóstico" : "Reservar una llamada gratuita"}
           />

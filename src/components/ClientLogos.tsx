@@ -92,7 +92,7 @@ const ClientLogos = () => {
             </div>
             <div className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`} style={{ transitionDelay: "1.7s" }}>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Hemos trabajado en proyectos digitales para grandes compañías. Esa misma forma de trabajar, con plazos y presupuestos cerrados, es la que llevamos ahora a la automatización con IA en pymes.
+                Hemos trabajado en proyectos digitales para grandes compañías. Esa misma forma de trabajar, con alcance y plazos cerrados, es la que llevamos ahora a la automatización con IA en pymes.
               </p>
             </div>
           </div>

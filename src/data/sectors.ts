@@ -51,7 +51,7 @@ export const sectors: SectorDef[] = [
     faqs: [
       { question: "¿Funciona si mis técnicos no quieren usar apps?", answer: "Por eso el agente vive en WhatsApp y por voz. No hay que aprender ninguna app: se manda una foto o un audio y el sistema hace el resto." },
       { question: "¿Los certificados salen con el formato oficial?", answer: "Se generan sobre vuestras plantillas y las de Industria de vuestra comunidad, con los datos de la obra y las mediciones. Una persona los revisa y firma." },
-      { question: "¿Cuánto cuesta empezar?", answer: "El diagnóstico son 490 €. La primera automatización, normalmente presupuestos o certificados, parte de 1.500 € con precio cerrado." },
+      { question: "¿Por dónde se empieza?", answer: "Por un diagnóstico de una o dos semanas con tu equipo. Después, la primera automatización, normalmente presupuestos o certificados, con alcance y plazo cerrados." },
     ],
     provinces: ["sevilla", "cadiz", "malaga", "madrid", "murcia", "valencia"],
     match: ["instalac", "electric", "construc"],

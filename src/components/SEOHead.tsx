@@ -40,10 +40,10 @@ const SEOHead = () => {
         },
         {
           "@type": "Question",
-          "name": "¿Cuánto cuesta automatizar un proceso con IA?",
+          "name": "¿Cuánto se tarda en automatizar un proceso con IA?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "El diagnóstico cuesta 490 €. Cada automatización parte de 1.500 € con alcance, precio y plazo cerrados antes de empezar. El acompañamiento mensual son 350 € al mes sin permanencia. Precios sin IVA."
+            "text": "El diagnóstico dura una o dos semanas. Cada automatización se entrega normalmente entre dos y seis semanas, con alcance y plazo cerrados antes de empezar. El acompañamiento es mensual y sin permanencia."
           }
         }
       ]
@@ -63,19 +63,15 @@ const SEOHead = () => {
         "itemListElement": [
           {
             "@type": "Offer",
-            "price": "1500",
-            "priceCurrency": "EUR",
             "itemOffered": {
               "@type": "Service",
               "name": "Sistemas de herramientas y automatizaciones con IA",
-              "description": "Automatizaciones de procesos, agentes de IA, apps corporativas a medida y sistemas completos interconectados y gobernados por IA. Precio cerrado por fase.",
+              "description": "Automatizaciones de procesos, agentes de IA, apps corporativas a medida y sistemas completos interconectados y gobernados por IA.",
               "url": "https://alpa.digital/servicios/sistemas-ia"
             }
           },
           {
             "@type": "Offer",
-            "price": "490",
-            "priceCurrency": "EUR",
             "itemOffered": {
               "@type": "Service",
               "name": "Consultoría de IA",

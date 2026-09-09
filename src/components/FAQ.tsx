@@ -29,8 +29,8 @@ const FAQ = () => {
       answer: "Se equivoca, como cualquier persona nueva en un puesto. Por eso diseñamos cada automatización con puntos de revisión: la IA prepara, una persona aprueba lo importante. Con el tiempo, cuando la fiabilidad está demostrada, se puede dar más autonomía."
     },
     {
-      question: "¿Cuánto cuesta y cuánto se tarda?",
-      answer: "El diagnóstico cuesta 490 € y dura una o dos semanas; si seguimos con la implementación, se descuenta. Cada automatización parte de 1.500 € y se presupuesta con alcance, precio y plazo fijos antes de empezar, normalmente entre dos y seis semanas. El acompañamiento mensual son 350 € al mes sin permanencia. Precios sin IVA. Nunca cobramos por horas abiertas."
+      question: "¿Cuánto se tarda?",
+      answer: "El diagnóstico dura una o dos semanas. Cada automatización se entrega normalmente entre dos y seis semanas, con alcance y plazo cerrados antes de empezar. El acompañamiento es mensual y sin permanencia. Nunca trabajamos por horas abiertas."
     },
     {
       question: "¿Dónde estáis?",

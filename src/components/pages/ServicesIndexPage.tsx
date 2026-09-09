@@ -14,7 +14,7 @@ const ServicesIndexPage = () => (
           <div className="max-w-5xl mx-auto">
             <Breadcrumbs items={[{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }]} />
             <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mt-6 mb-6" style={{ textWrap: "balance" }}>Dos líneas de servicio, un mismo objetivo</h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">Construimos los sistemas de IA que tu empresa necesita, y te ayudamos a decidir con criterio qué construir y en qué orden. Precio cerrado en todo.</p>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">Construimos los sistemas de IA que tu empresa necesita, y te ayudamos a decidir con criterio qué construir y en qué orden.</p>
           </div>
         </section>
         <section className="px-4 md:px-8 pb-16">
@@ -32,7 +32,6 @@ const ServicesIndexPage = () => (
                     {(pillar.offerings ?? []).map((o) => (
                       <li key={o.name} className="flex items-start justify-between gap-3 text-sm">
                         <span className="text-foreground">{o.slug ? <Link to={`/servicios/${o.slug}`} className="hover:text-primary">{o.name}</Link> : o.name}</span>
-                        {o.price && <span className="text-muted-foreground flex-shrink-0">{o.price}</span>}
                       </li>
                     ))}
                   </ul>
@@ -45,7 +44,7 @@ const ServicesIndexPage = () => (
             })}
           </div>
         </section>
-        <CtaBand title="¿No sabes por dónde empezar?" text="El diagnóstico de 490 € te dice qué automatizar primero, con estimación cerrada. Y se descuenta si seguimos." onContactClick={openContact} buttonLabel="Pedir diagnóstico" />
+        <CtaBand title="¿No sabes por dónde empezar?" text="El diagnóstico te dice qué automatizar primero, con estimación cerrada, en una o dos semanas." onContactClick={openContact} buttonLabel="Pedir diagnóstico" />
       </>
     )}
   </PageShell>
