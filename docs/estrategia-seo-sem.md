@@ -8,7 +8,7 @@ Este documento define la estrategia y señala qué parte ya está implementada e
 
 - Dos líneas de servicio y así se comunican en toda la web: **Sistemas de herramientas y automatizaciones con IA** (lo que construimos: automatizaciones, agentes, apps corporativas y sistemas completos gobernados por IA, un mismo servicio a distintas escalas) y **Consultoría de IA** (cómo decidimos qué construir: diagnóstico, I+D, diseño de producto y roadmap corporativo). La consultoría tiene sección propia en la home, página pilar y aparece en precios, cabecera y pie.
 - Categoría a conquistar en buscadores: "automatización con IA para pymes" como puerta de entrada (búsqueda con intención de compra y poco disputada), y desde ahí "sistemas de IA para empresas", "apps corporativas con IA" y "consultoría de IA".
-- Diferenciadores que deben aparecer en todas las páginas: precio cerrado, empezar por un proceso, trabajar con las herramientas que la empresa ya usa, una persona decide, resultados medidos en horas.
+- Diferenciadores que deben aparecer en todas las páginas: alcance y plazo cerrados antes de empezar (sin importes en la web: el presupuesto se da en la primera llamada), empezar por un proceso, trabajar con las herramientas que la empresa ya usa, una persona decide, resultados medidos en horas.
 - Prueba: el analizador de webs es el activo más diferencial. Cada página local y de servicio enlaza a él.
 
 ## 2. Palabras clave
@@ -118,7 +118,7 @@ Estructura de Google Ads:
 Ajustes:
 
 - Negativas desde el primer día: gratis, curso, empleo, trabajo, máster, universidad, tutorial, pdf, plantilla, "qué es" (salvo en campañas informacionales).
-- Anuncios responsivos con 12 títulos que combinen servicio, precio cerrado, "desde 1.500 €", "diagnóstico 490 €", zona y llamada a la acción. Extensiones de enlaces (servicios, analizador, zonas), texto destacado (precio cerrado, un mes de soporte, sin permanencia) y llamada.
+- Anuncios responsivos con 12 títulos que combinen servicio, "alcance y plazo cerrados", "diagnóstico en 1 o 2 semanas", zona y llamada a la acción. Sin importes en los anuncios. Extensiones de enlaces (servicios, analizador, zonas), texto destacado (alcance y plazo cerrados, un mes de soporte, sin permanencia) y llamada.
 - Puja: maximizar clics las dos primeras semanas; pasar a maximizar conversiones cuando haya 30 conversiones en 30 días.
 - Presupuesto inicial sugerido: 52 € al día activando Sistemas IA (24 €, cuatro grupos), Consultoría IA (6 €), Sectores (10 €, seis grupos) y Local Sevilla (12 €). Las diez campañas completas suman 73 € al día. Revisar cada dos semanas con el coste por lead.
 - Todo está preparado para importar en Google Ads Editor: `docs/google-ads/campanas.csv` (campañas, grupos, palabras clave y anuncios) y `docs/google-ads/negativas.csv`.
