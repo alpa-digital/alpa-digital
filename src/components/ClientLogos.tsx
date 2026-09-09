@@ -45,9 +45,9 @@ const ClientLogos = () => {
   }, []);
 
   const stats = [
-    { number: "20", symbol: "+", label: "Proyectos", sublabel: "Exitosos" },
-    { number: "4", symbol: "+", label: "Años de", sublabel: "Experiencia" },
-    { number: "10", symbol: "+", label: "Clientes", sublabel: "Satisfechos" },
+    { number: "25", symbol: "+", label: "Proyectos", sublabel: "Exitosos" },
+    { number: "5", symbol: "+", label: "Años de", sublabel: "Experiencia" },
+    { number: "12", symbol: "+", label: "Clientes", sublabel: "Satisfechos" },
   ];
 
   return (
