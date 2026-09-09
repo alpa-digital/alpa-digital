@@ -8,14 +8,15 @@ const HUB = { x: 480, y: 220, r: 58 };
 const NODE_W = 210;
 const NODE_H = 68;
 
-// Seis posiciones (centros) alrededor del agente.
+// Siete posiciones (centros) alrededor del agente; la séptima, arriba en el centro.
 const slots = [
-  { x: 262, y: 66 },
-  { x: 698, y: 66 },
+  { x: 236, y: 66 },
+  { x: 724, y: 66 },
   { x: 118, y: 220 },
   { x: 842, y: 220 },
-  { x: 262, y: 374 },
-  { x: 698, y: 374 },
+  { x: 236, y: 374 },
+  { x: 724, y: 374 },
+  { x: 480, y: 66 },
 ];
 
 function spoke(cx: number, cy: number) {

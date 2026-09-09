@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import alpaLogo from "@/assets/alpa-logo.png";
 import alpaLogoWhite from "@/assets/alpa-logo-white.png";
@@ -21,17 +22,23 @@ const Header = ({ onContactClick }: HeaderProps) => {
       <div
         className={`mx-auto flex items-center justify-between transition-all duration-500 ease-out pointer-events-auto ${
           isScrolled
-            ? "mt-3 w-[calc(100%-1.5rem)] max-w-[380px] rounded-full border border-white/10 bg-[#0D0E11]/80 text-white shadow-lg shadow-black/30 backdrop-blur-xl px-3 py-1.5 md:px-4"
+            ? "mt-3 w-[calc(100%-1.5rem)] max-w-[640px] rounded-full border border-white/10 bg-[#0D0E11]/80 text-white shadow-lg shadow-black/30 backdrop-blur-xl px-3 py-1.5 md:px-4"
             : "mt-0 w-full max-w-7xl bg-transparent px-6 py-4 md:px-8 md:py-5"
         }`}
       >
-        <a href="/" className="flex items-center hover:opacity-80 transition-opacity" aria-label="Alpa Digital, inicio">
+        <Link to="/" className="flex items-center hover:opacity-80 transition-opacity" aria-label="Alpa Digital, inicio">
           <img
             src={isScrolled ? alpaLogoWhite : alpaLogo}
             alt="Alpa Digital - Automatización e IA para pymes"
             className={`transition-all duration-500 ${isScrolled ? "h-4 md:h-5 ml-2" : "h-6 md:h-8"}`}
           />
-        </a>
+        </Link>
+        <nav className={`hidden md:flex items-center gap-5 text-sm ${isScrolled ? "text-white/70" : "text-muted-foreground"}`} aria-label="Principal">
+          <Link to="/servicios/sistemas-ia" className="hover:text-primary transition-colors">Sistemas de IA</Link>
+          <Link to="/servicios/consultoria-ia-pymes" className="hover:text-primary transition-colors">Consultoría</Link>
+          <Link to="/sectores" className="hover:text-primary transition-colors">Sectores</Link>
+          <Link to="/zonas" className="hover:text-primary transition-colors">Zonas</Link>
+        </nav>
         <button
           onClick={onContactClick}
           className={`bg-primary hover:bg-primary/90 text-white rounded-full font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25 active:scale-95 ${

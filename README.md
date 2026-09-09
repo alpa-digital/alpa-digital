@@ -30,6 +30,15 @@ npm run lint
 - `src/components/SEOHead.tsx`: datos estructurados (FAQ, servicios, contacto).
 - `index.html`: título, meta descripción, Open Graph y datos de organización.
 
+## SEO: páginas de servicios y zonas
+
+- `src/data/services.ts`: los cuatro servicios (páginas `/servicios/...`).
+- `src/data/locations.ts`: 52 provincias con capital, municipios y sectores (páginas `/automatizacion-ia/...`).
+- `src/lib/seo.ts`: título, descripción, canonical y datos estructurados de cada ruta; `allRoutes()` alimenta el prerenderizado y el sitemap.
+- `npm run build` genera el HTML de cada página (`scripts/prerender.mjs`), `sitemap.xml` y `robots.txt`.
+- Medición: `VITE_GA4_ID` y `VITE_GADS_ID` activan GA4 y Google Ads con Consent Mode y aviso de cookies. Sin ellas no se carga nada.
+- La estrategia completa está en `docs/estrategia-seo-sem.md`.
+
 ## Funciones de servidor
 
 Desplegadas con Netlify Functions desde `netlify/functions`:

@@ -33,6 +33,10 @@ const FAQ = () => {
       answer: "El diagnóstico cuesta 490 € y dura una o dos semanas; si seguimos con la implementación, se descuenta. Cada automatización parte de 1.500 € y se presupuesta con alcance, precio y plazo fijos antes de empezar, normalmente entre dos y seis semanas. El acompañamiento mensual son 350 € al mes sin permanencia. Precios sin IVA. Nunca cobramos por horas abiertas."
     },
     {
+      question: "¿Dónde estáis?",
+      answer: "Nuestra sede está en Utrera (Sevilla). Trabajamos presencialmente con empresas de Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, y en remoto con pymes de toda España: la primera llamada es por videollamada y la mayor parte del trabajo no necesita desplazamientos."
+    },
+    {
       question: "¿Qué pasa cuando la automatización está en marcha?",
       answer: "Formamos a tu equipo, dejamos documentado cómo funciona y te acompañamos el primer mes. Después puedes gestionarla tú, contar con nosotros mes a mes o llamarnos cuando algo cambie en tu negocio."
     }

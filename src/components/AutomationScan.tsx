@@ -5,16 +5,10 @@ import { useToast } from "@/hooks/use-toast";
 import ScanResultCard from "@/components/ScanResultCard";
 import { estimateScan, domainFromUrl, guessSectorFromDomain, type ScanResult } from "@/lib/scanFallback";
 import { ANALYZE_ENDPOINT, LEAD_ENDPOINT } from "@/config/endpoints";
+import { track, utmParams } from "@/lib/analytics";
 
 type Phase = "idle" | "scanning" | "result";
 
-const sampleResult: ScanResult = {
-  ...estimateScan("voltia-instalaciones.es", "construccion"),
-  company: "Voltia Instalaciones",
-  sector: "Instalaciones eléctricas y fotovoltaicas",
-  summary: "Ejemplo. En Voltia, presupuestos, certificaciones y facturas de obra concentran unas 28 horas semanales de trabajo repetitivo que un agente podría asumir.",
-  source: "analysis",
-};
 
 const scanSteps = ["Leyendo tu web", "Identificando a qué te dedicas", "Buscando tareas repetitivas por área", "Diseñando las automatizaciones", "Preparando tu mapa"];
 
@@ -121,6 +115,7 @@ const AutomationScan = () => {
     setSent(false);
     setEmail("");
     setPhase("scanning");
+    track("analyze_start", { domain: domainFromUrl(clean) });
     const started = Date.now();
     let analysis: ScanResult;
     try {
@@ -135,6 +130,7 @@ const AutomationScan = () => {
     if (elapsed < minimum) await new Promise((r) => window.setTimeout(r, minimum - elapsed));
     setResult(analysis);
     setPhase("result");
+    track("analyze_result", { domain: domainFromUrl(clean), source: analysis.source, sector: analysis.sectorId });
   };
 
   const handleLead = async (e: React.FormEvent) => {
@@ -146,7 +142,8 @@ const AutomationScan = () => {
     }
     setEmailError(null);
     setSending(true);
-    const payload = { email: parsed.data, url: url.trim(), sector: result?.sector, analysis: result };
+    const payload = { email: parsed.data, url: url.trim(), sector: result?.sector, analysis: result, utm: utmParams() };
+    track("lead_submit", { domain: domainFromUrl(url), source: result?.source });
     try {
       const response = await fetch(LEAD_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!response.ok) throw new Error(`lead ${response.status}`);
@@ -167,7 +164,7 @@ const AutomationScan = () => {
     <section id="analiza-tu-empresa" className="py-16 md:py-20 px-4 md:px-8 bg-background relative overflow-hidden scroll-mt-20">
       <div className="absolute top-0 left-0 w-full h-px bg-border" />
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 lg:gap-10 items-end mb-6">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 lg:gap-10 items-end">
           <div>
             <p className="text-xs font-medium text-primary uppercase tracking-wide mb-2">Pruébalo con tu empresa</p>
             <h2 className="text-3xl md:text-4xl font-light text-foreground leading-tight mb-3" style={{ textWrap: "balance" }}>
@@ -208,8 +205,6 @@ const AutomationScan = () => {
         </div>
 
         <div ref={resultRef} className="scroll-mt-24">
-          {phase === "idle" && <ScanResultCard result={sampleResult} url="voltia-instalaciones.es" sample />}
-
           {phase === "scanning" && (
             <div className="rounded-2xl border border-white/10 bg-[#0D0E11] text-white p-6 md:p-8 min-h-[280px] grid md:grid-cols-2 gap-8 items-center">
               <div className="flex items-center gap-4">

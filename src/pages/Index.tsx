@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import AutomationFlows from "@/components/AutomationFlows";
 import AutomationScan from "@/components/AutomationScan";
+import Sectors from "@/components/Sectors";
 import Workflow from "@/components/Workflow";
 import Testimonials from "@/components/Testimonials";
 import ClientLogos from "@/components/ClientLogos";
@@ -23,14 +24,17 @@ const Index = () => {
         <Header onContactClick={openContactForm} />
         <main>
           <Hero onContactClick={openContactForm} />
-          <section aria-label="Flujos de automatización con IA por área">
+          <section aria-label="Sistemas de herramientas y automatizaciones con IA">
             <AutomationFlows />
           </section>
           <section aria-label="Analiza qué automatizar en tu empresa">
             <AutomationScan />
           </section>
-          <section aria-label="Servicios de automatización e IA">
+          <section aria-label="Líneas de servicio">
             <Services onContactClick={openContactForm} />
+          </section>
+          <section aria-label="Sectores">
+            <Sectors />
           </section>
           <section aria-label="Proceso de trabajo">
             <Workflow />

@@ -3,7 +3,7 @@ export type NodeKind = "trigger" | "agent" | "tool" | "human" | "output";
 export type IconName =
   | "mail" | "whatsapp" | "bot" | "book" | "users" | "user" | "send" | "file"
   | "receipt" | "calculator" | "alert" | "check" | "calendar" | "clipboard"
-  | "image" | "megaphone" | "clock" | "chart" | "package" | "timer" | "tag";
+  | "image" | "megaphone" | "clock" | "chart" | "package" | "timer" | "tag" | "database" | "gauge";
 
 export interface FlowNode {
   id: string;
@@ -216,6 +216,37 @@ export const automationFlows: AreaFlow[] = [
       "Stock: 2 referencias por debajo del mínimo · pedido sugerido",
       "Atención al cliente: 41 consultas · respuesta media 52 s",
       "Informe enviado a dirección · 07:04",
+    ],
+  },,
+  {
+    id: "datos",
+    area: "Datos y analítica",
+    title: "Todos tus datos en un cuadro de mando que responde",
+    hook: "Ventas, costes, stock y web unidos en un solo sitio que se actualiza solo. Y un agente al que dirección pregunta en lenguaje normal y contesta con datos, no con opiniones.",
+    metric: { value: "0 h", label: "preparando informes a mano" },
+    nodes: [
+      { id: "in", kind: "trigger", label: "Datos nuevos cada noche", sub: "ERP · ventas · web · hojas", icon: "database", x: T, y: 152 },
+      { id: "agent", kind: "agent", label: "Agente de datos", sub: "limpia, cruza y compara", icon: "bot", x: A, y: 144 },
+      { id: "kb", kind: "tool", label: "Almacén de datos", sub: "todas las fuentes unidas", icon: "database", x: K, y: 40 },
+      { id: "crm", kind: "tool", label: "Cuadro de mando", sub: "Power BI · Looker · a medida", icon: "gauge", x: K, y: 152 },
+      { id: "human", kind: "human", label: "Pregunta de dirección", sub: "«¿por qué bajó el margen?»", icon: "user", x: K, y: 264 },
+      { id: "out", kind: "output", label: "Respuesta con gráfico", sub: "y alertas cuando algo se desvía", icon: "chart", x: O, y: 152 },
+    ],
+    edges: [
+      { from: "in", to: "agent" },
+      { from: "agent", to: "kb" },
+      { from: "agent", to: "crm" },
+      { from: "agent", to: "human" },
+      { from: "kb", to: "out" },
+      { from: "crm", to: "out" },
+      { from: "human", to: "out" },
+    ],
+    log: [
+      "03:00 · 4 fuentes leídas: ERP, TPV, web y hoja de costes",
+      "Agente: 212 registros duplicados unidos · clientes normalizados",
+      "Cuadro de mando actualizado · margen, ventas y stock por familia",
+      "Gerencia (WhatsApp): «¿Por qué bajó el margen en marzo?» → transporte +18 % en la zona norte",
+      "Alerta: 3 referencias con rotación por debajo del mínimo",
     ],
   },
 ];

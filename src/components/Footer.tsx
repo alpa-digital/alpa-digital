@@ -1,8 +1,13 @@
+import { Link } from "react-router-dom";
 import alpaLogoWhite from "@/assets/alpa-logo-white.png";
+import { families, pillarOf, servicesOf } from "@/data/services";
+import { site } from "@/data/site";
+import { provinces } from "@/data/locations";
+import { sectors } from "@/data/sectors";
 
 const Footer = () => {
   return (
-    <footer className="py-16 px-8 bg-black text-white relative">
+    <footer className="py-14 px-5 md:px-8 bg-black text-white relative">
       <div className="max-w-7xl mx-auto">
         {/* Main content area */}
         <div className="flex flex-col md:flex-row items-start justify-between min-h-[120px] gap-8">
@@ -18,15 +23,52 @@ const Footer = () => {
           </div>
 
           {/* Right side - Contact email */}
-          <div className="flex-1 flex justify-end">
-            <div className="text-right">
-              <a 
-                href="mailto:info@alpa.digital" 
-                className="text-xl hover:opacity-80 transition-opacity"
-              >
-                info@alpa.digital
+          <div className="flex-1 flex md:justify-end">
+            <div className="md:text-right">
+              <a href={`mailto:${site.email}`} className="text-xl hover:opacity-80 transition-opacity">
+                {site.email}
               </a>
+              <p className="text-sm text-white/55 mt-2">
+                {site.address.street} · {site.address.postalCode} {site.address.locality} ({site.address.region})
+              </p>
             </div>
+          </div>
+        </div>
+
+        {/* Servicios, sectores y zonas */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8 pt-10 mt-10 border-t border-white/10 text-sm">
+          {(["sistemas", "consultoria"] as const).map((familyId) => {
+            const pillar = pillarOf(familyId);
+            return (
+              <div key={familyId}>
+                <Link to={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{families[familyId].short}</Link>
+                <ul className="space-y-1.5">
+                  {(pillar.offerings ?? []).map((o) => (
+                    <li key={o.name}>
+                      {o.slug ? <Link to={`/servicios/${o.slug}`} className="text-white/75 hover:text-white transition-colors">{o.name}</Link> : <span className="text-white/55">{o.name}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+          <div>
+            <Link to="/sectores" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Sectores</Link>
+            <ul className="space-y-1.5">
+              {sectors.slice(0, 6).map((s) => (
+                <li key={s.slug}><Link to={`/sectores/${s.slug}`} className="text-white/75 hover:text-white transition-colors">{s.short}</Link></li>
+              ))}
+              <li><Link to="/sectores" className="text-white/50 hover:text-white underline underline-offset-2">Los {sectors.length} sectores</Link></li>
+            </ul>
+          </div>
+          <div>
+            <Link to="/zonas" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Zonas</Link>
+            <ul className="space-y-1.5">
+              {provinces.filter((p) => p.tier === 1).map((p) => (
+                <li key={p.slug}><Link to={`/automatizacion-ia/${p.slug}`} className="text-white/75 hover:text-white transition-colors">{p.name} · presencial</Link></li>
+              ))}
+              <li><Link to="/zonas" className="text-white/50 hover:text-white underline underline-offset-2">Las 52 provincias, en remoto</Link></li>
+            </ul>
           </div>
         </div>
 
@@ -34,9 +76,9 @@ const Footer = () => {
         <div className="flex items-center justify-between pt-8 mt-8">
           {/* Cookie policy */}
           <div>
-            <a href="/politica-cookies" className="text-sm hover:opacity-80 transition-opacity">
+            <Link to="/politica-cookies" className="text-sm hover:opacity-80 transition-opacity">
               Política de Cookies
-            </a>
+            </Link>
           </div>
 
           {/* Social icons */}
