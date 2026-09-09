@@ -13,7 +13,7 @@ const Workflow = () => {
     {
       number: "02",
       title: "Elegimos por dónde empezar",
-      description: "No todo merece la pena automatizarse. Priorizamos por tiempo ahorrado, coste y riesgo, y te entregamos un plan claro con una primera automatización acotada, con precio y plazo cerrados."
+      description: "No todo merece la pena automatizarse. Priorizamos por tiempo ahorrado, coste y riesgo, y te entregamos un plan claro con una primera automatización acotada, con alcance y plazo cerrados."
     },
     {
       number: "03",

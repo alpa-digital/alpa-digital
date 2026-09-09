@@ -67,7 +67,7 @@ export function localFaqs(place: string, province: Province) {
           : `Sí. Trabajamos con pymes de toda España, ${place} incluido. La mayor parte del trabajo se hace en remoto con reuniones por videollamada y, cuando el proyecto lo pide, viajamos desde nuestra sede en Utrera (Sevilla).`,
     },
     { question: `¿Qué tipo de empresas ${place} automatizan con IA?`, answer: `En ${province.name} vemos sobre todo ${province.sectors.slice(0, 3).map((s) => s.toLowerCase()).join(", ")}: negocios con mucha atención al cliente, presupuestos, pedidos y documentación que se puede automatizar.` },
-    { question: "¿Cuánto cuesta y cuánto se tarda?", answer: "El diagnóstico cuesta 490 € y dura una o dos semanas. Cada automatización parte de 1.500 € con alcance, precio y plazo cerrados, normalmente entre dos y seis semanas. El acompañamiento mensual son 350 € sin permanencia." },
+    { question: "¿Cuánto se tarda?", answer: "El diagnóstico dura una o dos semanas. Cada automatización se entrega normalmente entre dos y seis semanas, con alcance y plazo cerrados antes de empezar. El acompañamiento es mensual y sin permanencia." },
     { question: "¿Necesito cambiar mis programas?", answer: "No. Conectamos la automatización a lo que ya usas: correo, WhatsApp, tu CRM, tu programa de facturación o tu ERP." },
   ];
 }
@@ -85,7 +85,7 @@ function localSeo(province: Province, municipality?: string): RouteSeo {
   return {
     path,
     title: `Automatización con IA para pymes ${placeIn} | Alpa Digital`,
-    description: `Automatización, agentes de IA y software a medida para pymes ${placeIn} (${province.community}). ${province.sectors.slice(0, 3).join(", ")}. Diagnóstico por 490 € y automatizaciones desde 1.500 € con precio cerrado.`,
+    description: `Automatización, agentes de IA y software a medida para pymes ${placeIn} (${province.community}). ${province.sectors.slice(0, 3).join(", ")}. Diagnóstico, automatizaciones y sistemas de IA con alcance y plazo cerrados.`,
     canonical: `${site.url}${path}`,
     priority: municipality ? 0.6 : 0.7,
     jsonLd: [
@@ -155,7 +155,7 @@ const staticRoutes: RouteSeo[] = [
   {
     path: "/",
     title: "Alpa Digital - Automatización con IA y consultoría para pymes",
-    description: "Automatizamos con inteligencia artificial las tareas repetitivas de tu pyme: atención al cliente, presupuestos, facturación y seguimiento comercial. Diagnóstico, implementación y acompañamiento con presupuesto cerrado.",
+    description: "Automatizamos con inteligencia artificial las tareas repetitivas de tu pyme: atención al cliente, presupuestos, facturación y seguimiento comercial. Diagnóstico, implementación y acompañamiento, con alcance y plazo cerrados.",
     canonical: site.url,
     priority: 1,
     jsonLd: [organizationJsonLd],
@@ -163,7 +163,7 @@ const staticRoutes: RouteSeo[] = [
   {
     path: "/servicios",
     title: "Servicios: sistemas de IA y consultoría de IA para pymes | Alpa Digital",
-    description: "Dos líneas de servicio: construimos sistemas de herramientas y automatizaciones con IA (automatizaciones, agentes, apps corporativas, IA corporativa) y hacemos consultoría de IA (diagnóstico, I+D, diseño de producto, roadmap). Precio cerrado.",
+    description: "Dos líneas de servicio: construimos sistemas de herramientas y automatizaciones con IA (automatizaciones, agentes, apps corporativas, IA corporativa) y hacemos consultoría de IA (diagnóstico, I+D, diseño de producto, roadmap).",
     canonical: `${site.url}/servicios`,
     priority: 0.8,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }])],

@@ -62,7 +62,7 @@ const SectorPage = () => {
               <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Qué automatizamos {sector.forName}</h2>
-                  <p className="text-muted-foreground max-w-2xl">Cada automatización se contrata suelta, con precio cerrado desde 1.500 €, y comparte base con las demás para crecer hasta el sistema completo.</p>
+                  <p className="text-muted-foreground max-w-2xl">Cada automatización se contrata suelta, con alcance y plazo cerrados, y comparte base con las demás para crecer hasta el sistema completo.</p>
                 </div>
                 <p className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary"><Clock className="w-4 h-4" /> ≈ {totalHours} h/semana en total</p>
               </div>
@@ -86,7 +86,7 @@ const SectorPage = () => {
               <div>
                 <p className="text-xs font-medium text-blue-300 uppercase tracking-wide mb-2">La escala de empresa</p>
                 <h2 className="text-2xl md:text-3xl font-light mb-4" style={{ textWrap: "balance" }}>Así sería el sistema completo {sector.forName.replace(/^para /, "de ")}</h2>
-                <p className="text-white/60 leading-relaxed mb-5">Las mismas automatizaciones, conectadas entre sí y con un agente central al que el equipo habla por WhatsApp o por voz. Datos compartidos, permisos y supervisión. Se construye por fases, con precio cerrado en cada una.</p>
+                <p className="text-white/60 leading-relaxed mb-5">Las mismas automatizaciones, conectadas entre sí y con un agente central al que el equipo habla por WhatsApp o por voz. Datos compartidos, permisos y supervisión. Se construye por fases, con alcance y plazo cerrados en cada una.</p>
                 <Link to={servicePath(sistemas)} className="inline-flex items-center gap-2 text-blue-300 hover:text-white">Ver sistemas de IA <ArrowRight className="w-4 h-4" /></Link>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#0D0E11] p-5 md:p-6">
@@ -113,8 +113,8 @@ const SectorPage = () => {
                 <ul className="space-y-3">
                   {[
                     { t: "Analiza tu web gratis", d: "En 30 segundos, un primer mapa de las áreas con más trabajo repetitivo." },
-                    { t: "Diagnóstico (490 €)", d: "Una o dos semanas con las personas que hacen el trabajo. Plan priorizado con estimación cerrada." },
-                    { t: "Primera automatización", d: "La que más horas ahorra, en dos a seis semanas, con precio cerrado y un mes de soporte." },
+                    { t: "Diagnóstico", d: "Una o dos semanas con las personas que hacen el trabajo. Plan priorizado con estimación cerrada." },
+                    { t: "Primera automatización", d: "La que más horas ahorra, en dos a seis semanas, con alcance y plazo cerrados y un mes de soporte." },
                   ].map((s) => (
                     <li key={s.t} className="flex items-start gap-3"><Check className="w-4 h-4 text-primary mt-1 flex-shrink-0" /><span><span className="font-medium text-foreground">{s.t}</span><span className="text-muted-foreground"> · {s.d}</span></span></li>
                   ))}

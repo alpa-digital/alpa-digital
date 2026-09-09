@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Clock, ShieldCheck, Euro } from "lucide-react";
+import { Clock, ShieldCheck, ClipboardCheck } from "lucide-react";
 
 interface HeroProps {
   onContactClick: () => void;
@@ -32,7 +32,7 @@ const Hero = ({ onContactClick }: HeroProps) => {
               Tu pyme trabajando mientras tú te ocupas del negocio
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-3xl animate-fade-in" style={{ animationDelay: '0.4s', lineHeight: '1.8' }}>
-              Construimos los sistemas de IA que tu pyme necesita, desde una automatización que quita una tarea hasta apps corporativas y agentes interconectados, y te ayudamos a decidir con criterio qué construir y en qué orden. Precio cerrado, sin proyectos eternos ni tecnología que nadie entiende.
+              Construimos los sistemas de IA que tu pyme necesita, desde una automatización que quita una tarea hasta apps corporativas y agentes interconectados, y te ayudamos a decidir con criterio qué construir y en qué orden. Sin proyectos eternos ni tecnología que nadie entiende.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mt-10 animate-fade-in" style={{ animationDelay: '0.6s' }}>
@@ -52,7 +52,7 @@ const Hero = ({ onContactClick }: HeroProps) => {
 
             <ul className="flex flex-wrap gap-x-8 gap-y-3 mt-10 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.8s' }}>
               <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> Primera automatización en semanas, no meses</li>
-              <li className="flex items-center gap-2"><Euro className="w-4 h-4 text-primary" /> Presupuesto cerrado antes de empezar</li>
+              <li className="flex items-center gap-2"><ClipboardCheck className="w-4 h-4 text-primary" /> Alcance y plazo cerrados antes de empezar</li>
               <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> Tus datos se quedan en tus herramientas</li>
             </ul>
           </div>
