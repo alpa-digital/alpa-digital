@@ -12,6 +12,8 @@ export interface Client {
   mono?: string;
   /** Ajuste de tamaño para logos con mucho margen interno. */
   scale?: number;
+  /** Solo para archivos monocromos blancos: color de marca con el que se tiñen. */
+  tint?: string;
 }
 
 export const clients: Client[] = [
@@ -25,6 +27,6 @@ export const clients: Client[] = [
   { slug: "goodyear", name: "Goodyear", mono: "GoodyearLogo", scale: 1.5 },
   { slug: "logista", name: "Logista", mono: "LogistaLogo" },
   { slug: "peralada", name: "Grup Peralada", mono: "PeraladalLogo" },
-  { slug: "telefonica", name: "Telefónica Tech", mono: "TelefonicaLogo" },
+  { slug: "telefonica", name: "Telefónica Tech", mono: "TelefonicaLogo", tint: "#0066FF" },
   { slug: "vectalia", name: "Vectalia", mono: "VectaliaLogo" },
 ];

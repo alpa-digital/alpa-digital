@@ -14,6 +14,11 @@ function findAsset(map: Record<string, string>, base: string): string | undefine
 const Logo = ({ client }: { client: Client }) => {
   const src = findAsset(slugLogos, client.slug) ?? (client.mono ? findAsset(legacyLogos, client.mono) : undefined);
   if (!src) return <span className="text-lg md:text-xl font-semibold tracking-tight text-foreground/75">{client.name}</span>;
+  if (client.tint) {
+    // Archivo blanco sobre transparente: se usa como máscara y se pinta con el color de marca.
+    const mask = `url(${src}) center / contain no-repeat`;
+    return <span role="img" aria-label={`Logo de ${client.name}`} className="block w-[78%] h-[62%]" style={{ WebkitMask: mask, mask, backgroundColor: client.tint }} />;
+  }
   return (
     <img
       src={src}
