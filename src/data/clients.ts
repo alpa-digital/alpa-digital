@@ -1,16 +1,14 @@
 /**
  * Empresas que han confiado en Alpa Digital.
  *
- * Logos a color: colocar el archivo en `src/assets/logos/<slug>.(svg|png|webp)`.
- * Si no existe, el componente usa la versión monocroma (`src/assets/<Nombre>Logo.png`)
- * teñida con `tint`, y si tampoco existe, muestra el nombre en texto.
+ * Logos: `src/assets/logos/<slug>.(svg|png|webp|jpg)` o, si no existe, el archivo
+ * heredado `src/assets/<mono>.png`. Se muestran sin filtros, con su color real.
+ * Si no hay ningún archivo, aparece el nombre en texto.
  */
 export interface Client {
   slug: string;
   name: string;
-  /** Color oficial de marca para la versión monocroma, si se conoce con certeza. */
-  tint?: string;
-  /** Archivo monocromo blanco heredado, en src/assets. */
+  /** Nombre base del archivo heredado en src/assets (sin extensión). */
   mono?: string;
   /** Ajuste de tamaño para logos con mucho margen interno. */
   scale?: number;
@@ -22,11 +20,11 @@ export const clients: Client[] = [
   { slug: "cepsa", name: "Cepsa", mono: "CepsalLogo" },
   { slug: "cirsa", name: "Cirsa", mono: "CirsaLogo" },
   { slug: "deoleo", name: "Deoleo", mono: "DeoleoLogo" },
-  { slug: "esteve", name: "Esteve" },
-  { slug: "fluidra", name: "Fluidra" },
+  { slug: "esteve", name: "Esteve", mono: "EsteveLogo" },
+  { slug: "fluidra", name: "Fluidra", mono: "FluidraLogo" },
   { slug: "goodyear", name: "Goodyear", mono: "GoodyearLogo", scale: 1.5 },
   { slug: "logista", name: "Logista", mono: "LogistaLogo" },
   { slug: "peralada", name: "Grup Peralada", mono: "PeraladalLogo" },
-  { slug: "telefonica", name: "Telefónica Tech", mono: "TelefonicaLogo", tint: "#0066FF" },
+  { slug: "telefonica", name: "Telefónica Tech", mono: "TelefonicaLogo" },
   { slug: "vectalia", name: "Vectalia", mono: "VectaliaLogo" },
 ];

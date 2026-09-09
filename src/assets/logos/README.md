@@ -19,4 +19,6 @@ Coloca aquí el logo oficial a color de cada empresa con el nombre exacto de su 
 | Vectalia         | `vectalia.svg`     |
 
 Recomendaciones: fondo transparente, versión horizontal, sin márgenes grandes.
-Mientras falte el archivo, la web muestra la versión monocroma heredada o el nombre en texto.
+Alternativa: sustituir directamente `src/assets/<Nombre>Logo.png` (por ejemplo `CepsalLogo.png`,
+`FluidraLogo.png`, `EsteveLogo.png`). Los logos se muestran sin filtros ni tintes, con su color real.
+Si no hay ningún archivo, la web muestra el nombre en texto.
