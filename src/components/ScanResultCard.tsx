@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Lock, Mail, Calendar, CheckCircle2, Loader2, ArrowRight, Globe, Building2, Clock, Sparkles, AlertCircle } from "lucide-react";
-import { areaNames, domainFromUrl, type ScanArea, type ScanResult } from "@/lib/scanFallback";
+import { domainFromUrl, type ScanArea, type ScanResult } from "@/lib/scanFallback";
+import { useCopy } from "@/i18n";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 interface Props {
@@ -47,12 +48,14 @@ const CompanyMark = ({ domain, favicon, name, size }: { domain: string; favicon?
 };
 
 /** Versión móvil del mapa: rejilla de áreas con su anillo de puntuación. */
-const AreaGrid = ({ ordered }: { ordered: ScanArea[] }) => (
+const AreaGrid = ({ ordered }: { ordered: ScanArea[] }) => {
+  const c = useCopy();
+  return (
   <div className="grid grid-cols-3 gap-2 px-4 pb-4">
     {ordered.map((area, i) => {
       const top = i < 2;
       const r = 18;
-      const c = 2 * Math.PI * r;
+      const circumference = 2 * Math.PI * r;
       return (
         <div
           key={area.id}
@@ -65,8 +68,8 @@ const AreaGrid = ({ ordered }: { ordered: ScanArea[] }) => (
               <circle cx="24" cy="24" r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
               <circle
                 cx="24" cy="24" r={r} fill="none" stroke={top ? "#60A5FA" : "rgba(255,255,255,0.35)"} strokeWidth="4" strokeLinecap="round"
-                strokeDasharray={c} strokeDashoffset={c - (area.score / 100) * c} transform="rotate(-90 24 24)"
-                className="ring-fill" style={{ ["--ring-c" as string]: c, ["--ring-off" as string]: c - (area.score / 100) * c, animationDelay: `${0.2 + i * 0.12}s` }}
+                strokeDasharray={circumference} strokeDashoffset={circumference - (area.score / 100) * circumference} transform="rotate(-90 24 24)"
+                className="ring-fill" style={{ ["--ring-c" as string]: circumference, ["--ring-off" as string]: circumference - (area.score / 100) * circumference, animationDelay: `${0.2 + i * 0.12}s` }}
               />
               <text x="24" y="28" fontSize="12" fontWeight="700" fill={top ? "#FFFFFF" : "rgba(255,255,255,0.75)"} textAnchor="middle">{area.score}</text>
             </svg>
@@ -76,15 +79,17 @@ const AreaGrid = ({ ordered }: { ordered: ScanArea[] }) => (
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#0D0E11] border border-white/20 flex items-center justify-center"><Lock className="w-2.5 h-2.5 text-white/60" /></span>
             )}
           </div>
-          <p className={`text-[11px] font-semibold leading-tight mt-1.5 ${top ? "text-white" : "text-white/60"}`}>{areaNames[area.id]}</p>
-          <p className={`text-[10px] mt-0.5 ${top ? "text-blue-300" : "text-white/40"}`}>{top ? `≈ ${area.hoursPerWeek} h/sem` : `${i + 1}ª prioridad`}</p>
+          <p className={`text-[11px] font-semibold leading-tight mt-1.5 ${top ? "text-white" : "text-white/60"}`}>{c.result.areas[area.id]}</p>
+          <p className={`text-[10px] mt-0.5 ${top ? "text-blue-300" : "text-white/40"}`}>{top ? `≈ ${area.hoursPerWeek} ${c.result.perWeekShort}` : `${i + 1}${c.result.priority}`}</p>
         </div>
       );
     })}
   </div>
-);
+  );
+};
 
 const ScanResultCard = ({ result, url, sample = false, email = "", emailError, sending, sent, onEmailChange, onSubmitLead }: Props) => {
+  const c = useCopy();
   const isWide = useMediaQuery("(min-width: 640px)");
   const domain = domainFromUrl(url);
   const ordered = [...result.areas].sort((a, b) => b.score - a.score);
@@ -117,7 +122,7 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
               </span>
               <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] ${isEstimate ? "border-amber-300/40 bg-amber-400/10 text-amber-200" : "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"}`}>
                 {isEstimate ? <AlertCircle className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
-                {isEstimate ? "Estimación por sector" : "Leído de tu web"}
+                {isEstimate ? c.result.fromSector : c.result.fromWeb}
               </span>
             </div>
             {isEstimate && result.note && <p className="text-[11px] text-amber-200/80 mt-2 leading-snug">{result.note}</p>}
@@ -187,9 +192,9 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
                         <Lock x="-4.5" y="-4.5" width="9" height="9" stroke="rgba(255,255,255,0.6)" strokeWidth={2} />
                       </g>
                     )}
-                    <text y={labelY} fontSize="11" fontWeight="600" fill={top ? "#FFFFFF" : "rgba(255,255,255,0.6)"} textAnchor="middle">{areaNames[area.id]}</text>
+                    <text y={labelY} fontSize="11" fontWeight="600" fill={top ? "#FFFFFF" : "rgba(255,255,255,0.6)"} textAnchor="middle">{c.result.areas[area.id]}</text>
                     <text y={labelY + 13} fontSize="9.5" fill={top ? "#93C5FD" : "rgba(255,255,255,0.4)"} textAnchor="middle">
-                      {top ? `≈ ${area.hoursPerWeek} h/semana` : `${i + 1}ª prioridad`}
+                      {top ? `≈ ${area.hoursPerWeek} ${c.result.perWeekLong}` : `${i + 1}${c.result.priority}`}
                     </text>
                   </g>
                 </g>
@@ -204,9 +209,9 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
         <div className="flex flex-col">
           <div className="grid grid-cols-3 border-b border-white/10">
             {[
-              { value: `${totalHours} h`, label: "a la semana automatizables", Icon: Clock },
-              { value: String(revealed.length), label: "prioritarias", Icon: Sparkles },
-              { value: String(ordered.length), label: "áreas analizadas", Icon: Building2 },
+              { value: `${totalHours} h`, label: c.result.statHours, Icon: Clock },
+              { value: String(revealed.length), label: c.result.statTop, Icon: Sparkles },
+              { value: String(ordered.length), label: c.result.statAreas, Icon: Building2 },
             ].map(({ value, label, Icon }, i) => (
               <div key={label} className={`px-4 py-3 ${i > 0 ? "border-l border-white/10" : ""}`}>
                 <p className="text-xl md:text-2xl font-semibold tracking-tight leading-none" style={{ fontVariantNumeric: "tabular-nums" }}>{value}</p>
@@ -217,16 +222,16 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
 
           <div className="px-5 py-4 border-b border-white/10">
             <p className="text-[13px] text-white/65 leading-snug mb-3">{result.summary}</p>
-            <p className="text-[10px] uppercase tracking-wide text-white/40 mb-2">Por dónde empezaríamos</p>
+            <p className="text-[10px] uppercase tracking-wide text-white/40 mb-2">{c.result.whereToStart}</p>
             <div className="space-y-2">
               {revealed.map((area, i) => (
                 <article key={area.id} className="rounded-lg border border-blue-400/30 bg-blue-500/10 px-3.5 py-2.5">
                   <div className="flex items-center justify-between gap-3">
                     <span className="inline-flex items-center gap-2 text-[11px] font-medium text-blue-200 min-w-0">
                       <span className="w-4 h-4 rounded-full bg-blue-600 text-white text-[9px] font-bold flex items-center justify-center flex-shrink-0">{i + 1}</span>
-                      <span className="truncate">{areaNames[area.id]}</span>
+                      <span className="truncate">{c.result.areas[area.id]}</span>
                     </span>
-                    <span className="text-[11px] text-white/50 flex-shrink-0" style={{ fontVariantNumeric: "tabular-nums" }}>≈ {area.hoursPerWeek} h/sem</span>
+                    <span className="text-[11px] text-white/50 flex-shrink-0" style={{ fontVariantNumeric: "tabular-nums" }}>≈ {area.hoursPerWeek} {c.result.perWeekShort}</span>
                   </div>
                   <h4 className="text-sm font-medium mt-1 leading-snug">{area.title}</h4>
                   <p className="text-xs text-white/55 leading-snug mt-0.5 line-clamp-2">{area.description}</p>
@@ -239,26 +244,26 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
             <div className="flex flex-wrap gap-1.5 mb-3">
               {locked.map((area) => (
                 <span key={area.id} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.03] text-white/55 px-2 py-0.5 text-[11px]">
-                  <Lock className="w-3 h-3" /> {areaNames[area.id]}
+                  <Lock className="w-3 h-3" /> {c.result.areas[area.id]}
                 </span>
               ))}
             </div>
-            <p className="text-sm font-medium leading-snug">{locked.length} automatizaciones más en el informe completo, con orden recomendado y estimación de coste.</p>
+            <p className="text-sm font-medium leading-snug">{locked.length} {locked.length === 1 ? c.result.lockedOne : c.result.lockedMany}</p>
             {sample ? (
-              <p className="text-xs text-white/50 mt-2">Escribe tu web para ver el tuyo.</p>
+              <p className="text-xs text-white/50 mt-2">{c.result.sampleHint}</p>
             ) : sent ? (
-              <p className="inline-flex items-center gap-2 text-sm text-emerald-300 mt-3"><CheckCircle2 className="w-4 h-4" /> Solicitud enviada. Revisa tu correo.</p>
+              <p className="inline-flex items-center gap-2 text-sm text-emerald-300 mt-3"><CheckCircle2 className="w-4 h-4" /> {c.result.sent}</p>
             ) : (
               <form onSubmit={onSubmitLead} className="mt-3">
                 <div className="flex gap-2">
                   <div className="relative flex-1 min-w-0">
                     <Mail className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input type="email" value={email} onChange={(e) => onEmailChange?.(e.target.value)} placeholder="tu@empresa.es" aria-label="Email para recibir el informe"
+                    <input type="email" value={email} onChange={(e) => onEmailChange?.(e.target.value)} placeholder={c.result.emailPlaceholder} aria-label={c.result.emailLabel}
                       className={`w-full rounded-full border bg-black/40 text-white placeholder:text-white/35 pl-9 pr-3 py-2 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25 ${emailError ? "border-red-400" : "border-white/15"}`} />
                   </div>
                   <button type="submit" disabled={sending} className="inline-flex items-center gap-1.5 bg-primary text-white rounded-full px-4 py-2 text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-70 flex-shrink-0">
                     {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-                    Recibir informe
+                    {c.result.emailButton}
                   </button>
                 </div>
                 {emailError && <p className="text-xs text-red-300 mt-1.5">{emailError}</p>}
@@ -266,7 +271,7 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
             )}
             {!sample && (
               <a href="https://cal.com/alpa-digital-studio/30min?user=alpa-digital-studio&overlayCalendar=true" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-blue-300 mt-3 hover:underline">
-                <Calendar className="w-3.5 h-3.5" /> O coméntalo con nosotros en 30 minutos
+                <Calendar className="w-3.5 h-3.5" /> {c.result.callLink}
               </a>
             )}
           </div>

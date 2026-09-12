@@ -1,46 +1,15 @@
 import { useState, useEffect, useRef } from "react";
+import { useCopy } from "@/i18n";
 
 const FAQ = () => {
+  const c = useCopy();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [visibleItems, setVisibleItems] = useState<boolean[]>([]);
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const headerRef = useRef<HTMLDivElement>(null);
 
-  const faqs = [
-    {
-      question: "¿Esto es para una empresa de mi tamaño?",
-      answer: "Sí. Trabajamos con pymes de entre 5 y 100 personas: despachos, clínicas, distribuidores, talleres, inmobiliarias, comercios y empresas de servicios. No hace falta departamento de informática ni grandes inversiones. Empezamos por un solo proceso y crecemos según los resultados."
-    },
-    {
-      question: "¿Qué tareas se pueden automatizar con IA?",
-      answer: "Las que se repiten, siguen reglas parecidas y consumen tiempo: responder consultas frecuentes, preparar presupuestos, leer y registrar facturas, hacer seguimiento a clientes, cribar candidaturas, redactar contenido o preparar informes. En el diagnóstico te decimos cuáles tienen sentido en tu caso y cuáles no."
-    },
-    {
-      question: "¿Tengo que cambiar mis programas actuales?",
-      answer: "No. Conectamos la automatización a las herramientas que ya usas: correo, WhatsApp, Google Workspace o Microsoft 365, tu CRM, tu programa de facturación o tu ERP. Solo recomendamos cambiar de herramienta cuando la actual es el problema, y eso te lo diremos con claridad."
-    },
-    {
-      question: "¿Qué pasa con mis datos y los de mis clientes?",
-      answer: "Tus datos siguen en tus sistemas. Elegimos proveedores de IA con garantías de privacidad, no usamos tu información para entrenar modelos y dejamos por escrito qué datos se procesan y dónde. Si tu sector tiene requisitos especiales, adaptamos la solución a ellos."
-    },
-    {
-      question: "¿Y si la IA se equivoca?",
-      answer: "Se equivoca, como cualquier persona nueva en un puesto. Por eso diseñamos cada automatización con puntos de revisión: la IA prepara, una persona aprueba lo importante. Con el tiempo, cuando la fiabilidad está demostrada, se puede dar más autonomía."
-    },
-    {
-      question: "¿Cuánto se tarda?",
-      answer: "El diagnóstico dura una o dos semanas. Cada automatización se entrega normalmente entre dos y seis semanas, con alcance y plazo cerrados antes de empezar. El acompañamiento es mensual y sin permanencia. Nunca trabajamos por horas abiertas."
-    },
-    {
-      question: "¿Dónde estáis?",
-      answer: "Nuestra sede está en Utrera (Sevilla). Trabajamos presencialmente con empresas de Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, y en remoto con pymes de toda España: la primera llamada es por videollamada y la mayor parte del trabajo no necesita desplazamientos."
-    },
-    {
-      question: "¿Qué pasa cuando la automatización está en marcha?",
-      answer: "Formamos a tu equipo, dejamos documentado cómo funciona y te acompañamos el primer mes. Después puedes gestionarla tú, contar con nosotros mes a mes o llamarnos cuando algo cambie en tu negocio."
-    }
-  ];
+  const faqs = c.faq.items.map((item) => ({ question: item.q, answer: item.a }));
 
   useEffect(() => {
     // Observer para el header
@@ -110,10 +79,10 @@ const FAQ = () => {
           }`}
         >
           <h2 className="text-5xl font-light text-foreground mb-6">
-            Preguntas frecuentes
+            {c.faq.title}
           </h2>
           <p className="text-xl text-muted-foreground">
-            Lo que nos preguntan las pymes antes de empezar
+            {c.faq.subtitle}
           </p>
         </div>
 

@@ -1,39 +1,22 @@
 import { useEffect, useRef, useState } from "react";
+import { useCopy } from "@/i18n";
 
 const Testimonials = () => {
+  const c = useCopy();
   const [visibleCards, setVisibleCards] = useState<boolean[]>([]);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const testimonials = [
-    {
-      icon: "W",
-      iconBg: "bg-foreground",
-      iconColor: "text-background",
-      text: "Trabajar con Alpa ha sido una experiencia maravillosa. Desde el primer momento, supieron captar nuestra visión y la hicieron suya, trabajando con una dedicación y compromiso excepcionales. Son empáticos, siempre dispuestos a escuchar y, lo mejor de todo, son personas increíbles con las que trabajar.",
-      boldText: "Cumplieron cada plazo y nos hicieron sentir que nuestro proyecto también era el suyo.",
-      additionalText: "No consideraríamos hacer ningún desarrollo sin ellos. Sin duda, repetiríamos mil veces",
-      name: "Lucía Yturriaga",
-      company: "Womanhood"
-    },
-    {
-      icon: "×",
-      iconBg: "bg-green-500",
-      iconColor: "text-white",
-      text: "Encargamos un proyecto de UX complejo que requería un conjunto de habilidades difícil de encontrar. Es fácil encontrar diseñadores creativos, pero Adrián fue un paso más allá, realizando un trabajo de diseño UX realmente inteligente.",
-      boldText: "Cumplió con los tiempos y costos establecidos",
-      name: "Luca Bernardi",
-      company: "Crossover"
-    },
-    {
-      icon: "Z",
-      iconBg: "bg-blue-500",
-      iconColor: "text-white",
-      text: "Trabajar con Alpa Studio ha sido una gran experiencia. Su equipo entrega resultados impecables: rápidos, confiables y con una actitud siempre profesional y cercana.",
-      boldText: "Supieron entender nuestras necesidades desde el primer momento y ofrecieron soluciones eficientes y bien diseñadas en tiempo récord",
-      name: "Sebastian",
-      company: "Zandura"
-    }
+  const meta = [
+    { icon: "W", iconBg: "bg-foreground", iconColor: "text-background", name: "Lucía Yturriaga", company: "Womanhood" },
+    { icon: "×", iconBg: "bg-green-500", iconColor: "text-white", name: "Luca Bernardi", company: "Crossover" },
+    { icon: "Z", iconBg: "bg-blue-500", iconColor: "text-white", name: "Sebastian", company: "Zandura" },
   ];
+  const testimonials = meta.map((m, i) => ({
+    ...m,
+    text: c.testimonials.items[i].text,
+    boldText: c.testimonials.items[i].highlight,
+    additionalText: c.testimonials.items[i].closing || undefined,
+  }));
 
   useEffect(() => {
     const observers = cardRefs.current.map((ref, index) => {
@@ -74,7 +57,7 @@ const Testimonials = () => {
       <div className="absolute top-0 left-0 w-full h-px bg-border"></div>
       <div className="max-w-7xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-light text-foreground mb-16 animate-fade-in">
-          Lo que dicen quienes ya han trabajado con nosotros
+          {c.testimonials.title}
         </h2>
 
         <div className="grid md:grid-cols-3 gap-12">

@@ -154,7 +154,7 @@ const SectorPage = () => {
             </div>
           </section>
 
-          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano?`} text={`Cuéntanosla en una llamada de 30 minutos. Conocemos el sector y te diremos con franqueza si merece la pena automatizarla, cuánto costaría y cuánto tiempo ahorrarías.`} onContactClick={openContact} />
+          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano?`} text={`Cuéntanosla en una llamada de 30 minutos. Conocemos el sector y te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías.`} onContactClick={openContact} />
         </>
       )}
     </PageShell>

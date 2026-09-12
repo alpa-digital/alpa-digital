@@ -68,6 +68,8 @@ const areaIds = ["atencion", "ventas", "admin", "rrhh", "marketing", "direccion"
 
 const requestSchema = z.object({
   url: z.string().min(3).max(300),
+  /** Idioma de la respuesta. Por omisión, español. */
+  lang: z.enum(["es", "en"]).optional(),
 });
 
 const analysisSchema = z.object({
@@ -131,6 +133,12 @@ Reglas:
 - Sé concreto: "Presupuestos de reformas a partir de fotos" es mejor que "Optimizar el proceso comercial".
 - Las horas semanales deben ser realistas para una empresa de 5 a 50 personas.
 - Responde únicamente con el JSON pedido.`;
+
+/** Instrucción de idioma: el esquema pide los textos en español, así que en inglés hay que decirlo explícitamente. */
+const languageRule = (lang: "es" | "en") =>
+  lang === "en"
+    ? "\n- IMPORTANT: write every text field (sector, summary, title, description) in English, even though the schema descriptions are written in Spanish."
+    : "";
 
 function normalizeUrl(raw: string): URL | null {
   try {
@@ -246,13 +254,16 @@ interface MistralResponse {
   choices?: { message?: { content?: string | { type: string; text?: string }[] } }[];
 }
 
-async function askMistral(apiKey: string, hostname: string, siteText: string, structured: boolean, model: string, timeoutMs: number): Promise<Response> {
+async function askMistral(apiKey: string, hostname: string, siteText: string, structured: boolean, model: string, timeoutMs: number, lang: "es" | "en" = "es"): Promise<Response> {
   const userPrompt = `Web: ${hostname}\n\nTexto público de la web:\n"""\n${siteText}\n"""\n\nDevuelve el análisis de automatización para esta empresa.`;
   const responseFormat = structured
     ? { type: "json_schema", json_schema: { name: "automation_analysis", strict: true, schema: schemaForProvider(outputJsonSchema) } }
     : { type: "json_object" };
   const messages = [
-    { role: "system", content: structured ? systemPrompt : `${systemPrompt}\n\nEl JSON debe seguir este esquema:\n${JSON.stringify(outputJsonSchema)}` },
+    {
+      role: "system",
+      content: (structured ? systemPrompt : `${systemPrompt}\n\nEl JSON debe seguir este esquema:\n${JSON.stringify(outputJsonSchema)}`) + languageRule(lang),
+    },
     { role: "user", content: userPrompt },
   ];
   return fetch(MISTRAL_URL, {
@@ -325,7 +336,7 @@ export default async (req: Request, _context: Context) => {
         return undefined;
       }
       try {
-        return await askMistral(apiKey, url.hostname, site.text, step.structured, step.model, timeoutMs);
+        return await askMistral(apiKey, url.hostname, site.text, step.structured, step.model, timeoutMs, input.lang ?? "es");
       } catch (error) {
         if (error instanceof Error && error.name === "TimeoutError") {
           timedOut = true;

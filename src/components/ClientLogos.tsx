@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { clients, type Client } from "@/data/clients";
+import { useCopy } from "@/i18n";
 
 // Logos: primero src/assets/logos/<slug>.*, si no, el archivo heredado src/assets/<Nombre>Logo.png.
 // Se muestran tal cual, sin filtros ni tintes, para que se vea el color real.
@@ -34,6 +35,7 @@ const Logo = ({ client }: { client: Client }) => {
 
 const ClientLogos = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const c = useCopy();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,21 +46,18 @@ const ClientLogos = () => {
     return () => observer.disconnect();
   }, []);
 
-  const stats = [
-    { number: "25", symbol: "+", label: "Proyectos", sublabel: "Exitosos" },
-    { number: "5", symbol: "+", label: "Años de", sublabel: "Experiencia" },
-    { number: "12", symbol: "+", label: "Clientes", sublabel: "Satisfechos" },
-  ];
+  const numbers = ["25", "5", "12"];
+  const stats = c.clients.stats.map((stat, i) => ({ number: numbers[i], symbol: "+", ...stat }));
 
   return (
     <section ref={sectionRef} className="py-16 md:py-24 px-4 md:px-8 bg-background border-t border-border overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className={`text-center mb-10 md:mb-14 transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <h3 className="text-4xl md:text-5xl font-light text-foreground mb-4" style={{ textWrap: "balance" }}>Empresas que han confiado en nosotros</h3>
-          <p className="text-sm md:text-base text-muted-foreground/80">Grandes empresas y pymes con las que hemos trabajado en proyectos digitales</p>
+          <h3 className="text-4xl md:text-5xl font-light text-foreground mb-4" style={{ textWrap: "balance" }}>{c.clients.title}</h3>
+          <p className="text-sm md:text-base text-muted-foreground/80">{c.clients.subtitle}</p>
         </div>
 
-        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" aria-label="Clientes">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" aria-label={c.clients.title}>
           {clients.map((client, index) => (
             <li
               key={client.slug}
@@ -73,7 +72,7 @@ const ClientLogos = () => {
         </ul>
 
         <p className={`text-center mt-8 md:mt-10 text-xs md:text-sm text-muted-foreground/70 transition-all duration-1000 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`} style={{ transitionDelay: "0.9s" }}>
-          Experiencia con grandes empresas, ahora al servicio de las pymes
+          {c.clients.footnote}
         </p>
 
         <div className="mt-16 md:mt-20 bg-secondary/20 rounded-2xl p-8 md:p-12">
@@ -92,7 +91,7 @@ const ClientLogos = () => {
             </div>
             <div className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`} style={{ transitionDelay: "1.7s" }}>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Hemos trabajado en proyectos digitales para grandes compañías. Esa misma forma de trabajar, con alcance y plazos cerrados, es la que llevamos ahora a la automatización con IA en pymes.
+                {c.clients.closing}
               </p>
             </div>
           </div>

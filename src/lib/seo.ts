@@ -32,7 +32,7 @@ export const organizationJsonLd = {
     ...(site.address.street ? { streetAddress: site.address.street } : {}),
     addressLocality: site.address.locality,
     addressRegion: site.address.region,
-    postalCode: site.address.postalCode,
+    ...(site.address.postalCode ? { postalCode: site.address.postalCode } : {}),
     addressCountry: site.address.country,
   },
   ...(site.phone ? { telephone: site.phone } : {}),

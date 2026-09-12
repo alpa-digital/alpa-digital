@@ -15,6 +15,7 @@ import SectorsIndexPage from "@/components/pages/SectorsIndexPage";
 import CookieConsent from "@/components/CookieConsent";
 import { useRouteSeo } from "@/hooks/useRouteSeo";
 import { useAnalytics } from "@/lib/analytics";
+import { LanguageProvider } from "@/i18n";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const RouteEffects = () => {
 /** Árbol de la aplicación. El router lo aporta main.tsx (navegador) o entry-server.tsx (prerenderizado). */
 const App = () => (
   <QueryClientProvider client={queryClient}>
+   <LanguageProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -45,6 +47,7 @@ const App = () => (
       </Routes>
       <CookieConsent />
     </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 

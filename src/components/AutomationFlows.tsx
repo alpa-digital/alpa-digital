@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { automationFlows } from "@/data/automationFlows";
-import { agentSystems } from "@/data/agentSystems";
+import { useFlows, useSystems } from "@/i18n/content";
+import { useCopy } from "@/i18n";
 import FlowCanvas from "@/components/flows/FlowCanvas";
 import SystemCanvas from "@/components/flows/SystemCanvas";
 import { FlowStack, SystemStack } from "@/components/flows/MobileStacks";
@@ -23,12 +23,14 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
-const modes: { id: Mode; label: string }[] = [
-  { id: "automatizaciones", label: "Una automatización" },
-  { id: "sistemas", label: "Un sistema completo" },
-];
-
 const AutomationFlows = () => {
+  const c = useCopy();
+  const automationFlows = useFlows();
+  const agentSystems = useSystems();
+  const modes: { id: Mode; label: string }[] = [
+    { id: "automatizaciones", label: c.flows.modeFlow },
+    { id: "sistemas", label: c.flows.modeSystem },
+  ];
   const reducedMotion = usePrefersReducedMotion();
   const isWide = useMediaQuery("(min-width: 768px)");
   const [mode, setMode] = useState<Mode>("automatizaciones");
@@ -88,7 +90,7 @@ const AutomationFlows = () => {
 
   const metric = isFlows ? flow.metric : module.metric;
   const hook = isFlows ? flow.hook : module.description;
-  const chips = isFlows ? automationFlows.map((f) => f.area) : agentSystems.map((c) => c.sector);
+  const chips = isFlows ? automationFlows.map((f) => f.area) : agentSystems.map((system) => system.sector);
   const chipIndex = isFlows ? flowIndex : systemIndex;
   const pick = (i: number) => (isFlows ? select(i) : changeSystem(i));
 
@@ -102,10 +104,10 @@ const AutomationFlows = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-6">
           <div className="max-w-xl">
-            <p className="text-xs font-medium text-blue-300 uppercase tracking-wide mb-2">Lo que construimos</p>
-            <h2 className="text-3xl md:text-4xl font-light leading-tight" style={{ textWrap: "balance" }}>Míralo funcionar</h2>
+            <p className="text-xs font-medium text-blue-300 uppercase tracking-wide mb-2">{c.flows.eyebrow}</p>
+            <h2 className="text-3xl md:text-4xl font-light leading-tight" style={{ textWrap: "balance" }}>{c.flows.title}</h2>
           </div>
-          <div className="inline-flex self-start rounded-full border border-white/15 bg-white/[0.04] p-1" role="tablist" aria-label="Qué mostrar">
+          <div className="inline-flex self-start rounded-full border border-white/15 bg-white/[0.04] p-1" role="tablist" aria-label={c.flows.switchLabel}>
             {modes.map(({ id, label }) => {
               const active = mode === id;
               return (
@@ -123,7 +125,7 @@ const AutomationFlows = () => {
           </div>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap mb-4" role="tablist" aria-label={isFlows ? "Área de la empresa" : "Empresa de ejemplo"}>
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap mb-4" role="tablist" aria-label={isFlows ? c.flows.areaLabel : c.flows.companyLabel}>
           {chips.map((label, i) => {
             const active = i === chipIndex;
             return (
@@ -151,7 +153,7 @@ const AutomationFlows = () => {
             </div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 px-2.5 py-1 text-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" style={animate ? { animation: "flow-pulse 1.2s ease-in-out infinite" } : undefined} />
-              En marcha
+              {c.flows.running}
             </span>
           </div>
 
@@ -175,7 +177,7 @@ const AutomationFlows = () => {
         </div>
 
         <a href="#servicios" className="mt-6 inline-flex items-center gap-1.5 text-sm text-blue-300 hover:text-white">
-          Cómo lo hacemos <ArrowRight className="w-4 h-4" />
+          {c.flows.more} <ArrowRight className="w-4 h-4" />
         </a>
       </div>
     </section>
