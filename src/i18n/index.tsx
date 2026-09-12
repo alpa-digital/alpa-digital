@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import { es, type Copy } from "./es";
 import { en } from "./en";
 
@@ -6,6 +7,13 @@ export type Lang = "es" | "en";
 
 const STORAGE_KEY = "alpa-lang";
 const dictionaries: Record<Lang, Copy> = { es, en };
+
+/**
+ * Rutas cuyo contenido existe en los dos idiomas. El resto (sectores, zonas y
+ * páginas de servicio) sigue siendo español: ahí se traduce la interfaz, pero el
+ * atributo `lang` del documento debe seguir diciendo español.
+ */
+const translatedRoutes = new Set(["/"]);
 
 interface LanguageValue {
   lang: Lang;
@@ -32,9 +40,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  const { pathname } = useLocation();
   useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
+    document.documentElement.lang = lang === "en" && translatedRoutes.has(pathname) ? "en" : "es";
+  }, [lang, pathname]);
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);
