@@ -1,36 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import { useCopy } from "@/i18n";
 
 const Workflow = () => {
+  const c = useCopy();
   const [visibleSteps, setVisibleSteps] = useState<boolean[]>([]);
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const steps = [
-    {
-      number: "01",
-      title: "Entendemos cómo trabajas hoy",
-      description: "Nos sentamos con las personas que hacen el trabajo, no solo con dirección. Vemos qué tareas se repiten, cuánto tiempo cuestan, qué herramientas usáis y dónde se atasca la información. Sin cambiar nada todavía."
-    },
-    {
-      number: "02",
-      title: "Elegimos por dónde empezar",
-      description: "No todo merece la pena automatizarse. Priorizamos por tiempo ahorrado, coste y riesgo, y te entregamos un plan claro con una primera automatización acotada, con alcance y plazo cerrados."
-    },
-    {
-      number: "03",
-      title: "Construimos la automatización",
-      description: "La montamos conectada a las herramientas que ya tienes (correo, WhatsApp, CRM, facturación, hojas de cálculo o tu ERP). Trabajamos con plataformas de automatización y modelos de IA de confianza, y la probamos con casos reales tuyos antes de activarla."
-    },
-    {
-      number: "04",
-      title: "Formamos a tu equipo",
-      description: "Una automatización que nadie entiende termina apagada. Explicamos a tu equipo qué hace, qué revisar y qué hacer cuando la IA no está segura, para que la use con confianza desde el primer día."
-    },
-    {
-      number: "05",
-      title: "Medimos y seguimos mejorando",
-      description: "Revisamos juntos el tiempo ahorrado y los errores evitados. Con esos datos decidimos la siguiente automatización o ajustamos la que ya funciona. Si quieres, seguimos acompañándote cada mes."
-    }
-  ];
+  const steps = c.workflow.steps.map((step, i) => ({
+    number: String(i + 1).padStart(2, "0"),
+    title: step.title,
+    description: step.text,
+  }));
 
   useEffect(() => {
     const observers = stepRefs.current.map((ref, index) => {
@@ -70,11 +50,10 @@ const Workflow = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <h2 className="text-5xl font-light text-foreground mb-6 animate-fade-in">
-            Nuestro proceso
+            {c.workflow.title}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            Un camino corto y predecible, pensado para empresas que no tienen
-            un departamento técnico ni tiempo que perder.
+            {c.workflow.subtitle}
           </p>
         </div>
 

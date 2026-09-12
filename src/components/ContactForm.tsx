@@ -8,6 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { track, utmParams } from "@/lib/analytics";
 import { site } from "@/data/site";
+import { useCopy } from "@/i18n";
+import type { Copy } from "@/i18n/es";
 
 // El embed de Cal.com solo existe en el navegador: se carga bajo demanda y nunca en el prerender.
 const CalEmbed = lazy(() => import("@calcom/embed-react"));
@@ -27,15 +29,16 @@ class CalBoundary extends Component<{ fallback: ReactNode; children: ReactNode }
   }
 }
 
-const contactSchema = z.object({
-  name: z.string().trim().min(1, { message: "El nombre es obligatorio" }).max(100, { message: "El nombre debe tener menos de 100 caracteres" }),
-  email: z.string().trim().email({ message: "Email inválido" }).max(255, { message: "El email debe tener menos de 255 caracteres" }),
-  phone: z.string().trim().optional().transform((val) => (val === "" ? undefined : val)),
-  company: z.string().trim().optional().transform((val) => (val === "" ? undefined : val)),
-  message: z.string().trim().min(1, { message: "El mensaje es obligatorio" }).max(1000, { message: "El mensaje debe tener menos de 1000 caracteres" }),
-});
+const buildSchema = (e: Copy["contact"]["errors"]) =>
+  z.object({
+    name: z.string().trim().min(1, { message: e.nameRequired }).max(100, { message: e.nameLong }),
+    email: z.string().trim().email({ message: e.emailInvalid }).max(255, { message: e.emailLong }),
+    phone: z.string().trim().optional().transform((val) => (val === "" ? undefined : val)),
+    company: z.string().trim().optional().transform((val) => (val === "" ? undefined : val)),
+    message: z.string().trim().min(1, { message: e.messageRequired }).max(1000, { message: e.messageLong }),
+  });
 
-type ContactFormData = z.infer<typeof contactSchema>;
+type ContactFormData = z.infer<ReturnType<typeof buildSchema>>;
 export type ContactTab = "llamada" | "mensaje";
 
 interface ContactFormProps {
@@ -45,11 +48,6 @@ interface ContactFormProps {
   initialTab?: ContactTab;
 }
 
-const tabs: { id: ContactTab; label: string; Icon: typeof Calendar }[] = [
-  { id: "llamada", label: "Reservar llamada", Icon: Calendar },
-  { id: "mensaje", label: "Dejar un mensaje", Icon: MessageSquare },
-];
-
 const emptyForm: ContactFormData = { name: "", email: "", phone: "", company: "", message: "" };
 
 const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormProps) => {
@@ -58,6 +56,11 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const c = useCopy();
+  const tabs: { id: ContactTab; label: string; Icon: typeof Calendar }[] = [
+    { id: "llamada", label: c.contact.tabCall, Icon: Calendar },
+    { id: "mensaje", label: c.contact.tabMessage, Icon: MessageSquare },
+  ];
 
   useEffect(() => {
     if (isOpen) setTab(initialTab);
@@ -86,7 +89,7 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
 
   const validateForm = () => {
     try {
-      contactSchema.parse(formData);
+      buildSchema(c.contact.errors).parse(formData);
       setErrors({});
       return true;
     } catch (error) {
@@ -107,23 +110,23 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
     if (!validateForm()) return;
     setIsSubmitting(true);
     try {
-      const subject = encodeURIComponent("Consulta de automatización con IA desde alpa.digital");
+      const subject = encodeURIComponent(c.contact.mailSubject);
       const body = encodeURIComponent(
-        `Nombre: ${formData.name}\n` +
-          `Email: ${formData.email}\n` +
-          `Teléfono: ${formData.phone || "No proporcionado"}\n` +
-          `Empresa: ${formData.company || "No proporcionada"}\n\n` +
-          `Mensaje:\n${formData.message}`
+        `${c.contact.name}: ${formData.name}\n` +
+          `${c.contact.email}: ${formData.email}\n` +
+          `${c.contact.phone}: ${formData.phone || "-"}\n` +
+          `${c.contact.company}: ${formData.company || "-"}\n\n` +
+          `${formData.message}`
       );
       const utm = utmParams();
       const campaign = utm.utm_campaign ? encodeURIComponent(`\n\nOrigen: ${utm.utm_source ?? ""} / ${utm.utm_campaign}`) : "";
       track("contact_submit", { method: "mailto" });
       window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}${campaign}`;
-      toast({ title: "¡Gracias por contactarnos!", description: "Se abrirá tu cliente de email para enviar el mensaje." });
+      toast({ title: c.contact.toastTitle, description: c.contact.toastBody });
       setFormData(emptyForm);
       onClose();
     } catch {
-      toast({ title: "Error", description: "Hubo un problema al procesar tu solicitud. Por favor, intenta de nuevo.", variant: "destructive" });
+      toast({ title: c.contact.toastErrorTitle, description: c.contact.toastErrorBody, variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
@@ -148,15 +151,15 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
                 <Mail className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h2 id="contact-title" className="text-lg sm:text-xl font-semibold text-foreground leading-tight">Hablemos de tu empresa</h2>
-                <p className="text-sm text-muted-foreground">Llamada de 30 minutos, o un mensaje y te respondemos en menos de 24 h</p>
+                <h2 id="contact-title" className="text-lg sm:text-xl font-semibold text-foreground leading-tight">{c.contact.title}</h2>
+                <p className="text-sm text-muted-foreground">{c.contact.subtitle}</p>
               </div>
             </div>
-            <button onClick={onClose} aria-label="Cerrar" className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors flex-shrink-0">
+            <button onClick={onClose} aria-label={c.contact.close} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors flex-shrink-0">
               <X className="w-4 h-4" />
             </button>
           </div>
-          <div role="tablist" aria-label="Cómo contactar" className="inline-flex w-full sm:w-auto rounded-full border border-border bg-muted/40 p-1">
+          <div role="tablist" aria-label={c.contact.tabsLabel} className="inline-flex w-full sm:w-auto rounded-full border border-border bg-muted/40 p-1">
             {tabs.map(({ id, label, Icon }) => {
               const active = tab === id;
               return (
@@ -183,14 +186,14 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
               {/* Queda detrás del iframe de Cal.com; solo se ve mientras carga o si el script no llega. */}
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-sm text-muted-foreground" aria-hidden="true">
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                Cargando el calendario…
+                {c.contact.calendarLoading}
               </div>
               <CalBoundary
                 fallback={
                   <div className="relative z-10 min-h-[520px] flex flex-col items-center justify-center gap-4 bg-background text-center px-6">
-                    <p className="text-sm text-muted-foreground">El calendario no se ha podido cargar aquí. Puedes reservar en una pestaña nueva.</p>
+                    <p className="text-sm text-muted-foreground">{c.contact.calendarFailed}</p>
                     <a href={site.calUrl} target="_blank" rel="noopener noreferrer" onClick={() => track("cal_click", { place: "contact_modal_fallback" })} className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full text-sm font-medium">
-                      <Calendar className="w-4 h-4" /> Reservar llamada en Cal.com
+                      <Calendar className="w-4 h-4" /> {c.contact.calendarFallback}
                     </a>
                   </div>
                 }
@@ -201,7 +204,7 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
               </CalBoundary>
             </div>
             <p className="px-5 sm:px-6 py-3 border-t border-border text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
-              <span>Si el calendario no carga, puedes abrirlo en una pestaña nueva.</span>
+              <span>{c.contact.calendarNote}</span>
               <a
                 href={site.calUrl}
                 target="_blank"
@@ -209,7 +212,7 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
                 onClick={() => track("cal_click", { place: "contact_modal_link" })}
                 className="inline-flex items-center gap-1 text-primary hover:underline"
               >
-                Abrir en Cal.com <ExternalLink className="w-3 h-3" />
+                {c.contact.calendarLink} <ExternalLink className="w-3 h-3" />
               </a>
             </p>
           </div>
@@ -219,42 +222,42 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
               <div className="space-y-2">
                 <Label htmlFor="name" className="flex items-center space-x-2">
                   <User className="w-4 h-4" />
-                  <span>Nombre *</span>
+                  <span>{c.contact.name} *</span>
                 </Label>
-                <Input id="name" type="text" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder="Tu nombre completo" className={errors.name ? "border-red-500" : ""} maxLength={100} />
+                <Input id="name" type="text" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder={c.contact.namePlaceholder} className={errors.name ? "border-red-500" : ""} maxLength={100} />
                 {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email" className="flex items-center space-x-2">
                   <Mail className="w-4 h-4" />
-                  <span>Email *</span>
+                  <span>{c.contact.email} *</span>
                 </Label>
-                <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder="tu@email.com" className={errors.email ? "border-red-500" : ""} maxLength={255} />
+                <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder={c.contact.emailPlaceholder} className={errors.email ? "border-red-500" : ""} maxLength={255} />
                 {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label htmlFor="phone">Teléfono</Label>
-                <Input id="phone" type="tel" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder="+34 600 000 000" maxLength={20} />
+                <Label htmlFor="phone">{c.contact.phone}</Label>
+                <Input id="phone" type="tel" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder={c.contact.phonePlaceholder} maxLength={20} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="company">Empresa</Label>
-                <Input id="company" type="text" value={formData.company} onChange={(e) => handleInputChange("company", e.target.value)} placeholder="Nombre de tu empresa" maxLength={100} />
+                <Label htmlFor="company">{c.contact.company}</Label>
+                <Input id="company" type="text" value={formData.company} onChange={(e) => handleInputChange("company", e.target.value)} placeholder={c.contact.companyPlaceholder} maxLength={100} />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="message" className="flex items-center space-x-2">
                 <MessageSquare className="w-4 h-4" />
-                <span>¿Qué tarea te quita más tiempo? *</span>
+                <span>{c.contact.message} *</span>
               </Label>
               <Textarea
                 id="message"
                 value={formData.message}
                 onChange={(e) => handleInputChange("message", e.target.value)}
-                placeholder="Ej.: cada semana dedico horas a pasar facturas a mano, contestar las mismas preguntas por WhatsApp..."
+                placeholder={c.contact.messagePlaceholder}
                 rows={4}
                 className={errors.message ? "border-red-500" : ""}
                 maxLength={1000}
@@ -267,21 +270,21 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
 
             <div className="flex space-x-3 pt-2">
               <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-                Cancelar
+                {c.contact.cancel}
               </Button>
               <Button type="submit" disabled={isSubmitting} className="flex-1">
-                {isSubmitting ? "Enviando..." : (
+                {isSubmitting ? c.contact.sending : (
                   <>
                     <Send className="w-4 h-4 mr-2" />
-                    Enviar mensaje
+                    {c.contact.send}
                   </>
                 )}
               </Button>
             </div>
 
             <p className="text-center text-xs text-muted-foreground pt-1">
-              ¿Prefieres contarlo de viva voz?{" "}
-              <button type="button" onClick={() => setTab("llamada")} className="text-primary hover:underline">Reserva una llamada de 30 minutos</button>
+              {c.contact.preferCall}{" "}
+              <button type="button" onClick={() => setTab("llamada")} className="text-primary hover:underline">{c.contact.preferCallLink}</button>
             </p>
           </form>
         )}

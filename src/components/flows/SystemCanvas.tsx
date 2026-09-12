@@ -1,6 +1,7 @@
 import { Bot } from "lucide-react";
 import type { CompanySystem, SystemModule } from "@/data/agentSystems";
 import { flowIcons, Packet } from "@/components/flows/icons";
+import { useCopy } from "@/i18n";
 
 const W = 960;
 const H = 440;
@@ -49,6 +50,7 @@ const ModuleText = ({ module, active }: { module: SystemModule; active: boolean 
 );
 
 const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
+  const c = useCopy();
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block" role="img" aria-label={`Sistema de agente IA y herramientas para ${system.company}`}>
       <defs>
@@ -136,7 +138,7 @@ const SystemCanvas = ({ system, activeIndex, animate, onSelect }: Props) => {
               <Icon x="19" y={NODE_H / 2 - 9} width="18" height="18" stroke={active ? "#BFDBFE" : "#E5E7EB"} strokeWidth={1.8} />
               <ModuleText module={module} active={active} />
               <text x={NODE_W - 9} y="12" fontSize="8" textAnchor="end" letterSpacing="0.6" fill={active ? "#93C5FD" : "rgba(255,255,255,0.35)"}>
-                {active ? "EN USO" : "HERRAMIENTA"}
+                {(active ? c.flows.inUse : c.flows.tool).toUpperCase()}
               </text>
             </g>
           </g>

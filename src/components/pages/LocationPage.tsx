@@ -203,7 +203,7 @@ const LocationPage = () => {
             </div>
           </section>
 
-          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano ${placeIn}?`} text="Cuéntanosla en una llamada de 30 minutos. Te diremos con franqueza si merece la pena automatizarla, cuánto costaría y cuánto tiempo ahorrarías." onContactClick={openContact} />
+          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano ${placeIn}?`} text="Cuéntanosla en una llamada de 30 minutos. Te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías." onContactClick={openContact} />
         </>
       )}
     </PageShell>

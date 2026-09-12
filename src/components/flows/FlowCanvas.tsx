@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { AreaFlow, FlowNode } from "@/data/automationFlows";
 import { flowIcons, Packet } from "@/components/flows/icons";
+import { useCopy } from "@/i18n";
 
 const W = 960;
 const H = 380;
@@ -35,12 +36,10 @@ export const nodeStyle: Record<FlowNode["kind"], { fill: string; stroke: string;
   output: { fill: "rgba(34,197,94,0.12)", stroke: "rgba(74,222,128,0.7)", text: "#FFFFFF", sub: "rgba(187,247,208,0.8)", icon: "#86EFAC", iconBg: "rgba(74,222,128,0.12)" },
 };
 
-export const kindLabel: Record<FlowNode["kind"], string> = {
-  trigger: "Disparador",
-  agent: "Agente IA",
-  tool: "Herramienta",
-  human: "Persona",
-  output: "Resultado",
+/** Etiqueta del tipo de nodo, en el idioma activo. */
+export const useKindLabel = (): Record<FlowNode["kind"], string> => {
+  const c = useCopy();
+  return { trigger: c.flows.trigger, agent: c.flows.agent, tool: c.flows.tool, human: c.flows.person, output: c.flows.result };
 };
 
 /** Texto del nodo en HTML dentro del SVG: se ajusta a la caja y nunca se sale. */
@@ -64,6 +63,7 @@ const NodeText = ({ node, w, h }: { node: FlowNode; w: number; h: number }) => {
 };
 
 const FlowCanvas = ({ flow, animate }: { flow: AreaFlow; animate: boolean }) => {
+  const kindLabel = useKindLabel();
   const byId = useMemo(() => Object.fromEntries(flow.nodes.map((n) => [n.id, n])), [flow]);
 
   return (

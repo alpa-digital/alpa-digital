@@ -3,21 +3,21 @@ import { Bot, Check } from "lucide-react";
 import type { AreaFlow, FlowNode } from "@/data/automationFlows";
 import type { CompanySystem } from "@/data/agentSystems";
 import { flowIcons, Packet } from "@/components/flows/icons";
-import { nodeStyle, kindLabel } from "@/components/flows/FlowCanvas";
+import { nodeStyle, useKindLabel } from "@/components/flows/FlowCanvas";
+import { useCopy } from "@/i18n";
 import { useNodeBoxes } from "@/components/flows/useConnectors";
 
 const STEP_S = 0.7;
 const SPINE_X = 18;
 
-const statusByKind: Record<FlowNode["kind"], string> = {
-  trigger: "Recibido",
-  agent: "Procesando",
-  tool: "Consultado",
-  human: "Aprobado",
-  output: "Hecho",
+/** Estado que se muestra en la tarjeta de cada nodo, en el idioma activo. */
+const useStatusLabel = (): Record<FlowNode["kind"], string> => {
+  const c = useCopy();
+  return { trigger: c.flows.received, agent: c.flows.processing, tool: c.flows.consulted, human: c.flows.approved, output: c.flows.done };
 };
 
 const StatusChip = ({ kind, animate, delay }: { kind: FlowNode["kind"]; animate: boolean; delay: number }) => {
+  const statusByKind = useStatusLabel();
   const isAgent = kind === "agent";
   const tone =
     kind === "output" ? "bg-emerald-400/15 text-emerald-300" : kind === "human" ? "bg-amber-300/15 text-amber-200" : isAgent ? "bg-blue-500/25 text-blue-100" : "bg-white/[0.08] text-white/70";
@@ -42,6 +42,7 @@ const StatusChip = ({ kind, animate, delay }: { kind: FlowNode["kind"]; animate:
 };
 
 const NodeCard = ({ node, animate, order, indent }: { node: FlowNode; animate: boolean; order: number; indent: boolean }) => {
+  const kindLabel = useKindLabel();
   const style = nodeStyle[node.kind];
   const Icon = flowIcons[node.icon];
   const isAgent = node.kind === "agent";
@@ -125,6 +126,7 @@ interface SystemProps {
 }
 
 export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemProps) => {
+  const c = useCopy();
   const containerRef = useRef<HTMLDivElement>(null);
   const { boxes, size } = useNodeBoxes(containerRef, [system.id]);
   const hub = boxes.hub;
@@ -179,7 +181,7 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
             <p className="text-sm font-semibold text-white leading-tight">{system.hub.label}</p>
             <p className="text-[11px] text-blue-200 leading-tight mt-0.5">{system.hub.sub}</p>
           </div>
-          <span className="absolute top-1.5 right-2.5 text-[8px] tracking-wide text-blue-200">AGENTE IA</span>
+          <span className="absolute top-1.5 right-2.5 text-[8px] tracking-wide text-blue-200">{c.flows.agent.toUpperCase()}</span>
           <span className="absolute bottom-1.5 right-2.5 w-2 h-2 rounded-full bg-blue-300" style={animate ? { animation: "flow-pulse 1.4s ease-in-out infinite" } : undefined} />
         </div>
       </div>
@@ -202,7 +204,7 @@ export const SystemStack = ({ system, activeIndex, animate, onSelect }: SystemPr
                 <div className={`w-7 h-7 rounded-md flex items-center justify-center ${active ? "bg-blue-500/35" : "bg-white/[0.06]"}`}>
                   <Icon className={`w-4 h-4 ${active ? "text-blue-200" : "text-gray-200"}`} />
                 </div>
-                <span className={`text-[8px] tracking-wide ml-auto ${active ? "text-blue-300" : "text-white/35"}`}>{active ? "EN USO" : "HERRAMIENTA"}</span>
+                <span className={`text-[8px] tracking-wide ml-auto ${active ? "text-blue-300" : "text-white/35"}`}>{(active ? c.flows.inUse : c.flows.tool).toUpperCase()}</span>
               </div>
               <p className="text-[12px] font-semibold text-white leading-tight">{module.name}</p>
               <p className={`text-[10px] leading-snug mt-0.5 ${active ? "text-blue-200" : "text-white/50"}`}>{module.short}</p>

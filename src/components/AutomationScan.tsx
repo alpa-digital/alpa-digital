@@ -5,12 +5,13 @@ import { useToast } from "@/hooks/use-toast";
 import ScanResultCard from "@/components/ScanResultCard";
 import { estimateScan, domainFromUrl, guessSectorFromDomain, type ScanResult } from "@/lib/scanFallback";
 import { ANALYZE_ENDPOINT, LEAD_ENDPOINT } from "@/config/endpoints";
+import { useCopy, useLang, type Lang } from "@/i18n";
+import type { Copy } from "@/i18n/es";
 import { track, utmParams } from "@/lib/analytics";
 
 type Phase = "idle" | "scanning" | "result";
 
 
-const scanSteps = ["Leyendo tu web", "Identificando a qué te dedicas", "Buscando tareas repetitivas por área", "Diseñando las automatizaciones", "Preparando tu mapa"];
 
 const resultSchema = z.object({
   company: z.string(),
@@ -35,23 +36,25 @@ class AnalysisError extends Error {
   }
 }
 
-const reasonByStatus: Record<number, string> = {
-  404: "el servicio de análisis no está desplegado en esta web",
-  422: "no hemos podido descargar tu web (puede que bloquee robots o no tenga texto legible)",
-  429: "el modelo de IA ha rechazado la petición por límite de uso; vuelve a intentarlo en unos segundos",
-  502: "el modelo de IA no ha devuelto un análisis válido",
-  503: "el servicio de análisis no está configurado (falta la clave de la IA)",
-  504: "el análisis ha tardado más de lo que permite el servidor; vuelve a intentarlo",
-};
+type ScanErrors = Copy["scan"]["errors"];
 
-async function requestAnalysis(url: string): Promise<ScanResult> {
+const reasonByStatus = (e: ScanErrors): Record<number, string> => ({
+  404: e.notDeployed,
+  422: e.unreadable,
+  429: e.rateLimit,
+  502: e.invalidAnswer,
+  503: e.notConfigured,
+  504: e.timeoutServer,
+});
+
+async function requestAnalysis(url: string, lang: Lang, e: ScanErrors): Promise<ScanResult> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 45000);
   try {
     const response = await fetch(ANALYZE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({ url, lang }),
       signal: controller.signal,
     });
     if (!response.ok) {
@@ -61,20 +64,20 @@ async function requestAnalysis(url: string): Promise<ScanResult> {
       } catch {
         /* sin detalle */
       }
-      throw new AnalysisError(`${reasonByStatus[response.status] ?? `error ${response.status} del servicio`}${detail ? ` · ${detail.slice(0, 120)}` : ""}`);
+      throw new AnalysisError(`${reasonByStatus(e)[response.status] ?? `error ${response.status}`}${detail ? ` · ${detail.slice(0, 120)}` : ""}`);
     }
     const contentType = response.headers.get("content-type") ?? "";
     if (!contentType.includes("json")) {
-      throw new AnalysisError("la ruta del análisis devuelve la propia web en lugar de datos: este hosting no ejecuta las funciones de servidor");
+      throw new AnalysisError(e.htmlResponse);
     }
     const parsed = resultSchema.parse(await response.json());
     parsed.areas.sort((a, b) => b.score - a.score);
     return { ...parsed, source: "analysis" };
   } catch (error) {
     if (error instanceof AnalysisError) throw error;
-    if (error instanceof DOMException && error.name === "AbortError") throw new AnalysisError("el análisis ha tardado demasiado");
-    if (error instanceof z.ZodError) throw new AnalysisError("la respuesta del análisis no tenía el formato esperado");
-    throw new AnalysisError("no se ha podido conectar con el servicio de análisis");
+    if (error instanceof DOMException && error.name === "AbortError") throw new AnalysisError(e.timeout);
+    if (error instanceof z.ZodError) throw new AnalysisError(e.badFormat);
+    throw new AnalysisError(e.offline);
   } finally {
     window.clearTimeout(timeout);
   }
@@ -92,6 +95,9 @@ const AutomationScan = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
+  const c = useCopy();
+  const { lang } = useLang();
+  const scanSteps = c.scan.steps;
 
   useEffect(() => {
     if (phase !== "scanning") return;
@@ -108,7 +114,7 @@ const AutomationScan = () => {
     e.preventDefault();
     const clean = url.trim();
     if (!/^([a-z0-9-]+\.)+[a-z]{2,}(\/.*)?$/i.test(clean.replace(/^https?:\/\//i, "").replace(/^www\./i, ""))) {
-      setUrlError("Escribe la dirección de tu web, por ejemplo miempresa.es");
+      setUrlError(c.scan.invalidUrl);
       return;
     }
     setUrlError(null);
@@ -119,11 +125,11 @@ const AutomationScan = () => {
     const started = Date.now();
     let analysis: ScanResult;
     try {
-      analysis = await requestAnalysis(clean);
+      analysis = await requestAnalysis(clean, lang, c.scan.errors);
     } catch (error) {
-      const reason = error instanceof AnalysisError ? error.reason : "no se ha podido analizar la web";
-      console.warn("Análisis no disponible, se usa la estimación por sector:", reason);
-      analysis = { ...estimateScan(clean, guessSectorFromDomain(clean)), note: `No hemos podido leer tu web: ${reason}. Esto es una estimación por sector; el informe completo se hace leyendo tu web.` };
+      const reason = error instanceof AnalysisError ? error.reason : c.scan.errors.generic;
+      console.warn(c.scan.fallbackPrefix, reason);
+      analysis = { ...estimateScan(clean, guessSectorFromDomain(clean)), note: c.scan.noteTemplate.replace("{reason}", reason) };
     }
     const minimum = 900 * scanSteps.length + 400;
     const elapsed = Date.now() - started;
@@ -137,7 +143,7 @@ const AutomationScan = () => {
     e.preventDefault();
     const parsed = z.string().trim().email().safeParse(email);
     if (!parsed.success) {
-      setEmailError("Escribe un email válido para enviarte el informe");
+      setEmailError(c.result.emailError);
       return;
     }
     setEmailError(null);
@@ -148,13 +154,13 @@ const AutomationScan = () => {
       const response = await fetch(LEAD_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!response.ok) throw new Error(`lead ${response.status}`);
       setSent(true);
-      toast({ title: "Informe en camino", description: "Te llega al email en unos minutos. Revisa la carpeta de spam si no lo ves." });
+      toast({ title: c.scan.leadSentTitle, description: c.scan.leadSentBody });
     } catch {
-      const subject = encodeURIComponent(`Informe de automatización para ${domainFromUrl(url)}`);
-      const body = encodeURIComponent(`Hola, quiero recibir el informe completo de automatización.\n\nWeb: ${url.trim()}\nSector: ${result?.sector ?? "sin determinar"}\nEmail: ${parsed.data}\n`);
+      const subject = encodeURIComponent(`${c.scan.leadMailSubject} ${domainFromUrl(url)}`);
+      const body = encodeURIComponent(`${c.scan.leadMailIntro}\n\n${c.scan.leadMailWeb}: ${url.trim()}\n${c.scan.leadMailSector}: ${result?.sector ?? c.scan.leadMailUnknown}\n${c.scan.leadMailEmail}: ${parsed.data}\n`);
       window.location.href = `mailto:info@alpa.digital?subject=${subject}&body=${body}`;
       setSent(true);
-      toast({ title: "Se abre tu correo", description: "Envíanos el mensaje y te mandamos el informe completo." });
+      toast({ title: c.scan.leadMailTitle, description: c.scan.leadMailBody });
     } finally {
       setSending(false);
     }
@@ -166,16 +172,16 @@ const AutomationScan = () => {
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 lg:gap-10 items-end">
           <div>
-            <p className="text-xs font-medium text-primary uppercase tracking-wide mb-2">Pruébalo con tu empresa</p>
+            <p className="text-xs font-medium text-primary uppercase tracking-wide mb-2">{c.scan.eyebrow}</p>
             <h2 className="text-3xl md:text-4xl font-light text-foreground leading-tight mb-3" style={{ textWrap: "balance" }}>
-              ¿Qué se automatizaría en la tuya?
+              {c.scan.title}
             </h2>
             <p className="text-base text-muted-foreground leading-relaxed">
-              Escribe tu web. Leemos a qué te dedicas, deducimos el sector y te mostramos un primer mapa de las áreas con más trabajo repetitivo y las dos automatizaciones con más impacto.
+              {c.scan.body}
             </p>
           </div>
           <form onSubmit={handleScan} className="w-full">
-            <label htmlFor="scan-url" className="block text-sm font-medium text-foreground mb-2">Tu web</label>
+            <label htmlFor="scan-url" className="block text-sm font-medium text-foreground mb-2">{c.scan.label}</label>
             <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
                 <Globe className="w-4 h-4 text-muted-foreground absolute left-4 top-1/2 -translate-y-1/2" />
@@ -186,7 +192,7 @@ const AutomationScan = () => {
                   autoComplete="url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="miempresa.es"
+                  placeholder={c.scan.placeholder}
                   disabled={phase === "scanning"}
                   className={`w-full rounded-full border bg-background pl-11 pr-4 py-3 text-base outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20 ${urlError ? "border-red-500" : "border-border"}`}
                 />
@@ -197,10 +203,10 @@ const AutomationScan = () => {
                 className="inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-full text-base font-medium transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/30 active:scale-95 disabled:opacity-70 disabled:hover:scale-100 flex-shrink-0"
               >
                 {phase === "scanning" ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-                {phase === "scanning" ? "Analizando…" : "Analizar mi empresa"}
+                {phase === "scanning" ? c.scan.analyzing : c.scan.analyze}
               </button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">{urlError ?? "Sin registro. Solo leemos lo que tu web ya muestra públicamente."}</p>
+            <p className="text-xs text-muted-foreground mt-2">{urlError ?? c.scan.note}</p>
           </form>
         </div>
 
@@ -214,7 +220,7 @@ const AutomationScan = () => {
                   <Globe className="w-6 h-6 text-blue-300 relative" />
                 </div>
                 <div>
-                  <p className="text-sm text-white/50">Analizando</p>
+                  <p className="text-sm text-white/50">{c.scan.scanningLabel}</p>
                   <p className="text-lg font-medium">{domainFromUrl(url)}</p>
                 </div>
               </div>

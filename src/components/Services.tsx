@@ -1,66 +1,28 @@
 import { Link } from "react-router-dom";
 import { Compass, Blocks, Route, Check, ArrowRight } from "lucide-react";
+import { useCopy } from "@/i18n";
 
 interface ServicesProps {
   onContactClick: () => void;
 }
 
-const lines = [
-  {
-    id: "diagnostico",
-    Icon: Compass,
-    name: "Diagnóstico e I+D",
-    claim: "Decidir qué construir",
-    text: "Miramos cómo trabaja tu equipo y te decimos qué merece la pena automatizar y en qué orden.",
-    items: [
-      { title: "Diagnóstico", text: "Qué se repite, cuánto cuesta y qué automatizar primero." },
-      { title: "Pruebas de concepto", text: "Probamos la IA con tus datos antes de construir nada." },
-      { title: "Plan priorizado", text: "Un informe con lo que funciona, lo que no y por dónde empezar." },
-    ],
-    href: "/servicios/consultoria-ia-pymes",
-    cta: "Pedir diagnóstico",
-    more: "Ver diagnóstico",
-  },
-  {
-    id: "sistemas",
-    Icon: Blocks,
-    name: "Construcción",
-    claim: "Construirlo",
-    text: "Empezamos por la tarea que más duele y crecemos hasta un sistema completo, con una persona al mando.",
-    items: [
-      { title: "Automatizaciones", text: "Una tarea repetitiva deja de hacerse a mano." },
-      { title: "Agentes de IA", text: "Atienden y actúan por WhatsApp, email o voz." },
-      { title: "Apps y sistemas a medida", text: "La herramienta que te falta, conectada a las que ya usas." },
-    ],
-    href: "/servicios/sistemas-ia",
-    cta: "Hablar de tu caso",
-    more: "Ver sistemas de IA",
-  },
-  {
-    id: "acompanamiento",
-    Icon: Route,
-    name: "Consultoría y asesoría",
-    claim: "Seguir avanzando",
-    text: "Un roadmap estratégico de IA y alguien que lo ejecuta contigo mes a mes, sin proyectos eternos.",
-    items: [
-      { title: "Roadmap estratégico", text: "Qué viene después y en qué orden, alineado con el negocio." },
-      { title: "Implementación continua", text: "Nuevas automatizaciones y mejoras cada mes." },
-      { title: "Asesoría a dirección", text: "Criterio para decidir sobre IA, proveedores y datos." },
-    ],
-    href: "/servicios/consultoria-ia-pymes",
-    cta: "Hablar de tu caso",
-    more: "Ver consultoría",
-  },
-];
+const lineMeta = [
+  { id: "diagnostico", Icon: Compass, href: "/servicios/consultoria-ia-pymes" },
+  { id: "sistemas", Icon: Blocks, href: "/servicios/sistemas-ia" },
+  { id: "acompanamiento", Icon: Route, href: "/servicios/consultoria-ia-pymes" },
+] as const;
 
 /** Las tres líneas de servicio, en tres tarjetas. Sin importes: eso vive en las páginas de servicio. */
-const Services = ({ onContactClick }: ServicesProps) => (
+const Services = ({ onContactClick }: ServicesProps) => {
+  const c = useCopy();
+  const lines = lineMeta.map(({ id, Icon, href }) => ({ id, Icon, href, ...c.services.lines[id] }));
+  return (
   <section id="servicios" className="py-20 md:py-24 px-4 md:px-8 bg-background relative scroll-mt-20">
     <div className="absolute top-0 left-0 w-full h-px bg-border" />
     <div className="max-w-6xl mx-auto">
       <div className="max-w-2xl mb-10 md:mb-12">
-        <h2 className="text-4xl md:text-5xl font-light text-foreground mb-3">Tres líneas de servicio</h2>
-        <p className="text-lg text-muted-foreground font-light">Decidir, construir y seguir avanzando. Puedes empezar por cualquiera.</p>
+        <h2 className="text-4xl md:text-5xl font-light text-foreground mb-3">{c.services.title}</h2>
+        <p className="text-lg text-muted-foreground font-light">{c.services.subtitle}</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4 md:gap-5">
@@ -90,6 +52,7 @@ const Services = ({ onContactClick }: ServicesProps) => (
     </div>
     <div className="absolute bottom-0 left-0 w-full h-px bg-border" />
   </section>
-);
+  );
+};
 
 export default Services;

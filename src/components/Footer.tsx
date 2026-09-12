@@ -3,9 +3,13 @@ import alpaLogoWhite from "@/assets/alpa-logo-white.png";
 import { families, pillarOf, servicesOf } from "@/data/services";
 import { site } from "@/data/site";
 import { provinces } from "@/data/locations";
-import { sectors } from "@/data/sectors";
+import { useSectors, translateService } from "@/i18n/content";
+import { useCopy, useLang } from "@/i18n";
 
 const Footer = () => {
+  const c = useCopy();
+  const { lang } = useLang();
+  const sectors = useSectors();
   return (
     <footer className="py-14 px-5 md:px-8 bg-black text-white relative">
       <div className="max-w-7xl mx-auto">
@@ -17,8 +21,8 @@ const Footer = () => {
               <img src={alpaLogoWhite} alt="Alpa Digital - Automatización e inteligencia artificial para pymes" className="h-7 md:h-9" />
             </div>
             <h2 className="text-2xl md:text-3xl font-light leading-tight">
-              Automatización e IA{" "}
-              <span className="font-bold">con criterio</span>, para que tu pyme haga más con el mismo equipo
+              {c.footer.claimStart}{" "}
+              <span className="font-bold">{c.footer.claimBold}</span>{c.footer.claimEnd}
             </h2>
           </div>
 
@@ -28,9 +32,6 @@ const Footer = () => {
               <a href={`mailto:${site.email}`} className="text-xl hover:opacity-80 transition-opacity">
                 {site.email}
               </a>
-              <p className="text-sm text-white/55 mt-2">
-                {site.address.street} · {site.address.postalCode} {site.address.locality} ({site.address.region})
-              </p>
             </div>
           </div>
         </div>
@@ -41,11 +42,11 @@ const Footer = () => {
             const pillar = pillarOf(familyId);
             return (
               <div key={familyId}>
-                <Link to={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{families[familyId].short}</Link>
+                <Link to={`/servicios/${pillar.slug}`} className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{translateService(families[familyId].short, lang)}</Link>
                 <ul className="space-y-1.5">
                   {(pillar.offerings ?? []).map((o) => (
                     <li key={o.name}>
-                      {o.slug ? <Link to={`/servicios/${o.slug}`} className="text-white/75 hover:text-white transition-colors">{o.name}</Link> : <span className="text-white/55">{o.name}</span>}
+                      {o.slug ? <Link to={`/servicios/${o.slug}`} className="text-white/75 hover:text-white transition-colors">{translateService(o.name, lang)}</Link> : <span className="text-white/55">{translateService(o.name, lang)}</span>}
                     </li>
                   ))}
                 </ul>
@@ -53,21 +54,21 @@ const Footer = () => {
             );
           })}
           <div>
-            <Link to="/sectores" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Sectores</Link>
+            <Link to="/sectores" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{c.footer.sectors}</Link>
             <ul className="space-y-1.5">
               {sectors.slice(0, 6).map((s) => (
                 <li key={s.slug}><Link to={`/sectores/${s.slug}`} className="text-white/75 hover:text-white transition-colors">{s.short}</Link></li>
               ))}
-              <li><Link to="/sectores" className="text-white/50 hover:text-white underline underline-offset-2">Los {sectors.length} sectores</Link></li>
+              <li><Link to="/sectores" className="text-white/50 hover:text-white underline underline-offset-2">{c.footer.allSectors}</Link></li>
             </ul>
           </div>
           <div>
-            <Link to="/zonas" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">Zonas</Link>
+            <Link to="/zonas" className="text-xs uppercase tracking-wide text-white/70 hover:text-white mb-3 inline-block">{c.footer.zones}</Link>
             <ul className="space-y-1.5">
               {provinces.filter((p) => p.tier === 1).map((p) => (
-                <li key={p.slug}><Link to={`/automatizacion-ia/${p.slug}`} className="text-white/75 hover:text-white transition-colors">{p.name} · presencial</Link></li>
+                <li key={p.slug}><Link to={`/automatizacion-ia/${p.slug}`} className="text-white/75 hover:text-white transition-colors">{p.name} · {c.footer.onSite}</Link></li>
               ))}
-              <li><Link to="/zonas" className="text-white/50 hover:text-white underline underline-offset-2">Las 52 provincias, en remoto</Link></li>
+              <li><Link to="/zonas" className="text-white/50 hover:text-white underline underline-offset-2">{c.footer.allProvinces}</Link></li>
             </ul>
           </div>
         </div>
@@ -77,7 +78,7 @@ const Footer = () => {
           {/* Cookie policy */}
           <div>
             <Link to="/politica-cookies" className="text-sm hover:opacity-80 transition-opacity">
-              Política de Cookies
+              {c.footer.cookies}
             </Link>
           </div>
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useCopy } from "@/i18n";
 
 interface CTAProps {
   onContactClick: () => void;
@@ -6,6 +7,7 @@ interface CTAProps {
 
 const CTA = ({ onContactClick }: CTAProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const c = useCopy();
 
   return (
     <section className="py-16 md:py-24 px-4 md:px-8 bg-gradient-to-br from-primary/5 via-background to-primary/10 relative overflow-hidden">
@@ -18,10 +20,10 @@ const CTA = ({ onContactClick }: CTAProps) => {
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <div className="animate-fade-in">
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 md:mb-8">
-            ¿Qué tarea te gustaría dejar de hacer a mano?
+            {c.cta.title}
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 leading-relaxed">
-            Cuéntanosla en una llamada de 30 minutos. Te diremos con franqueza si merece la pena automatizarla, cuánto costaría y cuánto tiempo ahorrarías.
+            {c.cta.body}
           </p>
         </div>
         
@@ -34,7 +36,7 @@ const CTA = ({ onContactClick }: CTAProps) => {
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <span className="relative z-10">Reservar llamada gratuita</span>
+            <span className="relative z-10">{c.cta.button}</span>
             <div className={`absolute inset-0 bg-gradient-to-r from-primary to-primary/80 transition-transform duration-300 ${
               isHovered ? 'scale-110' : 'scale-100'
             }`}></div>

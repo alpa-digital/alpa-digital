@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Clock, ShieldCheck, ClipboardCheck } from "lucide-react";
+import { useCopy } from "@/i18n";
 
 interface HeroProps {
   onContactClick: () => void;
@@ -8,6 +9,7 @@ interface HeroProps {
 
 const Hero = ({ onContactClick }: HeroProps) => {
   const [isVisible, setIsVisible] = useState(false);
+  const c = useCopy();
 
   useEffect(() => {
     setIsVisible(true);
@@ -26,13 +28,13 @@ const Hero = ({ onContactClick }: HeroProps) => {
         <div className="max-w-7xl mx-auto px-8 w-full">
           <div className={`max-w-6xl transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <p className="text-sm md:text-base font-medium text-primary mb-6 animate-fade-in tracking-wide uppercase">
-              Automatización e IA para pymes
+              {c.hero.eyebrow}
             </p>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-foreground leading-[1.05] mb-10 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              Tu pyme trabajando mientras tú te ocupas del negocio
+              {c.hero.title}
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-3xl animate-fade-in" style={{ animationDelay: '0.4s', lineHeight: '1.8' }}>
-              Construimos los sistemas de IA que tu pyme necesita, desde una automatización que quita una tarea hasta apps corporativas y agentes interconectados, y te ayudamos a decidir con criterio qué construir y en qué orden. Sin proyectos eternos ni tecnología que nadie entiende.
+              {c.hero.body}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mt-10 animate-fade-in" style={{ animationDelay: '0.6s' }}>
@@ -40,20 +42,20 @@ const Hero = ({ onContactClick }: HeroProps) => {
                 onClick={onContactClick}
                 className="bg-primary text-white px-8 py-4 rounded-full text-base md:text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 active:scale-95"
               >
-                Reservar una llamada gratuita
+                {c.hero.ctaPrimary}
               </button>
               <a
                 href="#automatizaciones"
                 className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base md:text-lg font-medium border border-border text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
               >
-                Ver qué construimos
+                {c.hero.ctaSecondary}
               </a>
             </div>
 
             <ul className="flex flex-wrap gap-x-8 gap-y-3 mt-10 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.8s' }}>
-              <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> Primera automatización en semanas, no meses</li>
-              <li className="flex items-center gap-2"><ClipboardCheck className="w-4 h-4 text-primary" /> Alcance y plazo cerrados antes de empezar</li>
-              <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> Tus datos se quedan en tus herramientas</li>
+              <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> {c.hero.point1}</li>
+              <li className="flex items-center gap-2"><ClipboardCheck className="w-4 h-4 text-primary" /> {c.hero.point2}</li>
+              <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> {c.hero.point3}</li>
             </ul>
           </div>
         </div>

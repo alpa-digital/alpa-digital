@@ -53,7 +53,7 @@ Sede: Utrera (Sevilla). Nivel 1 con visita presencial: Sevilla, Cádiz, Huelva, 
 
 Acciones fuera de la web, por orden:
 
-1. Completar el teléfono de la sede en `src/data/site.ts` (la dirección, Calle Molares 18A, 41710 Utrera, ya está en los datos estructurados y en el pie). Con él, la ficha de Google se puede verificar y se activa la extensión de llamada en los anuncios.
+1. Completar la dirección postal y el teléfono de la sede en `src/data/site.ts` cuando se publique la ficha de Google Business Profile. Por ahora los datos estructurados solo declaran Utrera (Sevilla), sin calle. Con el teléfono se activa además la extensión de llamada en los anuncios.
 2. Crear y verificar la ficha de Google Business Profile en Utrera: categoría principal "Consultor informático" o "Empresa de software", secundarias "Consultoría empresarial" y "Servicio de automatización", zona de servicio con Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, servicios, fotos del equipo y del despacho, y una publicación al mes. Enlazar la ficha a `https://alpa.digital/automatizacion-ia/sevilla/utrera`.
 3. Reseñas: pedir una reseña al cerrar cada proyecto (el módulo de marketing de los flujos ya lo cuenta como práctica; aplicarlo a la propia agencia). Objetivo: 10 reseñas en 90 días.
 4. Citas locales coherentes (mismo nombre, dirección y teléfono): Páginas Amarillas, Cylex, Europages, Infoempresa, directorio de la Cámara de Comercio y del ayuntamiento de la sede.
@@ -145,6 +145,6 @@ Semanas 7 a 12: casos de éxito por sector, remarketing, colaboraciones con ases
 
 ## 10. Qué está hecho y qué falta
 
-Hecho en la web: dos líneas de servicio con pilar y páginas de detalle, sección de consultoría en la home, arquitectura de zonas (476 páginas en total), prerenderizado, datos estructurados con la sede en Calle Molares 18A (Utrera), sitemap, medición con consentimiento, captura de campañas en los leads, enlazado interno, campañas de Google Ads listas para importar.
+Hecho en la web: dos líneas de servicio con pilar y páginas de detalle, sección de consultoría en la home, arquitectura de zonas (476 páginas en total), prerenderizado, datos estructurados con la sede en Utrera (Sevilla), sitemap, medición con consentimiento, captura de campañas en los leads, enlazado interno, campañas de Google Ads listas para importar.
 
 Falta y depende de decisiones de negocio: teléfono de la sede, ficha de Google Business Profile, identificadores de GA4 y Google Ads en las variables de entorno de Netlify, imagen social, contenido del blog y casos, activar las campañas.
