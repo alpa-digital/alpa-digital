@@ -14,6 +14,7 @@ Coloca aquí el logo oficial a color de cada empresa con el nombre exacto de su 
 | Fluidra          | `fluidra.svg`      |
 | Goodyear         | `goodyear.svg`     |
 | Logista          | `logista.svg`      |
+| López Alcón      | `lopez-alcon.webp` |
 | Grup Peralada    | `peralada.svg`     |
 | Telefónica Tech  | `telefonica.svg`   |
 | Vectalia         | `vectalia.svg`     |
