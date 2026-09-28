@@ -57,11 +57,12 @@ const ClientLogos = () => {
           <p className="text-sm md:text-base text-muted-foreground/80">{c.clients.subtitle}</p>
         </div>
 
-        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" aria-label={c.clients.title}>
+        {/* Flex en lugar de rejilla: cuando la última fila no se llena, los logos sueltos quedan centrados. */}
+        <ul className="flex flex-wrap justify-center gap-3 md:gap-4" aria-label={c.clients.title}>
           {clients.map((client, index) => (
             <li
               key={client.slug}
-              className={`flex items-center justify-center h-20 md:h-24 lg:h-28 px-4 rounded-2xl bg-card hover:bg-secondary/40 transition-all ${
+              className={`w-[calc(50%-0.375rem)] sm:w-[calc(33.333%-0.5rem)] md:w-[calc(33.333%-0.667rem)] lg:w-[calc(25%-0.75rem)] flex items-center justify-center h-20 md:h-24 lg:h-28 px-4 rounded-2xl bg-card hover:bg-secondary/40 transition-all ${
                 isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
               }`}
               style={{ transitionDelay: `${index * 0.06}s`, transitionDuration: "600ms" }}

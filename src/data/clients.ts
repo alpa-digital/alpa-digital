@@ -26,6 +26,7 @@ export const clients: Client[] = [
   { slug: "fluidra", name: "Fluidra", mono: "FluidraLogo" },
   { slug: "goodyear", name: "Goodyear", mono: "GoodyearLogo", scale: 1.5 },
   { slug: "logista", name: "Logista", mono: "LogistaLogo" },
+  { slug: "lopez-alcon", name: "López Alcón Electrificaciones", scale: 1.1 },
   { slug: "peralada", name: "Grup Peralada", mono: "PeraladalLogo" },
   { slug: "telefonica", name: "Telefónica Tech", mono: "TelefonicaLogo", tint: "#0066FF" },
   { slug: "vectalia", name: "Vectalia", mono: "VectaliaLogo" },
