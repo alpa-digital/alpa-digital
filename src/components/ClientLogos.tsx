@@ -16,7 +16,8 @@ const ClientLogos = () => {
     return () => observer.disconnect();
   }, []);
 
-  const numbers = ["25", "5", "12"];
+  // El contador de clientes sale de la propia lista, para que no se quede corto al añadir logos.
+  const numbers = ["25", "5", String(clients.length)];
   const stats = c.clients.stats.map((stat, i) => ({ number: numbers[i], symbol: "+", ...stat }));
 
   return (
