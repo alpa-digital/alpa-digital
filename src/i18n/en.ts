@@ -22,6 +22,10 @@ export const en: Copy = {
   flows: {
     eyebrow: "What we build",
     title: "Watch it work",
+    videoIntro: "Under a minute: the tasks that repeat in a small business, the technology we work with and the hours your team gets back.",
+    videoPlay: "Play the video",
+    videoLabel: "Alpa Digital video: AI automation for small businesses",
+    videoDuration: "56 s",
     modeFlow: "One automation",
     modeSystem: "A complete system",
     switchLabel: "What to show",

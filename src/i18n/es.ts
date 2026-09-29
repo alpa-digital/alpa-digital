@@ -23,6 +23,10 @@ export const es = {
   flows: {
     eyebrow: "Lo que construimos",
     title: "Míralo funcionar",
+    videoIntro: "Menos de un minuto: las tareas que se repiten en una pyme, la tecnología con la que trabajamos y las horas que vuelven a tu equipo.",
+    videoPlay: "Reproducir el vídeo",
+    videoLabel: "Vídeo de Alpa Digital: automatización con IA para pymes",
+    videoDuration: "56 s",
     modeFlow: "Una automatización",
     modeSystem: "Un sistema completo",
     switchLabel: "Qué mostrar",
