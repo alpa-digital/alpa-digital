@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import ClientLogo, { clientBySlug } from "@/components/ClientLogo";
 import { useCopy } from "@/i18n";
+
+// Cada reseña se atribuye a la empresa, no a la persona.
+const AUTHORS = ["caf", "lopez-alcon", "trackeo"].map(clientBySlug);
 
 const Testimonials = () => {
   const c = useCopy();
   const [visibleCards, setVisibleCards] = useState<boolean[]>([]);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const meta = [
-    { icon: "W", iconBg: "bg-foreground", iconColor: "text-background", name: "Lucía Yturriaga", company: "Womanhood" },
-    { icon: "×", iconBg: "bg-green-500", iconColor: "text-white", name: "Luca Bernardi", company: "Crossover" },
-    { icon: "Z", iconBg: "bg-blue-500", iconColor: "text-white", name: "Sebastian", company: "Zandura" },
-  ];
-  const testimonials = meta.map((m, i) => ({
-    ...m,
+  const testimonials = AUTHORS.map((client, i) => ({
+    client,
     text: c.testimonials.items[i].text,
     boldText: c.testimonials.items[i].highlight,
     additionalText: c.testimonials.items[i].closing || undefined,
@@ -75,13 +74,16 @@ const Testimonials = () => {
                 }`}
                 style={{ transitionDelay: `${index * 0.2}s` }}
               >
-                {/* Icono */}
-                <div className={`w-12 h-12 ${testimonial.iconBg} rounded-lg flex items-center justify-center transition-all duration-500 ${
-                  isVisible ? 'rotate-0 scale-100' : 'rotate-12 scale-90'
+                {/* Empresa que firma la reseña */}
+                <div className={`h-10 flex items-center transition-all duration-500 ${
+                  isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                 }`} style={{ transitionDelay: `${index * 0.2 + 0.3}s` }}>
-                  <span className={`text-xl font-bold ${testimonial.iconColor}`}>
-                    {testimonial.icon}
-                  </span>
+                  <ClientLogo
+                    client={testimonial.client}
+                    imgClass="max-h-10 max-w-[150px]"
+                    maskClass="h-10 w-[150px]"
+                    textClass="text-lg font-semibold tracking-tight text-foreground"
+                  />
                 </div>
 
                 {/* Testimonio */}
@@ -93,7 +95,7 @@ const Testimonials = () => {
                     <strong className="font-semibold">{testimonial.boldText}</strong>
                     {testimonial.additionalText && (
                       <>
-                        {". "}
+                        {/[.!?]$/.test(testimonial.boldText) ? " " : ". "}
                         {testimonial.additionalText}
                       </>
                     )}
@@ -118,14 +120,6 @@ const Testimonials = () => {
                         ★
                       </span>
                     ))}
-                  </div>
-
-                  {/* Autor */}
-                  <div className={`transition-all duration-700 ease-out ${
-                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`} style={{ transitionDelay: `${index * 0.2 + 0.9}s` }}>
-                    <p className="font-medium text-foreground">{testimonial.name}</p>
-                    <p className="text-muted-foreground text-sm">{testimonial.company}</p>
                   </div>
                 </div>
               </div>

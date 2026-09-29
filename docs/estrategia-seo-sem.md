@@ -8,7 +8,7 @@ Este documento define la estrategia y señala qué parte ya está implementada e
 
 - Dos líneas de servicio y así se comunican en toda la web: **Sistemas de herramientas y automatizaciones con IA** (lo que construimos: automatizaciones, agentes, apps corporativas y sistemas completos gobernados por IA, un mismo servicio a distintas escalas) y **Consultoría de IA** (cómo decidimos qué construir: diagnóstico, I+D, diseño de producto y roadmap corporativo). La consultoría tiene sección propia en la home, página pilar y aparece en cabecera y pie.
 - Categoría a conquistar en buscadores: "automatización con IA para pymes" como puerta de entrada (búsqueda con intención de compra y poco disputada), y desde ahí "sistemas de IA para empresas", "apps corporativas con IA" y "consultoría de IA".
-- Diferenciadores que deben aparecer en todas las páginas: alcance y plazo cerrados antes de empezar (sin importes en la web: el presupuesto se da en la primera llamada), empezar por un proceso, trabajar con las herramientas que la empresa ya usa, una persona decide, resultados medidos en horas.
+- Diferenciadores que deben aparecer en todas las páginas: alcance y plazo cerrados antes de empezar (sin importes en la web: el presupuesto se da tras el primer contacto), empezar por un proceso, trabajar con las herramientas que la empresa ya usa, una persona decide, resultados medidos en horas.
 - Prueba: el analizador de webs es el activo más diferencial. Cada página local y de servicio enlaza a él.
 
 ## 2. Palabras clave
@@ -97,7 +97,7 @@ Calendario de los tres primeros meses (una pieza por semana, 600 a 1.200 palabra
 
 Autoridad:
 
-- Casos de éxito con nombre, cifras y cita del cliente (el testimonio de Womanhood ya existe; convertirlo en caso).
+- Casos de éxito con nombre, cifras y cita del cliente (los testimonios de CAF, López Alcón y trackeo.es ya existen; convertirlos en casos).
 - Colaboraciones con asesorías, gestorías y despachos: son prescriptores naturales de pymes y fuente de enlaces.
 - Alta como Agente Digitalizador del Kit Digital si no se está: enlace institucional y canal de captación.
 - Ponencias en Cámaras de Comercio, asociaciones de empresarios y polígonos industriales de las provincias de nivel 1.
@@ -122,7 +122,7 @@ Ajustes:
 - Puja: maximizar clics las dos primeras semanas; pasar a maximizar conversiones cuando haya 30 conversiones en 30 días.
 - Presupuesto inicial sugerido: 52 € al día activando Sistemas IA (24 €, cuatro grupos), Consultoría IA (6 €), Sectores (10 €, seis grupos) y Local Sevilla (12 €). Las diez campañas completas suman 73 € al día. Revisar cada dos semanas con el coste por lead.
 - Todo está preparado para importar en Google Ads Editor: `docs/google-ads/campanas.csv` (campañas, grupos, palabras clave y anuncios) y `docs/google-ads/negativas.csv`.
-- Conversiones ya medidas en la web: `lead_submit` (informe del analizador), `contact_submit` (formulario), `cal_click` (reserva de llamada) y `analyze_result` (análisis completado, como conversión secundaria). Los parámetros UTM y el `gclid` viajan con cada lead.
+- Conversiones ya medidas en la web: `lead_submit` (informe del analizador), `contact_submit` (formulario de contacto, que llega a info@alpa.digital) y `analyze_result` (análisis completado, como conversión secundaria). Los parámetros UTM y el `gclid` viajan con cada lead.
 - Remarketing: audiencia de GA4 "vio el analizador y no dejó email" y "vio una página de servicio", con anuncios de display y de YouTube de bajo coste.
 - Performance Max solo cuando la búsqueda lleve tres meses estable.
 

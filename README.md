@@ -45,6 +45,7 @@ Desplegadas con Netlify Functions desde `netlify/functions`:
 
 - `analyze.mts` (`POST /api/analyze`): descarga el texto público de la web indicada y pide a Mistral (salida JSON estructurada) el sector de la empresa y un mapa de automatización por área. Necesita `MISTRAL_API_KEY`; `MISTRAL_MODEL` es opcional.
 - `lead.mts` (`POST /api/lead`): envía el informe completo al email del visitante y un aviso a `LEAD_TO_EMAIL` usando Resend. Necesita `RESEND_API_KEY`.
+- `contact.mts` (`POST /api/contact`): el formulario de contacto de la web. Manda el mensaje a `LEAD_TO_EMAIL` (por defecto info@alpa.digital) con el remitente en «responder a», y una confirmación a quien escribe. Necesita `RESEND_API_KEY`. Si no está configurada, el formulario abre el cliente de correo del visitante en su lugar.
 
 Las variables están descritas en `.env.example`. Se configuran en el panel de Netlify, nunca en el repositorio. Sin ellas, la web sigue funcionando: el analizador muestra una estimación por sector y el formulario abre el cliente de correo.
 
@@ -53,7 +54,7 @@ Las variables están descritas en `.env.example`. Se configuran en el panel de N
 El analizador necesita código de servidor. Hay dos opciones:
 
 - **Netlify** (recomendada): las funciones de `netlify/functions` se despliegan con la web. Comprobar con `https://<sitio>/api/health`, que indica el proveedor y el modelo en uso y si las claves están configuradas.
-- **Cualquier otro hosting** (Lovable, GitHub Pages, estático): importar los workflows de `n8n/` y definir `VITE_ANALYZE_ENDPOINT` y `VITE_LEAD_ENDPOINT` en el build. Detalles en `n8n/README.md`.
+- **Cualquier otro hosting** (Lovable, GitHub Pages, estático): importar los workflows de `n8n/` y definir `VITE_ANALYZE_ENDPOINT`, `VITE_LEAD_ENDPOINT` y `VITE_CONTACT_ENDPOINT` en el build. Detalles en `n8n/README.md`.
 
 Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el aviso indica cuál de los dos pasos falla.
 
@@ -61,7 +62,7 @@ Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el avi
 
 1. En Netlify, "Add new site" → "Import an existing project" → elegir este repositorio y la rama a publicar. La configuración de build la toma de `netlify.toml`.
 2. En "Site configuration" → "Environment variables", añadir `OPENAI_API_KEY` (o `MISTRAL_API_KEY`) y `RESEND_API_KEY`. Si están las dos claves de modelo, tiene prioridad OpenAI. Las demás variables de `.env.example` son opcionales.
-3. Lanzar el deploy. Las funciones quedan en `https://<sitio>.netlify.app/api/analyze` y `/api/lead`.
+3. Lanzar el deploy. Las funciones quedan en `https://<sitio>.netlify.app/api/analyze`, `/api/lead` y `/api/contact`.
 
 Prueba rápida del análisis desde un terminal:
 

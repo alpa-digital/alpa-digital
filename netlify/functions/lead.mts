@@ -61,8 +61,8 @@ function reportHtml(lead: Lead): string {
     ${analysis ? `<p style="color:#4b5563">${escapeHtml(analysis.summary)}</p>` : ""}
     ${analysis ? `<p><strong>${total} horas a la semana</strong> de trabajo repetitivo que podrían automatizarse.</p>` : ""}
     <table style="width:100%;border-collapse:collapse;font-size:15px">${rows}</table>
-    <p style="margin-top:24px">Si quieres que revisemos juntos por dónde empezar, reserva 30 minutos aquí:
-      <a href="https://cal.com/alpa-digital-studio/30min" style="color:#0066ff">cal.com/alpa-digital-studio/30min</a></p>
+    <p style="margin-top:24px">Si quieres que revisemos juntos por dónde empezar, responde a este correo o escríbenos a
+      <a href="mailto:info@alpa.digital" style="color:#0066ff">info@alpa.digital</a> y te contestamos en menos de 24 h.</p>
     <p style="color:#6b7280;font-size:13px;margin-top:32px">Alpa Digital · Automatización e IA para pymes · info@alpa.digital</p>
   </div>`;
 }

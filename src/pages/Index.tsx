@@ -28,7 +28,7 @@ const Index = () => {
             <AutomationFlows />
           </section>
           <section aria-label="Analiza qué automatizar en tu empresa">
-            <AutomationScan />
+            <AutomationScan onContactClick={openContactForm} />
           </section>
           <section aria-label="Líneas de servicio">
             <Services onContactClick={openContactForm} />

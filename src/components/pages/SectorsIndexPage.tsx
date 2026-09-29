@@ -32,7 +32,7 @@ const SectorsIndexPage = () => (
             })}
           </div>
         </section>
-        <CtaBand title="¿Tu sector no está en la lista?" text="Da igual: las tareas repetitivas se parecen mucho entre sectores. Analiza tu web gratis o cuéntanoslo en una llamada." onContactClick={openContact} />
+        <CtaBand title="¿Tu sector no está en la lista?" text="Da igual: las tareas repetitivas se parecen mucho entre sectores. Analiza tu web gratis o escríbenos y te respondemos en menos de 24 h." onContactClick={openContact} />
       </>
     )}
   </PageShell>

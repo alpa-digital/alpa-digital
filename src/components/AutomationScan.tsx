@@ -83,7 +83,7 @@ async function requestAnalysis(url: string, lang: Lang, e: ScanErrors): Promise<
   }
 }
 
-const AutomationScan = () => {
+const AutomationScan = ({ onContactClick }: { onContactClick?: () => void }) => {
   const { toast } = useToast();
   const [phase, setPhase] = useState<Phase>("idle");
   const [url, setUrl] = useState("");
@@ -240,7 +240,7 @@ const AutomationScan = () => {
           )}
 
           {phase === "result" && result && (
-            <ScanResultCard result={result} url={url} email={email} emailError={emailError} sending={sending} sent={sent} onEmailChange={setEmail} onSubmitLead={handleLead} />
+            <ScanResultCard result={result} url={url} email={email} emailError={emailError} sending={sending} sent={sent} onEmailChange={setEmail} onSubmitLead={handleLead} onContactClick={onContactClick} />
           )}
         </div>
       </div>
