@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { Compass, Blocks, Route, Check, ArrowRight } from "lucide-react";
 import { useCopy } from "@/i18n";
 
+import type { ContactTopic } from "@/hooks/useContactForm";
+
 interface ServicesProps {
-  onContactClick: () => void;
+  onContactClick: (topic?: ContactTopic) => void;
 }
 
 const lineMeta = [
@@ -43,7 +45,7 @@ const Services = ({ onContactClick }: ServicesProps) => {
               ))}
             </ul>
             <div className="mt-auto flex flex-col items-start gap-3">
-              <button onClick={onContactClick} className="bg-primary text-white px-6 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95">{cta}</button>
+              <button onClick={() => onContactClick(id)} className="bg-primary text-white px-6 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95">{cta}</button>
               <Link to={href} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">{more} <ArrowRight className="w-4 h-4" /></Link>
             </div>
           </div>

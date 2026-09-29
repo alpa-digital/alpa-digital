@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
-import { useContactForm } from "@/hooks/useContactForm";
+import { useContactForm, type ContactTopic } from "@/hooks/useContactForm";
 
 export interface Crumb {
   name: string;
@@ -29,14 +29,14 @@ export const Breadcrumbs = ({ items }: { items: Crumb[] }) => (
 );
 
 /** Estructura común de las páginas interiores: cabecera, contenido, pie y formulario de contacto. */
-const PageShell = ({ children }: { children: (openContact: () => void) => ReactNode }) => {
-  const { isContactFormOpen, openContactForm, closeContactForm } = useContactForm();
+const PageShell = ({ children }: { children: (openContact: (topic?: ContactTopic) => void) => ReactNode }) => {
+  const { isContactFormOpen, contactTopic, openContactForm, closeContactForm } = useContactForm();
   return (
     <div className="min-h-screen bg-background">
       <Header onContactClick={openContactForm} />
       <main className="pt-24 md:pt-28">{children(openContactForm)}</main>
       <Footer />
-      <ContactForm isOpen={isContactFormOpen} onClose={closeContactForm} />
+      <ContactForm isOpen={isContactFormOpen} onClose={closeContactForm} topic={contactTopic} />
     </div>
   );
 };
