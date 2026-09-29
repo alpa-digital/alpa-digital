@@ -1,5 +1,5 @@
-import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from "react";
-import { X, Send, Mail, User, MessageSquare, Calendar, ExternalLink, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { X, Send, Mail, User, MessageSquare } from "lucide-react";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -7,27 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { track, utmParams } from "@/lib/analytics";
+import { CONTACT_ENDPOINT } from "@/config/endpoints";
 import { site } from "@/data/site";
 import { useCopy } from "@/i18n";
 import type { Copy } from "@/i18n/es";
-
-// El embed de Cal.com solo existe en el navegador: se carga bajo demanda y nunca en el prerender.
-const CalEmbed = lazy(() => import("@calcom/embed-react"));
-
-/** Enlace de Cal.com sin dominio ni parámetros, p. ej. "alpa-digital-studio/30min". */
-const CAL_LINK = site.calUrl.replace(/^https?:\/\/cal\.com\//, "").replace(/\?.*$/, "");
-const CAL_CONFIG = { layout: "month_view", theme: "light" } as const;
-
-/** Si el embed falla por lo que sea, se muestra el enlace de respaldo en vez de tumbar la página. */
-class CalBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-  render() {
-    return this.state.failed ? this.props.fallback : this.props.children;
-  }
-}
 
 const buildSchema = (e: Copy["contact"]["errors"]) =>
   z.object({
@@ -39,32 +22,27 @@ const buildSchema = (e: Copy["contact"]["errors"]) =>
   });
 
 type ContactFormData = z.infer<ReturnType<typeof buildSchema>>;
-export type ContactTab = "llamada" | "mensaje";
 
 interface ContactFormProps {
   isOpen: boolean;
   onClose: () => void;
-  /** Pestaña con la que se abre el modal. Por defecto, la reserva de llamada. */
-  initialTab?: ContactTab;
 }
 
 const emptyForm: ContactFormData = { name: "", email: "", phone: "", company: "", message: "" };
 
-const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormProps) => {
-  const [tab, setTab] = useState<ContactTab>(initialTab);
+/** Texto plano del mensaje, para el respaldo por mailto. */
+const plainBody = (c: Copy["contact"], data: ContactFormData, source: string) =>
+  `${c.name}: ${data.name}\n${c.email}: ${data.email}\n${c.phone}: ${data.phone || "-"}\n${c.company}: ${data.company || "-"}\n\n${data.message}` +
+  (source ? `\n\n${source}` : "");
+
+const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
   const [formData, setFormData] = useState<ContactFormData>(emptyForm);
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Campo trampa: los humanos no lo ven, los bots lo rellenan.
+  const [honeypot, setHoneypot] = useState("");
   const { toast } = useToast();
   const c = useCopy();
-  const tabs: { id: ContactTab; label: string; Icon: typeof Calendar }[] = [
-    { id: "llamada", label: c.contact.tabCall, Icon: Calendar },
-    { id: "mensaje", label: c.contact.tabMessage, Icon: MessageSquare },
-  ];
-
-  useEffect(() => {
-    if (isOpen) setTab(initialTab);
-  }, [isOpen, initialTab]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -78,20 +56,17 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
     };
   }, [isOpen, onClose]);
 
-  useEffect(() => {
-    if (isOpen && tab === "llamada") track("cal_click", { place: "contact_modal_embed" });
-  }, [isOpen, tab]);
-
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
-  const validateForm = () => {
+  /** Devuelve los datos limpios (sin espacios, sin campos vacíos) o null si algo falla. */
+  const validateForm = (): ContactFormData | null => {
     try {
-      buildSchema(c.contact.errors).parse(formData);
+      const parsed = buildSchema(c.contact.errors).parse(formData);
       setErrors({});
-      return true;
+      return parsed;
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: Partial<Record<keyof ContactFormData, string>> = {};
@@ -101,32 +76,44 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
         });
         setErrors(newErrors);
       }
-      return false;
+      return null;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    const data = validateForm();
+    if (!data) return;
     setIsSubmitting(true);
+
+    const utm = utmParams();
+    const source = utm.utm_campaign ? `Origen: ${utm.utm_source ?? "-"} / ${utm.utm_campaign}` : "";
+
     try {
-      const subject = encodeURIComponent(c.contact.mailSubject);
-      const body = encodeURIComponent(
-        `${c.contact.name}: ${formData.name}\n` +
-          `${c.contact.email}: ${formData.email}\n` +
-          `${c.contact.phone}: ${formData.phone || "-"}\n` +
-          `${c.contact.company}: ${formData.company || "-"}\n\n` +
-          `${formData.message}`
-      );
-      const utm = utmParams();
-      const campaign = utm.utm_campaign ? encodeURIComponent(`\n\nOrigen: ${utm.utm_source ?? ""} / ${utm.utm_campaign}`) : "";
-      track("contact_submit", { method: "mailto" });
-      window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}${campaign}`;
+      const response = await fetch(CONTACT_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          page: typeof window !== "undefined" ? window.location.pathname : undefined,
+          source: source || undefined,
+          website: honeypot || undefined,
+        }),
+      });
+      if (!response.ok) throw new Error(`contact ${response.status}`);
+
+      track("contact_submit", { method: "form" });
       toast({ title: c.contact.toastTitle, description: c.contact.toastBody });
       setFormData(emptyForm);
       onClose();
     } catch {
-      toast({ title: c.contact.toastErrorTitle, description: c.contact.toastErrorBody, variant: "destructive" });
+      // Si el envío no sale (función sin configurar, red caída), el mensaje no se
+      // pierde: se abre el cliente de correo con todo escrito.
+      track("contact_submit", { method: "mailto" });
+      const subject = encodeURIComponent(c.contact.mailSubject);
+      const body = encodeURIComponent(plainBody(c.contact, data, source));
+      window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
+      toast({ title: c.contact.toastFallbackTitle, description: c.contact.toastFallbackBody });
     } finally {
       setIsSubmitting(false);
     }
@@ -140,12 +127,11 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
         role="dialog"
         aria-modal="true"
         aria-labelledby="contact-title"
-        className="bg-background sm:rounded-2xl rounded-t-2xl shadow-2xl border border-border w-full max-w-3xl max-h-[92vh] sm:max-h-[88vh] overflow-hidden flex flex-col"
+        className="bg-background sm:rounded-2xl rounded-t-2xl shadow-2xl border border-border w-full max-w-xl max-h-[92vh] sm:max-h-[88vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Cabecera con pestañas */}
-        <div className="px-5 pt-5 pb-3 sm:px-6 border-b border-border">
-          <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="px-5 pt-5 pb-4 sm:px-6 border-b border-border">
+          <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
                 <Mail className="w-5 h-5 text-primary" />
@@ -159,135 +145,90 @@ const ContactForm = ({ isOpen, onClose, initialTab = "llamada" }: ContactFormPro
               <X className="w-4 h-4" />
             </button>
           </div>
-          <div role="tablist" aria-label={c.contact.tabsLabel} className="inline-flex w-full sm:w-auto rounded-full border border-border bg-muted/40 p-1">
-            {tabs.map(({ id, label, Icon }) => {
-              const active = tab === id;
-              return (
-                <button
-                  key={id}
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setTab(id)}
-                  className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                    active ? "bg-primary text-white shadow-md shadow-primary/25" : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </button>
-              );
-            })}
-          </div>
         </div>
 
-        {tab === "llamada" ? (
-          <div className="flex-1 overflow-y-auto">
-            <div className="relative min-h-[520px]">
-              {/* Queda detrás del iframe de Cal.com; solo se ve mientras carga o si el script no llega. */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-sm text-muted-foreground" aria-hidden="true">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                {c.contact.calendarLoading}
-              </div>
-              <CalBoundary
-                fallback={
-                  <div className="relative z-10 min-h-[520px] flex flex-col items-center justify-center gap-4 bg-background text-center px-6">
-                    <p className="text-sm text-muted-foreground">{c.contact.calendarFailed}</p>
-                    <a href={site.calUrl} target="_blank" rel="noopener noreferrer" onClick={() => track("cal_click", { place: "contact_modal_fallback" })} className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full text-sm font-medium">
-                      <Calendar className="w-4 h-4" /> {c.contact.calendarFallback}
-                    </a>
-                  </div>
-                }
-              >
-                <Suspense fallback={null}>
-                  <CalEmbed calLink={CAL_LINK} config={CAL_CONFIG} className="relative z-10" style={{ width: "100%", height: "100%", overflow: "auto" }} />
-                </Suspense>
-              </CalBoundary>
-            </div>
-            <p className="px-5 sm:px-6 py-3 border-t border-border text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
-              <span>{c.contact.calendarNote}</span>
-              <a
-                href={site.calUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => track("cal_click", { place: "contact_modal_link" })}
-                className="inline-flex items-center gap-1 text-primary hover:underline"
-              >
-                {c.contact.calendarLink} <ExternalLink className="w-3 h-3" />
-              </a>
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-3 overflow-y-auto flex-1">
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="name" className="flex items-center space-x-2">
-                  <User className="w-4 h-4" />
-                  <span>{c.contact.name} *</span>
-                </Label>
-                <Input id="name" type="text" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder={c.contact.namePlaceholder} className={errors.name ? "border-red-500" : ""} maxLength={100} />
-                {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center space-x-2">
-                  <Mail className="w-4 h-4" />
-                  <span>{c.contact.email} *</span>
-                </Label>
-                <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder={c.contact.emailPlaceholder} className={errors.email ? "border-red-500" : ""} maxLength={255} />
-                {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="phone">{c.contact.phone}</Label>
-                <Input id="phone" type="tel" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder={c.contact.phonePlaceholder} maxLength={20} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="company">{c.contact.company}</Label>
-                <Input id="company" type="text" value={formData.company} onChange={(e) => handleInputChange("company", e.target.value)} placeholder={c.contact.companyPlaceholder} maxLength={100} />
-              </div>
-            </div>
-
+        <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-3 overflow-y-auto flex-1">
+          <div className="grid sm:grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label htmlFor="message" className="flex items-center space-x-2">
-                <MessageSquare className="w-4 h-4" />
-                <span>{c.contact.message} *</span>
+              <Label htmlFor="name" className="flex items-center space-x-2">
+                <User className="w-4 h-4" />
+                <span>{c.contact.name} *</span>
               </Label>
-              <Textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) => handleInputChange("message", e.target.value)}
-                placeholder={c.contact.messagePlaceholder}
-                rows={4}
-                className={errors.message ? "border-red-500" : ""}
-                maxLength={1000}
-              />
-              <div className="flex justify-between items-center">
-                {errors.message && <p className="text-sm text-red-500">{errors.message}</p>}
-                <p className="text-xs text-muted-foreground ml-auto">{formData.message.length}/1000</p>
-              </div>
+              <Input id="name" type="text" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder={c.contact.namePlaceholder} className={errors.name ? "border-red-500" : ""} maxLength={100} />
+              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
             </div>
-
-            <div className="flex space-x-3 pt-2">
-              <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-                {c.contact.cancel}
-              </Button>
-              <Button type="submit" disabled={isSubmitting} className="flex-1">
-                {isSubmitting ? c.contact.sending : (
-                  <>
-                    <Send className="w-4 h-4 mr-2" />
-                    {c.contact.send}
-                  </>
-                )}
-              </Button>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="flex items-center space-x-2">
+                <Mail className="w-4 h-4" />
+                <span>{c.contact.email} *</span>
+              </Label>
+              <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder={c.contact.emailPlaceholder} className={errors.email ? "border-red-500" : ""} maxLength={255} />
+              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
+          </div>
 
-            <p className="text-center text-xs text-muted-foreground pt-1">
-              {c.contact.preferCall}{" "}
-              <button type="button" onClick={() => setTab("llamada")} className="text-primary hover:underline">{c.contact.preferCallLink}</button>
-            </p>
-          </form>
-        )}
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="phone">{c.contact.phone}</Label>
+              <Input id="phone" type="tel" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder={c.contact.phonePlaceholder} maxLength={20} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="company">{c.contact.company}</Label>
+              <Input id="company" type="text" value={formData.company} onChange={(e) => handleInputChange("company", e.target.value)} placeholder={c.contact.companyPlaceholder} maxLength={100} />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="message" className="flex items-center space-x-2">
+              <MessageSquare className="w-4 h-4" />
+              <span>{c.contact.message} *</span>
+            </Label>
+            <Textarea
+              id="message"
+              value={formData.message}
+              onChange={(e) => handleInputChange("message", e.target.value)}
+              placeholder={c.contact.messagePlaceholder}
+              rows={4}
+              className={errors.message ? "border-red-500" : ""}
+              maxLength={1000}
+            />
+            <div className="flex justify-between items-center">
+              {errors.message && <p className="text-sm text-red-500">{errors.message}</p>}
+              <p className="text-xs text-muted-foreground ml-auto">{formData.message.length}/1000</p>
+            </div>
+          </div>
+
+          {/* Trampa para bots: fuera de la vista y del foco, nunca la rellena una persona. */}
+          <input
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            className="absolute left-[-9999px] w-px h-px opacity-0"
+          />
+
+          <div className="flex space-x-3 pt-2">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+              {c.contact.cancel}
+            </Button>
+            <Button type="submit" disabled={isSubmitting} className="flex-1">
+              {isSubmitting ? c.contact.sending : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  {c.contact.send}
+                </>
+              )}
+            </Button>
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground pt-1">
+            {c.contact.directEmail}{" "}
+            <a href={`mailto:${site.email}`} className="text-primary hover:underline">{site.email}</a>
+          </p>
+        </form>
       </div>
     </div>
   );

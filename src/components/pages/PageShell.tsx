@@ -43,7 +43,7 @@ const PageShell = ({ children }: { children: (openContact: () => void) => ReactN
 
 export default PageShell;
 
-export const CtaBand = ({ title, text, onContactClick, buttonLabel = "Reservar una llamada gratuita" }: { title: string; text: string; onContactClick: () => void; buttonLabel?: string }) => (
+export const CtaBand = ({ title, text, onContactClick, buttonLabel = "Cuéntanos tu caso" }: { title: string; text: string; onContactClick: () => void; buttonLabel?: string }) => (
   <section className="py-16 px-4 md:px-8 bg-gradient-to-br from-primary/5 via-background to-primary/10">
     <div className="max-w-4xl mx-auto text-center">
       <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4" style={{ textWrap: "balance" }}>{title}</h2>

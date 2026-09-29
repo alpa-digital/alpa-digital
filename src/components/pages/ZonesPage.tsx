@@ -32,7 +32,7 @@ const ZonesPage = () => (
             ))}
           </div>
         </section>
-        <CtaBand title="¿Tu empresa está en otra parte?" text="Da igual dónde estés: la primera llamada es por videollamada y la mayor parte del trabajo se hace en remoto." onContactClick={openContact} />
+        <CtaBand title="¿Tu empresa está en otra parte?" text="Da igual dónde estés: la primera reunión es por videollamada y la mayor parte del trabajo se hace en remoto." onContactClick={openContact} />
       </>
     )}
   </PageShell>

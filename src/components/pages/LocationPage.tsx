@@ -79,7 +79,7 @@ const LocationPage = () => {
                 Ayudamos a las pequeñas y medianas empresas {placeIn} a quitarse de encima el trabajo repetitivo con inteligencia artificial: atención al cliente, presupuestos, facturas, pedidos y seguimiento comercial. {province.note}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                <button onClick={openContact} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Reservar una llamada gratuita</button>
+                <button onClick={openContact} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Cuéntanos tu caso</button>
                 <Link to="/#analiza-tu-empresa" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-border font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors">
                   Analizar mi empresa gratis <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -131,7 +131,7 @@ const LocationPage = () => {
               <h2 className="text-2xl md:text-3xl font-light text-foreground mb-6">Cómo trabajamos con empresas {placeIn}</h2>
               <div className="grid md:grid-cols-3 gap-5">
                 {[
-                  { t: "Primera llamada por videollamada", d: "30 minutos para entender qué tarea te quita más tiempo. Sin compromiso." },
+                  { t: "Primera reunión por videollamada", d: "30 minutos para entender qué tarea te quita más tiempo. Sin compromiso." },
                   { t: "Diagnóstico con tu equipo", d: province.tier === 1 ? "Sesiones en tus instalaciones con las personas que hacen el trabajo, para ver el proceso en sitio." : "Sesiones en remoto con las personas que hacen el trabajo. Viajamos desde Utrera (Sevilla) cuando hace falta ver el proceso en sitio." },
                   { t: "Implantación y formación", d: "Automatización conectada a tus herramientas, probada con casos reales tuyos, y formación del equipo. Un mes de soporte incluido." },
                 ].map((step, i) => (
@@ -203,7 +203,7 @@ const LocationPage = () => {
             </div>
           </section>
 
-          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano ${placeIn}?`} text="Cuéntanosla en una llamada de 30 minutos. Te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías." onContactClick={openContact} />
+          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano ${placeIn}?`} text="Escríbenos en dos líneas. Te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías." onContactClick={openContact} />
         </>
       )}
     </PageShell>

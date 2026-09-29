@@ -2,7 +2,6 @@ export const site = {
   name: "Alpa Digital",
   url: "https://alpa.digital",
   email: "info@alpa.digital",
-  calUrl: "https://cal.com/alpa-digital-studio/30min?user=alpa-digital-studio&overlayCalendar=true",
   linkedin: "https://www.linkedin.com/company/alpa-digital",
   instagram: "https://www.instagram.com/alpadigitalstudio/",
   /** Sede: solo localidad y provincia. La calle, el código postal y el teléfono se añaden con la ficha de Google Business Profile. */

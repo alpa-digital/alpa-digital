@@ -28,7 +28,7 @@ const SectorPage = () => {
               <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mb-6" style={{ textWrap: "balance" }}>{sector.h1}</h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">{sector.intro}</p>
               <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                <button onClick={openContact} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Reservar una llamada gratuita</button>
+                <button onClick={openContact} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Cuéntanos tu caso</button>
                 <Link to="/#analiza-tu-empresa" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-border font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors">
                   Analizar mi empresa gratis <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -154,7 +154,7 @@ const SectorPage = () => {
             </div>
           </section>
 
-          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano?`} text={`Cuéntanosla en una llamada de 30 minutos. Conocemos el sector y te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías.`} onContactClick={openContact} />
+          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano?`} text={`Escríbenos en dos líneas. Conocemos el sector y te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías.`} onContactClick={openContact} />
         </>
       )}
     </PageShell>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lock, Mail, Calendar, CheckCircle2, Loader2, ArrowRight, Globe, Building2, Clock, Sparkles, AlertCircle } from "lucide-react";
+import { Lock, Mail, MessageSquare, CheckCircle2, Loader2, ArrowRight, Globe, Building2, Clock, Sparkles, AlertCircle } from "lucide-react";
 import { domainFromUrl, type ScanArea, type ScanResult } from "@/lib/scanFallback";
 import { useCopy } from "@/i18n";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -14,6 +14,8 @@ interface Props {
   sent?: boolean;
   onEmailChange?: (value: string) => void;
   onSubmitLead?: (e: React.FormEvent) => void;
+  /** Abre el formulario de contacto desde el pie del informe. */
+  onContactClick?: () => void;
 }
 
 const CX = 300;
@@ -88,7 +90,7 @@ const AreaGrid = ({ ordered }: { ordered: ScanArea[] }) => {
   );
 };
 
-const ScanResultCard = ({ result, url, sample = false, email = "", emailError, sending, sent, onEmailChange, onSubmitLead }: Props) => {
+const ScanResultCard = ({ result, url, sample = false, email = "", emailError, sending, sent, onEmailChange, onSubmitLead, onContactClick }: Props) => {
   const c = useCopy();
   const isWide = useMediaQuery("(min-width: 640px)");
   const domain = domainFromUrl(url);
@@ -269,10 +271,10 @@ const ScanResultCard = ({ result, url, sample = false, email = "", emailError, s
                 {emailError && <p className="text-xs text-red-300 mt-1.5">{emailError}</p>}
               </form>
             )}
-            {!sample && (
-              <a href="https://cal.com/alpa-digital-studio/30min?user=alpa-digital-studio&overlayCalendar=true" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-blue-300 mt-3 hover:underline">
-                <Calendar className="w-3.5 h-3.5" /> {c.result.callLink}
-              </a>
+            {!sample && onContactClick && (
+              <button type="button" onClick={onContactClick} className="inline-flex items-center gap-1.5 text-xs text-blue-300 mt-3 hover:underline">
+                <MessageSquare className="w-3.5 h-3.5" /> {c.result.callLink}
+              </button>
             )}
           </div>
         </div>
