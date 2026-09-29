@@ -200,8 +200,8 @@ export const en: Copy = {
         closing: "We would not consider doing any development without them. We would work with them again a thousand times over",
       },
       {
-        text: "We commissioned a complex UX project that called for a rare mix of skills. Creative designers are easy to find, but Adrián went further and delivered genuinely intelligent UX design work.",
-        highlight: "Delivered on the agreed time and budget",
+        text: "We commissioned a complex UX project that called for a rare mix of skills. Creative designers are easy to find, but the Alpa team went further and delivered genuinely intelligent UX design work.",
+        highlight: "They delivered within the agreed scope and deadlines",
         closing: "",
       },
       {

@@ -201,8 +201,8 @@ export const es = {
         closing: "No consideraríamos hacer ningún desarrollo sin ellos. Sin duda, repetiríamos mil veces",
       },
       {
-        text: "Encargamos un proyecto de UX complejo que requería un conjunto de habilidades difícil de encontrar. Es fácil encontrar diseñadores creativos, pero Adrián fue un paso más allá, realizando un trabajo de diseño UX realmente inteligente.",
-        highlight: "Cumplió con los tiempos y costos establecidos",
+        text: "Encargamos un proyecto de UX complejo que requería un conjunto de habilidades difícil de encontrar. Es fácil encontrar diseñadores creativos, pero el equipo de Alpa fue un paso más allá, realizando un trabajo de diseño UX realmente inteligente.",
+        highlight: "Cumplieron con el alcance y los plazos acordados",
         closing: "",
       },
       {

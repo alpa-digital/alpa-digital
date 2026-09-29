@@ -97,7 +97,7 @@ Calendario de los tres primeros meses (una pieza por semana, 600 a 1.200 palabra
 
 Autoridad:
 
-- Casos de éxito con nombre, cifras y cita del cliente (el testimonio de Womanhood ya existe; convertirlo en caso).
+- Casos de éxito con nombre, cifras y cita del cliente (los testimonios de CAF, López Alcón y trackeo.es ya existen; convertirlos en casos).
 - Colaboraciones con asesorías, gestorías y despachos: son prescriptores naturales de pymes y fuente de enlaces.
 - Alta como Agente Digitalizador del Kit Digital si no se está: enlace institucional y canal de captación.
 - Ponencias en Cámaras de Comercio, asociaciones de empresarios y polígonos industriales de las provincias de nivel 1.
