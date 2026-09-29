@@ -280,6 +280,13 @@ export const en: Copy = {
     title: "Let's talk about your company",
     subtitle: "Tell us what is eating your time and we reply within 24 hours",
     close: "Close",
+    need: "What do you need?",
+    needOptions: {
+      general: "Not sure yet",
+      diagnostico: "Diagnosis and R&D",
+      sistemas: "Building",
+      acompanamiento: "Consulting and advisory",
+    },
     name: "Name",
     namePlaceholder: "Your full name",
     email: "Email",

@@ -281,6 +281,13 @@ export const es = {
     title: "Hablemos de tu empresa",
     subtitle: "Cuéntanos qué te quita tiempo y te respondemos en menos de 24 h",
     close: "Cerrar",
+    need: "¿Qué necesitas?",
+    needOptions: {
+      general: "Todavía no lo sé",
+      diagnostico: "Diagnóstico e I+D",
+      sistemas: "Construcción",
+      acompanamiento: "Consultoría y asesoría",
+    },
     name: "Nombre",
     namePlaceholder: "Tu nombre completo",
     email: "Email",

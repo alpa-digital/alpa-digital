@@ -15,7 +15,7 @@ import ContactForm from "@/components/ContactForm";
 import { useContactForm } from "@/hooks/useContactForm";
 
 const Index = () => {
-  const { isContactFormOpen, openContactForm, closeContactForm } = useContactForm();
+  const { isContactFormOpen, contactTopic, openContactForm, closeContactForm } = useContactForm();
 
   return (
     <>
@@ -28,7 +28,7 @@ const Index = () => {
             <AutomationFlows />
           </section>
           <section aria-label="Analiza qué automatizar en tu empresa">
-            <AutomationScan onContactClick={openContactForm} />
+            <AutomationScan onContactClick={() => openContactForm("diagnostico")} />
           </section>
           <section aria-label="Líneas de servicio">
             <Services onContactClick={openContactForm} />
@@ -53,7 +53,7 @@ const Index = () => {
           </section>
         </main>
         <Footer />
-        <ContactForm isOpen={isContactFormOpen} onClose={closeContactForm} />
+        <ContactForm isOpen={isContactFormOpen} onClose={closeContactForm} topic={contactTopic} />
       </div>
     </>
   );

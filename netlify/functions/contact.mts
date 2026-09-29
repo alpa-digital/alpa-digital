@@ -12,6 +12,10 @@ const contactSchema = z.object({
   phone: z.string().trim().max(40).optional(),
   company: z.string().trim().max(120).optional(),
   message: z.string().trim().min(1).max(1000),
+  /** Qué necesita: diagnóstico, construcción, consultoría o todavía no lo sabe. */
+  topic: z.enum(["general", "diagnostico", "sistemas", "acompanamiento"]).optional(),
+  /** Etiqueta del interés en el idioma de la web, para leerla tal cual en el correo. */
+  topicLabel: z.string().trim().max(80).optional(),
   /** Página desde la que se envía, para saber qué contenido trae al cliente. */
   page: z.string().trim().max(300).optional(),
   /** Campaña de origen, si la visita venía con UTM. */
@@ -21,6 +25,14 @@ const contactSchema = z.object({
 });
 
 type ContactMessage = z.infer<typeof contactSchema>;
+
+/** Encabezado del asunto según lo que pide, para ordenar la bandeja de un vistazo. */
+const subjectTopic: Record<string, string> = {
+  general: "Nuevo mensaje",
+  diagnostico: "Diagnóstico e I+D",
+  sistemas: "Construcción",
+  acompanamiento: "Consultoría y asesoría",
+};
 
 const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
@@ -38,6 +50,7 @@ function inboxHtml(msg: ContactMessage): string {
   <div style="font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:0 auto;color:#111827;line-height:1.6">
     <h1 style="font-size:20px;font-weight:600;margin:0 0 16px">Nuevo mensaje desde alpa.digital</h1>
     <table style="font-size:15px;border-collapse:collapse;margin-bottom:20px">
+      ${row("Necesita", msg.topicLabel ?? msg.topic)}
       ${row("Nombre", msg.name)}
       ${row("Email", msg.email)}
       ${row("Teléfono", msg.phone)}
@@ -94,7 +107,7 @@ export default async (req: Request, _context: Context) => {
     await sendEmail(apiKey, {
       from,
       to: [inbox],
-      subject: `Nuevo mensaje de ${msg.name}${msg.company ? ` (${msg.company})` : ""}`,
+      subject: `${subjectTopic[msg.topic ?? "general"]} · ${msg.name}${msg.company ? ` (${msg.company})` : ""}`,
       html: inboxHtml(msg),
       replyTo: msg.email,
     });

@@ -79,7 +79,7 @@ const LocationPage = () => {
                 Ayudamos a las pequeñas y medianas empresas {placeIn} a quitarse de encima el trabajo repetitivo con inteligencia artificial: atención al cliente, presupuestos, facturas, pedidos y seguimiento comercial. {province.note}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mt-8">
-                <button onClick={openContact} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Cuéntanos tu caso</button>
+                <button onClick={() => openContact()} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Cuéntanos tu caso</button>
                 <Link to="/#analiza-tu-empresa" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-border font-medium hover:border-primary/40 hover:bg-primary/5 transition-colors">
                   Analizar mi empresa gratis <ArrowRight className="w-4 h-4" />
                 </Link>

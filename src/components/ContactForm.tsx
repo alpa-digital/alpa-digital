@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { track, utmParams } from "@/lib/analytics";
+import { contactTopics, type ContactTopic } from "@/hooks/useContactForm";
 import { CONTACT_ENDPOINT } from "@/config/endpoints";
 import { site } from "@/data/site";
 import { useCopy } from "@/i18n";
@@ -26,23 +27,30 @@ type ContactFormData = z.infer<ReturnType<typeof buildSchema>>;
 interface ContactFormProps {
   isOpen: boolean;
   onClose: () => void;
+  /** Qué necesita quien escribe, según el botón que ha pulsado. */
+  topic?: ContactTopic;
 }
 
 const emptyForm: ContactFormData = { name: "", email: "", phone: "", company: "", message: "" };
 
 /** Texto plano del mensaje, para el respaldo por mailto. */
-const plainBody = (c: Copy["contact"], data: ContactFormData, source: string) =>
-  `${c.name}: ${data.name}\n${c.email}: ${data.email}\n${c.phone}: ${data.phone || "-"}\n${c.company}: ${data.company || "-"}\n\n${data.message}` +
+const plainBody = (c: Copy["contact"], data: ContactFormData, need: string, source: string) =>
+  `${c.need}: ${need}\n${c.name}: ${data.name}\n${c.email}: ${data.email}\n${c.phone}: ${data.phone || "-"}\n${c.company}: ${data.company || "-"}\n\n${data.message}` +
   (source ? `\n\n${source}` : "");
 
-const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
+const ContactForm = ({ isOpen, onClose, topic = "general" }: ContactFormProps) => {
   const [formData, setFormData] = useState<ContactFormData>(emptyForm);
+  const [need, setNeed] = useState<ContactTopic>(topic);
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Campo trampa: los humanos no lo ven, los bots lo rellenan.
   const [honeypot, setHoneypot] = useState("");
   const { toast } = useToast();
   const c = useCopy();
+
+  useEffect(() => {
+    if (isOpen) setNeed(topic);
+  }, [isOpen, topic]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -95,6 +103,8 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...data,
+          topic: need,
+          topicLabel: c.contact.needOptions[need],
           page: typeof window !== "undefined" ? window.location.pathname : undefined,
           source: source || undefined,
           website: honeypot || undefined,
@@ -102,16 +112,16 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
       });
       if (!response.ok) throw new Error(`contact ${response.status}`);
 
-      track("contact_submit", { method: "form" });
+      track("contact_submit", { method: "form", topic: need });
       toast({ title: c.contact.toastTitle, description: c.contact.toastBody });
       setFormData(emptyForm);
       onClose();
     } catch {
       // Si el envío no sale (función sin configurar, red caída), el mensaje no se
       // pierde: se abre el cliente de correo con todo escrito.
-      track("contact_submit", { method: "mailto" });
+      track("contact_submit", { method: "mailto", topic: need });
       const subject = encodeURIComponent(c.contact.mailSubject);
-      const body = encodeURIComponent(plainBody(c.contact, data, source));
+      const body = encodeURIComponent(plainBody(c.contact, data, c.contact.needOptions[need], source));
       window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
       toast({ title: c.contact.toastFallbackTitle, description: c.contact.toastFallbackBody });
     } finally {
@@ -148,6 +158,28 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-3 overflow-y-auto flex-1">
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium leading-none mb-2">{c.contact.need}</legend>
+            <div className="flex flex-wrap gap-2">
+              {contactTopics.map((id) => {
+                const active = need === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setNeed(id)}
+                    className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
+                      active ? "border-primary bg-primary text-white" : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                    }`}
+                  >
+                    {c.contact.needOptions[id]}
+                  </button>
+                );
+              })}
+            </div>
+          </fieldset>
+
           <div className="grid sm:grid-cols-2 gap-3">
             <div className="space-y-2">
               <Label htmlFor="name" className="flex items-center space-x-2">
