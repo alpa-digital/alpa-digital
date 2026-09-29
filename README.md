@@ -43,7 +43,8 @@ npm run lint
 
 Desplegadas con Netlify Functions desde `netlify/functions`:
 
-- `analyze.mts` (`POST /api/analyze`): descarga el texto público de la web indicada y pide a Mistral (salida JSON estructurada) el sector de la empresa y un mapa de automatización por área. Necesita `MISTRAL_API_KEY`; `MISTRAL_MODEL` es opcional.
+- `analyze.mts` (`POST /api/analyze`): descarga el texto público de la web indicada y pide al modelo (salida JSON estructurada) el sector de la empresa y un mapa de automatización por área. Necesita `OPENAI_API_KEY` o `MISTRAL_API_KEY`.
+  Va en **dos llamadas**, porque leer la web y pensar el análisis no caben en los 10 s que Netlify da a una función síncrona. La primera (`{url}`) devuelve `{stage:"site", site, sig}` con el texto leído y una firma; la segunda (`{url, site, sig}`) lo cambia por el análisis, con todo el presupuesto para el modelo. La firma (HMAC con la propia clave del proveedor) hace que la segunda llamada solo acepte texto leído por la primera. El cliente encadena las dos; si la ruta responde el análisis de una sola vez (un webhook propio), también vale.
 - `lead.mts` (`POST /api/lead`): envía el informe completo al email del visitante y un aviso a `LEAD_TO_EMAIL` usando Resend. Necesita `RESEND_API_KEY`.
 - `contact.mts` (`POST /api/contact`): el formulario de contacto de la web. Manda el mensaje a `LEAD_TO_EMAIL` (por defecto info@alpa.digital) con el remitente en «responder a», y una confirmación a quien escribe. Necesita `RESEND_API_KEY`. Si no está configurada, el formulario abre el cliente de correo del visitante en su lugar.
 
@@ -67,16 +68,21 @@ Si el analizador muestra "Estimación por sector" con un aviso en ámbar, el avi
 Prueba rápida del análisis desde un terminal:
 
 ```sh
+# Paso 1: leer la web
 curl -sS https://<sitio>.netlify.app/api/analyze \
   -H "Content-Type: application/json" \
-  -d '{"url":"https://www.ejemplo.es"}'
+  -d '{"url":"https://www.ejemplo.es"}' > paso1.json
+
+# Paso 2: el análisis, reenviando site y sig del paso 1
+jq '{url:"https://www.ejemplo.es", site:.site, sig:.sig}' paso1.json |
+  curl -sS https://<sitio>.netlify.app/api/analyze -H "Content-Type: application/json" -d @-
 ```
 
-Debe devolver un JSON con `company`, `sectorId`, `sector`, `summary`, `favicon` y seis `areas`.
+El paso 1 devuelve `{"stage":"site","site":{…},"sig":"…"}`. El paso 2 debe devolver un JSON con `company`, `sectorId`, `sector`, `summary`, `favicon` y seis `areas`.
 
 Dos límites a tener en cuenta:
 
-- Netlify corta las funciones síncronas a los 10 segundos. La función reparte ese tiempo entre descargar la web y llamar al modelo, y responde 504 si no llega. `ANALYZE_DEADLINE_MS` (por defecto 9200) ajusta ese presupuesto si Netlify amplía el límite del sitio.
+- Netlify corta las funciones síncronas a los 10 segundos. Por eso el análisis va en dos llamadas: cada una tiene su propio presupuesto y el modelo dispone de los 9 s enteros. `ANALYZE_DEADLINE_MS` (por defecto 9200) ajusta ese presupuesto si Netlify amplía el límite del sitio.
 - El plan gratuito de Mistral limita a 1 petición por segundo y a veces responde 429 "capacity exceeded" en modelos concretos. La función reintenta con pausa, pasa a JSON libre si el esquema falla y cambia a `MISTRAL_FALLBACK_MODEL` (por defecto `open-mistral-nemo`). Con un plan de pago desaparecen estos 429.
 - Un 429 con `"code":"1300"` ("Rate limit exceeded") en todas las llamadas significa que la clave o el workspace de Mistral está en su límite (plan sin activar, cuota mensual agotada). Se comprueba con una llamada directa:
 
