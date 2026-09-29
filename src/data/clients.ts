@@ -29,5 +29,6 @@ export const clients: Client[] = [
   { slug: "lopez-alcon", name: "López Alcón Electrificaciones", scale: 1.1 },
   { slug: "peralada", name: "Grup Peralada", mono: "PeraladalLogo" },
   { slug: "telefonica", name: "Telefónica Tech", mono: "TelefonicaLogo", tint: "#0066FF" },
+  { slug: "trackeo", name: "trackeo.es" },
   { slug: "vectalia", name: "Vectalia", mono: "VectaliaLogo" },
 ];
