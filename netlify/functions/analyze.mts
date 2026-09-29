@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 
 // Proveedor del modelo, por prioridad:
@@ -66,11 +67,41 @@ const DEADLINE_MS = Number(process.env.ANALYZE_DEADLINE_MS ?? 9200);
 const sectorIds = ["servicios", "comercio", "industria", "salud", "inmobiliaria", "hosteleria", "construccion", "otro"] as const;
 const areaIds = ["atencion", "ventas", "admin", "rrhh", "marketing", "direccion"] as const;
 
+// El análisis va en dos llamadas porque Netlify corta las funciones síncronas a
+// los 10 s: leer la web y pensar el análisis no caben juntos. La primera llamada
+// devuelve el texto de la web firmado; la segunda lo cambia por el análisis.
+const siteSchema = z.object({
+  hostname: z.string().min(3).max(255),
+  text: z.string().min(1).max(12000),
+  favicon: z.string().max(500).optional(),
+});
+
 const requestSchema = z.object({
   url: z.string().min(3).max(300),
   /** Idioma de la respuesta. Por omisión, español. */
   lang: z.enum(["es", "en"]).optional(),
+  /** Segunda llamada: el texto que devolvió la primera. */
+  site: siteSchema.optional(),
+  /** Firma con la que la primera llamada avala ese texto. */
+  sig: z.string().max(128).optional(),
 });
+
+type Site = z.infer<typeof siteSchema>;
+
+/**
+ * Firma el texto leído de la web. Así la segunda llamada solo acepta lo que ha
+ * leído la primera y nadie puede usar la ruta para pedirle al modelo otra cosa.
+ */
+function signSite(secret: string, site: Site): string {
+  return createHmac("sha256", secret).update(`${site.hostname}\n${site.text}`).digest("hex");
+}
+
+function validSignature(secret: string, site: Site, sig: string | undefined): boolean {
+  if (!sig) return false;
+  const expected = Buffer.from(signSite(secret, site));
+  const received = Buffer.from(sig);
+  return expected.length === received.length && timingSafeEqual(expected, received);
+}
 
 const analysisSchema = z.object({
   company: z.string().min(1),
@@ -215,7 +246,7 @@ async function fetchOnce(url: URL, userAgent: string, timeoutMs: number): Promis
   return { html, finalUrl: response.url ? new URL(response.url) : url };
 }
 
-async function fetchSite(url: URL, budgetLeft: () => number): Promise<{ text: string; favicon?: string }> {
+async function fetchSite(url: URL, budgetLeft: () => number, reserveMs: number): Promise<{ text: string; favicon?: string }> {
   const variants: URL[] = [url];
   const alt = new URL(url.toString());
   alt.hostname = url.hostname.startsWith("www.") ? url.hostname.slice(4) : `www.${url.hostname}`;
@@ -229,8 +260,7 @@ async function fetchSite(url: URL, budgetLeft: () => number): Promise<{ text: st
   const errors: string[] = [];
   for (const candidate of variants) {
     for (const userAgent of ["Mozilla/5.0 (compatible; AlpaDigitalBot/1.0; +https://alpa.digital)", browserUA]) {
-      // Reservar al menos 4 s para la llamada al modelo.
-      const timeoutMs = Math.min(5000, budgetLeft() - 4000);
+      const timeoutMs = Math.min(5000, budgetLeft() - reserveMs);
       if (timeoutMs < 1000) {
         errors.push("sin tiempo para más intentos");
         break;
@@ -309,13 +339,24 @@ export default async (req: Request, _context: Context) => {
   const url = normalizeUrl(input.url);
   if (!url) return json({ error: "invalid url" }, 400);
 
-  let site: { text: string; favicon?: string };
-  try {
-    site = await fetchSite(url, budgetLeft);
-  } catch (error) {
-    const detail = error instanceof Error ? error.message : String(error);
-    console.error("analyze: no se pudo leer la web", url.hostname, detail);
-    return json({ error: "site unreachable", detail }, 422);
+  // Primera llamada: solo leer la web. Se devuelve firmada para la segunda.
+  if (!input.site) {
+    try {
+      const read = await fetchSite(url, budgetLeft, 800);
+      const site: Site = { hostname: url.hostname, text: read.text, favicon: read.favicon };
+      return json({ stage: "site", site, sig: signSite(apiKey, site) });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      console.error("analyze: no se pudo leer la web", url.hostname, detail);
+      return json({ error: "site unreachable", detail }, 422);
+    }
+  }
+
+  // Segunda llamada: el análisis, con todo el presupuesto para el modelo.
+  const site = input.site;
+  if (!validSignature(apiKey, site, input.sig)) {
+    console.warn("analyze: firma no válida para", site.hostname);
+    return json({ error: "invalid signature" }, 400);
   }
 
   try {
@@ -336,7 +377,7 @@ export default async (req: Request, _context: Context) => {
         return undefined;
       }
       try {
-        return await askMistral(apiKey, url.hostname, site.text, step.structured, step.model, timeoutMs, input.lang ?? "es");
+        return await askMistral(apiKey, site.hostname, site.text, step.structured, step.model, timeoutMs, input.lang ?? "es");
       } catch (error) {
         if (error instanceof Error && error.name === "TimeoutError") {
           timedOut = true;

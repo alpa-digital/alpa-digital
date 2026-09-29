@@ -47,14 +47,23 @@ const reasonByStatus = (e: ScanErrors): Record<number, string> => ({
   504: e.timeoutServer,
 });
 
+/** Respuesta del primer paso: el texto de la web, firmado por el servidor. */
+const siteStageSchema = z.object({
+  stage: z.literal("site"),
+  site: z.object({ hostname: z.string(), text: z.string(), favicon: z.string().optional() }),
+  sig: z.string(),
+});
+
 async function requestAnalysis(url: string, lang: Lang, e: ScanErrors): Promise<ScanResult> {
   const controller = new AbortController();
   const timeout = window.setTimeout(() => controller.abort(), 45000);
-  try {
+
+  /** Una llamada al análisis: devuelve el JSON o lanza el motivo ya traducido. */
+  const call = async (body: Record<string, unknown>): Promise<unknown> => {
     const response = await fetch(ANALYZE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, lang }),
+      body: JSON.stringify(body),
       signal: controller.signal,
     });
     if (!response.ok) {
@@ -67,10 +76,19 @@ async function requestAnalysis(url: string, lang: Lang, e: ScanErrors): Promise<
       throw new AnalysisError(`${reasonByStatus(e)[response.status] ?? `error ${response.status}`}${detail ? ` · ${detail.slice(0, 120)}` : ""}`);
     }
     const contentType = response.headers.get("content-type") ?? "";
-    if (!contentType.includes("json")) {
-      throw new AnalysisError(e.htmlResponse);
-    }
-    const parsed = resultSchema.parse(await response.json());
+    if (!contentType.includes("json")) throw new AnalysisError(e.htmlResponse);
+    return response.json();
+  };
+
+  try {
+    // El servidor lee la web en una llamada y piensa el análisis en otra, porque
+    // las dos cosas juntas no caben en el tiempo que da Netlify. Si la ruta
+    // responde el análisis de una vez (por ejemplo un webhook propio), vale igual.
+    let payload = await call({ url, lang });
+    const site = siteStageSchema.safeParse(payload);
+    if (site.success) payload = await call({ url, lang, site: site.data.site, sig: site.data.sig });
+
+    const parsed = resultSchema.parse(payload);
     parsed.areas.sort((a, b) => b.score - a.score);
     return { ...parsed, source: "analysis" };
   } catch (error) {
