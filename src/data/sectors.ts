@@ -17,6 +17,8 @@ export interface SectorDef {
   description: string;
   h1: string;
   intro: string;
+  /** Por qué importa la IA privada en este sector: qué datos se quedan en la instancia. */
+  privacy: string;
   pains: string[];
   automations: SectorAutomation[];
   system: { hub: string; modules: { name: string; short: string }[] };
@@ -28,16 +30,17 @@ export interface SectorDef {
   match: string[];
 }
 
-export const sectors: SectorDef[] = [
+const baseSectors: SectorDef[] = [
   {
     slug: "instalaciones-electricas",
     name: "Instalaciones eléctricas, climatización y fotovoltaica",
     forName: "para empresas de instalaciones eléctricas",
     short: "Instalaciones",
-    title: "IA y automatización para empresas de instalaciones eléctricas | Alpa Digital",
-    description: "Presupuestos a partir de fotos, certificados y boletines desde el móvil, control de herramientas por QR y fichaje en obra. Automatización y apps a medida para instaladores eléctricos, de climatización y fotovoltaica.",
-    h1: "IA y automatización para empresas de instalaciones",
+    title: "IA privada para empresas de instalaciones eléctricas | Alpa Digital",
+    description: "Presupuestos a partir de fotos, certificados y boletines desde el móvil, control de herramientas por QR y fichaje en obra. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para empresas de instalaciones eléctricas",
     intro: "En una empresa instaladora, las solicitudes, presupuestos y partes pueden pasar entre obra y oficina por distintos canales. Ayudamos a revisar esos procesos y a desarrollar herramientas y automatizaciones que faciliten el trabajo del equipo, con revisión humana donde haga falta.",
+    privacy: "Presupuestos, datos de clientes, obras y normativa técnica en la instancia de tu empresa. Tus técnicos consultan el REBT o vuestros procedimientos y la IA responde con vuestros documentos, sin subirlos a un chatbot público.",
     pains: ["Presupuestos que se preparan a mano después de la visita, a menudo días después", "Boletines y certificados (CIE, legalizaciones) que se acumulan y retrasan cobros", "Herramientas y material que no se sabe en qué furgoneta están", "Partes de horas y fichajes en papel o en WhatsApp sin orden", "Clientes que llaman para saber cuándo vais y qué falta"],
     automations: [
       { area: "Ventas", title: "Presupuestos a partir de fotos y medidas", text: "El técnico manda fotos, medidas y notas por WhatsApp desde la visita y el presupuesto sale en vuestra plantilla, con vuestras partidas y precios, listo para revisar y enviar.", hours: 7 },
@@ -51,7 +54,7 @@ export const sectors: SectorDef[] = [
     faqs: [
       { question: "¿Funciona si mis técnicos no quieren usar apps?", answer: "Por eso el agente vive en WhatsApp y por voz. No hay que aprender ninguna app: se manda una foto o un audio y el sistema hace el resto." },
       { question: "¿Los certificados salen con el formato oficial?", answer: "Se generan sobre vuestras plantillas y las de Industria de vuestra comunidad, con los datos de la obra y las mediciones. Una persona los revisa y firma." },
-      { question: "¿Por dónde se empieza?", answer: "Por un diagnóstico de una o dos semanas con tu equipo. Después, la primera automatización, normalmente presupuestos o certificados, con alcance y plazo cerrados." },
+      { question: "¿Por dónde se empieza?", answer: "Por un piloto con un proceso concreto, normalmente presupuestos, partes o atención al cliente, probado con vuestros datos reales en una instancia de IA privada. Con el resultado medido se añaden más apps." },
     ],
     provinces: ["sevilla", "cadiz", "malaga", "madrid", "murcia", "valencia"],
     match: ["instalac", "electric"],
@@ -61,10 +64,11 @@ export const sectors: SectorDef[] = [
     name: "Construcción y reformas",
     forName: "para empresas de construcción y reformas",
     short: "Construcción y reformas",
-    title: "IA y automatización para construcción y reformas | Alpa Digital",
-    description: "Presupuestos de reforma a partir de fotos, facturas y albaranes por obra, partes de cuadrilla y clientes informados sin llamadas. Automatización con IA para constructoras y empresas de reformas.",
-    h1: "IA y automatización para construcción y reformas",
+    title: "IA privada para empresas de construcción y reformas | Alpa Digital",
+    description: "Presupuestos de reforma a partir de fotos, facturas y albaranes por obra, partes de cuadrilla y clientes informados sin llamadas. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para empresas de construcción y reformas",
     intro: "En una reforma el dinero se pierde en lo que no se apunta: horas, material, cambios que pidió el cliente y nadie presupuestó. Un agente que recoge todo desde la obra y una administración que se lleva sola cambian el margen de cada trabajo.",
+    privacy: "Presupuestos, costes por obra y datos de clientes y subcontratas en tu propia instancia, no en un chatbot público. Y cada jefe de obra ve solo sus obras.",
     pains: ["Presupuestos de reforma que tardan días y se pierden por lentitud", "Albaranes y facturas de proveedores sin asignar a cada obra", "Cambios en obra que no se documentan ni se cobran", "Partes de cuadrilla en papel y subcontratas sin documentación al día", "Clientes que llaman a diario para saber cómo va"],
     automations: [
       { area: "Ventas", title: "Presupuestos de reforma a partir de fotos", text: "Fotos de la visita, medidas y notas de voz se convierten en un presupuesto por partidas con vuestros precios, listo para revisar.", hours: 8 },
@@ -88,10 +92,11 @@ export const sectors: SectorDef[] = [
     name: "Clínicas dentales, centros médicos y salud",
     forName: "para clínicas y centros de salud",
     short: "Clínicas y salud",
-    title: "IA y automatización para clínicas dentales y centros de salud | Alpa Digital",
-    description: "Citas y recordatorios por WhatsApp, consentimientos en tableta, presupuestos de tratamiento en consulta y liquidación de mutuas. Automatización con IA para clínicas dentales, fisioterapia, estética y centros médicos.",
-    h1: "IA y automatización para clínicas y centros de salud",
+    title: "IA privada para clínicas y centros de salud | Alpa Digital",
+    description: "Citas y recordatorios por WhatsApp, consentimientos en tableta, presupuestos de tratamiento en consulta y liquidación de mutuas. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para clínicas y centros de salud",
     intro: "El teléfono de una clínica no para y la recepción hace de agenda, caja, archivo y marketing a la vez. Un agente que atiende, agenda y recuerda, y unas herramientas que preparan presupuestos, consentimientos y liquidaciones, devuelven la recepción a lo que importa: el paciente que tiene delante.",
+    privacy: "Los datos de salud son una categoría especial en el RGPD. Con una IA privada, historiales, consentimientos y agendas se quedan en la instancia de la clínica, con acceso por persona y sin cederse para entrenar modelos de terceros.",
     pains: ["Teléfono ocupado y citas que se pierden fuera de horario", "Pacientes que no se presentan y huecos sin rellenar", "Consentimientos y documentación en papel", "Presupuestos de tratamiento que se envían tarde y no se siguen", "Liquidaciones de mutuas que llevan semanas"],
     automations: [
       { area: "Atención al cliente", title: "Citas, cambios y recordatorios por WhatsApp", text: "El paciente pide, cambia y confirma citas hablando con el agente. Los huecos se rellenan desde la lista de espera y los recordatorios reducen las ausencias.", hours: 10 },
@@ -103,7 +108,7 @@ export const sectors: SectorDef[] = [
     system: { hub: "Agente de la clínica por WhatsApp y teléfono", modules: [{ name: "Agenda conversacional", short: "Citas y recordatorios" }, { name: "Historial y consentimientos", short: "Documentación del paciente" }, { name: "CRM y presupuestos", short: "Tratamientos y financiación" }, { name: "Facturación y mutuas", short: "Cobros y aseguradoras" }, { name: "Fichaje y turnos", short: "Equipo clínico" }, { name: "Marketing y revisiones", short: "Pacientes que vuelven" }] },
     metrics: [{ value: "-62 %", label: "citas no presentadas" }, { value: "+27 %", label: "tratamientos aceptados" }, { value: "3 días", label: "para liquidar mutuas, antes 3 semanas" }],
     faqs: [
-      { question: "¿Cumple con la protección de datos de salud?", answer: "Los datos de pacientes se quedan en vuestros sistemas. Los proveedores de IA se eligen con garantías de privacidad, no se usan los datos para entrenar modelos y se documenta qué se procesa y dónde, con vuestro delegado de protección de datos si lo tenéis." },
+      { question: "¿Cumple con la protección de datos de salud?", answer: "Los datos de pacientes se procesan en la instancia de IA privada de la clínica, en servidores dedicados en la UE, con acceso por persona y sin usarse para entrenar modelos de terceros. Documentamos qué se procesa y dónde con vuestro delegado de protección de datos." },
       { question: "¿Se integra con mi programa de gestión clínica?", answer: "Con la mayoría sí, por integración o por exportación. Si el programa no lo permite, el agente trabaja con la agenda y los datos que sí están disponibles." },
       { question: "¿Puede el agente dar información médica?", answer: "No. Responde sobre horarios, citas, precios y trámites, y deriva cualquier consulta clínica al profesional." },
     ],
@@ -115,10 +120,11 @@ export const sectors: SectorDef[] = [
     name: "Asesorías, gestorías y despachos",
     forName: "para asesorías, gestorías y despachos",
     short: "Asesorías y despachos",
-    title: "IA y automatización para asesorías, gestorías y despachos | Alpa Digital",
-    description: "Documentación clasificada sola, facturas de clientes leídas y contabilizadas, consultas frecuentes respondidas y propuestas en minutos. Automatización con IA para asesorías fiscales, laborales, gestorías y despachos de abogados.",
-    h1: "IA y automatización para asesorías, gestorías y despachos",
+    title: "IA privada para asesorías, gestorías y despachos | Alpa Digital",
+    description: "Documentación clasificada sola, facturas de clientes leídas y contabilizadas, consultas frecuentes respondidas y propuestas en minutos. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para asesorías, gestorías y despachos",
     intro: "Una asesoría vive de documentos: los que llegan de los clientes, los que hay que presentar y los que hay que explicar. Cada uno pasa por manos que podrían dedicarse a asesorar. La IA clasifica, extrae, registra y responde lo repetitivo, y deja a las personas el criterio.",
+    privacy: "Nóminas, declaraciones y datos fiscales de tus clientes no deberían pasar por un chatbot público. En una IA privada se procesan en la instancia del despacho, con permisos por persona y por cliente.",
     pains: ["Documentación de clientes que llega por email, WhatsApp y papel sin orden", "Facturas de clientes que hay que picar una a una para contabilizar", "Las mismas preguntas de siempre en cada cierre trimestral", "Plazos y requerimientos que se controlan a mano", "Propuestas y presupuestos que se redactan desde cero"],
     automations: [
       { area: "Administración", title: "Documentación clasificada y archivada sola", text: "Cada documento que llega se identifica (factura, nómina, contrato, requerimiento), se asigna al cliente y al expediente y se archiva con su nombre correcto.", hours: 9 },
@@ -132,7 +138,7 @@ export const sectors: SectorDef[] = [
     faqs: [
       { question: "¿Se integra con A3, Sage, Contasol o mi programa contable?", answer: "Trabajamos con los formatos de importación de los programas habituales y, cuando existe, con su API. Las facturas quedan preparadas para contabilizar." },
       { question: "¿El asistente puede responder cuestiones fiscales?", answer: "Responde lo operativo: plazos, documentación, estado de un trámite. Cualquier consulta de criterio la pasa al asesor con el contexto reunido." },
-      { question: "¿Qué pasa con la confidencialidad?", answer: "Los datos se quedan en vuestros sistemas y se documenta qué se procesa y dónde. Trabajamos con proveedores con garantías de privacidad y sin uso de datos para entrenar." },
+      { question: "¿Qué pasa con la confidencialidad?", answer: "Los documentos de tus clientes se procesan en la instancia de IA privada del despacho, en servidores dedicados en la UE, con permisos por persona y por cliente. No se usan para entrenar modelos de terceros y documentamos qué se procesa y dónde." },
     ],
     provinces: ["sevilla", "madrid", "barcelona", "valencia", "malaga", "zaragoza"],
     match: ["servicios profesional", "asesor", "gestor", "despach"],
@@ -142,10 +148,11 @@ export const sectors: SectorDef[] = [
     name: "Distribución y mayoristas",
     forName: "para distribuidores y mayoristas",
     short: "Distribución",
-    title: "IA y automatización para distribuidores y mayoristas | Alpa Digital",
-    description: "Pedidos por WhatsApp o foto convertidos en pedidos reales, stock por ubicación, tarifas por cliente, rutas de reparto y cobros vigilados. Automatización con IA para distribución y comercio mayorista.",
-    h1: "IA y automatización para distribución y mayoristas",
+    title: "IA privada para distribuidores y mayoristas | Alpa Digital",
+    description: "Pedidos por WhatsApp o foto convertidos en pedidos reales, stock por ubicación, tarifas por cliente, rutas de reparto y cobros vigilados. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para distribuidores y mayoristas",
     intro: "Un distribuidor vive de responder rápido y no fallar el pedido. Los pedidos llegan por WhatsApp, por email, por una foto de una lista escrita a mano, y alguien los teclea. Un agente que los entiende y los crea, con el stock y las tarifas a mano, cambia la velocidad de toda la empresa.",
+    privacy: "Tarifas por cliente, márgenes y stock son información sensible. En tu IA privada se quedan en tu instancia y cada comercial ve solo lo que le corresponde.",
     pains: ["Pedidos que llegan por cualquier canal y hay que teclear", "Consultas de stock y precio que interrumpen todo el día", "Roturas de stock y compras a destiempo", "Rutas de reparto hechas a mano y albaranes en papel", "Cobros vencidos que se reclaman tarde"],
     automations: [
       { area: "Ventas", title: "Pedidos por WhatsApp, email o foto", text: "El agente entiende el pedido (aunque sea una foto de una lista), lo confirma con la tarifa del cliente y el plazo, y lo crea en el sistema.", hours: 10 },
@@ -169,10 +176,11 @@ export const sectors: SectorDef[] = [
     name: "Comercio y tiendas online",
     forName: "para comercios y tiendas online",
     short: "Comercio y e-commerce",
-    title: "IA y automatización para comercios y tiendas online | Alpa Digital",
-    description: "Consultas de producto, pedidos y devoluciones atendidos 24 horas, fichas de producto generadas, stock sincronizado y campañas con tu voz. Automatización con IA para tiendas físicas y e-commerce.",
-    h1: "IA y automatización para comercio y tiendas online",
+    title: "IA privada para comercios y tiendas online | Alpa Digital",
+    description: "Consultas de producto, pedidos y devoluciones atendidos 24 horas, fichas de producto generadas, stock sincronizado y campañas con tu voz. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para comercios y tiendas online",
     intro: "Una tienda pequeña compite con gigantes que responden al instante. Un agente que atiende consultas y pedidos por WhatsApp y web con vuestro catálogo real, fichas de producto que se escriben solas y campañas que salen cada semana ponen a un comercio de barrio al nivel de servicio de los grandes.",
+    privacy: "Datos de clientes, pedidos y márgenes en tu propia instancia. La IA atiende con tu catálogo real sin ceder tus datos a terceros.",
     pains: ["Preguntas de disponibilidad, tallas y envíos a todas horas", "Fichas de producto que nunca están completas", "Stock distinto en tienda y en la web", "Devoluciones y cambios gestionados a mano", "Campañas y newsletters que no salen por falta de tiempo"],
     automations: [
       { area: "Atención al cliente", title: "Consultas y pedidos atendidos 24 horas", text: "Disponibilidad, tallas, envíos y estado del pedido respondidos con datos reales por WhatsApp, web e Instagram.", hours: 8 },
@@ -196,10 +204,11 @@ export const sectors: SectorDef[] = [
     name: "Hostelería, restaurantes y hoteles",
     forName: "para hostelería, restaurantes y hoteles",
     short: "Hostelería",
-    title: "IA y automatización para hostelería, restaurantes y hoteles | Alpa Digital",
-    description: "Reservas y dudas respondidas 24 horas, reseñas contestadas, facturas de proveedores y escandallos al día, turnos y extras. Automatización con IA para restaurantes, hoteles y apartamentos turísticos.",
-    h1: "IA y automatización para hostelería, restaurantes y hoteles",
+    title: "IA privada para hostelería, restaurantes y hoteles | Alpa Digital",
+    description: "Reservas y dudas respondidas 24 horas, reseñas contestadas, facturas de proveedores y escandallos al día, turnos y extras. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para hostelería, restaurantes y hoteles",
     intro: "En hostelería todo el mundo llama a la vez y en temporada no hay manos. Un agente que gestiona reservas, cambios y preguntas frecuentes en varios idiomas, y una administración que lee facturas de proveedores y actualiza escandallos sola, dejan al equipo con el cliente que está en la mesa.",
+    privacy: "Reservas, datos de clientes y costes de proveedores en la instancia de tu negocio, con acceso por persona y sin cederse para entrenar modelos de terceros.",
     pains: ["Reservas y preguntas por teléfono, WhatsApp, Instagram y portales, a la vez", "Reseñas sin responder y clientes de temporada que no vuelven", "Facturas de proveedores y precios que cambian cada semana", "Turnos, extras y selección en temporada alta", "Presupuestos de grupos y eventos que se pierden"],
     automations: [
       { area: "Atención al cliente", title: "Reservas y dudas 24 horas en varios idiomas", text: "El agente gestiona reservas, cambios, alergias y preguntas frecuentes por WhatsApp, web y redes, y lo vuelca en vuestro sistema de reservas.", hours: 9 },
@@ -223,10 +232,11 @@ export const sectors: SectorDef[] = [
     name: "Inmobiliarias y administración de fincas",
     forName: "para inmobiliarias y administradores de fincas",
     short: "Inmobiliarias y fincas",
-    title: "IA y automatización para inmobiliarias y administración de fincas | Alpa Digital",
-    description: "Contactos de portales cualificados y visitas agendadas, inquilinos y propietarios atendidos al momento, contratos y recibos generados, fichas de inmuebles en minutos. Automatización con IA para inmobiliarias y administradores de fincas.",
-    h1: "IA y automatización para inmobiliarias y administración de fincas",
+    title: "IA privada para inmobiliarias y administradores de fincas | Alpa Digital",
+    description: "Contactos de portales cualificados y visitas agendadas, inquilinos y propietarios atendidos al momento, contratos y recibos generados, fichas de inmuebles en minutos. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para inmobiliarias y administradores de fincas",
     intro: "Cada contacto de portal que no se responde en minutos se pierde. Y cada comunidad de propietarios genera incidencias, recibos y dudas que llegan a todas horas. Un agente que cualifica, agenda, atiende y documenta convierte la velocidad en operaciones cerradas y comunidades tranquilas.",
+    privacy: "Datos de propietarios, inquilinos y comunidades (documentos de identidad, contratos, recibos) en la instancia de tu agencia o despacho, con permisos por persona.",
     pains: ["Contactos de portales que se responden tarde", "Visitas que se agendan por teléfono y se olvidan", "Incidencias de comunidades por WhatsApp a cualquier hora", "Contratos, recibos y liquidaciones hechos a mano", "Fichas de inmuebles que tardan en publicarse"],
     automations: [
       { area: "Ventas", title: "Contactos cualificados y visitas agendadas", text: "Cada contacto de portal o web recibe respuesta al momento, se cualifica y sale con visita agendada en la agenda del comercial.", hours: 9 },
@@ -250,10 +260,11 @@ export const sectors: SectorDef[] = [
     name: "Industria, talleres y fabricación",
     forName: "para industria, talleres y fabricación",
     short: "Industria y talleres",
-    title: "IA y automatización para industria, talleres y fabricación | Alpa Digital",
-    description: "Presupuestos técnicos en minutos, albaranes y partes sin picar datos, seguimiento de pedidos sin llamadas, documentación de calidad al día. Automatización con IA para talleres, industria auxiliar y fabricantes.",
-    h1: "IA y automatización para industria, talleres y fabricación",
+    title: "IA privada para industria, talleres y fabricación | Alpa Digital",
+    description: "Presupuestos técnicos en minutos, albaranes y partes sin picar datos, seguimiento de pedidos sin llamadas, documentación de calidad al día. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para industria, talleres y fabricación",
     intro: "En un taller o una fábrica pequeña la oficina técnica presupuesta, la administración pica albaranes y alguien atiende las llamadas de «¿cómo va mi pedido?». Un agente que prepara presupuestos técnicos, registra documentos y responde con el estado real de producción devuelve horas a la gente que sabe.",
+    privacy: "Planos, escandallos y documentación técnica son el saber hacer de tu empresa. En una IA privada la oficina técnica consulta y presupuesta con ellos sin sacarlos de tu instancia.",
     pains: ["Presupuestos técnicos que tardan días y quitan tiempo a producción", "Albaranes, facturas y partes de trabajo picados a mano", "Llamadas de clientes preguntando por el estado de su pedido", "Documentación de calidad y certificaciones dispersas", "Mantenimiento y calibraciones controlados en hojas de cálculo"],
     automations: [
       { area: "Ventas", title: "Presupuestos técnicos en minutos", text: "A partir de un plano, un email o una llamada transcrita, el presupuesto se prepara con vuestros materiales, tiempos y márgenes, listo para revisar.", hours: 6 },
@@ -277,10 +288,11 @@ export const sectors: SectorDef[] = [
     name: "Transporte y logística",
     forName: "para empresas de transporte y logística",
     short: "Transporte y logística",
-    title: "IA y automatización para transporte y logística | Alpa Digital",
-    description: "Rutas, albaranes firmados en el móvil, incidencias registradas al momento, presupuestos de portes y documentación de conductores. Automatización con IA para transportistas, agencias de transporte y operadores logísticos.",
-    h1: "IA y automatización para transporte y logística",
+    title: "IA privada para empresas de transporte y logística | Alpa Digital",
+    description: "Rutas, albaranes firmados en el móvil, incidencias registradas al momento, presupuestos de portes y documentación de conductores. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para empresas de transporte y logística",
     intro: "En transporte el margen se pierde en las horas muertas: rutas hechas a mano, albaranes en papel, incidencias que se enteran tarde y presupuestos de portes que se calculan a ojo. Un agente que organiza, documenta y responde convierte cada furgoneta y cada camión en una operación que se ve.",
+    privacy: "Rutas, clientes, tarifas y documentación de conductores en tu propia instancia, con acceso por persona y sin ceder datos a terceros.",
     pains: ["Presupuestos de portes calculados a mano y con retraso", "Rutas hechas cada mañana sin optimizar", "Albaranes en papel que se pierden y retrasan facturas", "Incidencias de entrega de las que se entera la oficina al día siguiente", "Documentación de conductores y vehículos con caducidades sin controlar"],
     automations: [
       { area: "Ventas", title: "Presupuestos de portes al momento", text: "A partir de origen, destino, mercancía y plazo, el presupuesto sale con vuestras tarifas y condiciones, listo para enviar.", hours: 5 },
@@ -304,10 +316,11 @@ export const sectors: SectorDef[] = [
     name: "Agroalimentario y cooperativas",
     forName: "para empresas agroalimentarias y cooperativas",
     short: "Agroalimentario",
-    title: "IA y automatización para empresas agroalimentarias y cooperativas | Alpa Digital",
-    description: "Pedidos y albaranes sin teclear, trazabilidad y documentación de exportación, comunicación con socios y campañas gestionadas sin desbordar la oficina. Automatización con IA para cooperativas, almazaras, bodegas y comercializadoras.",
-    h1: "IA y automatización para agroalimentario y cooperativas",
+    title: "IA privada para empresas agroalimentarias y cooperativas | Alpa Digital",
+    description: "Pedidos y albaranes sin teclear, trazabilidad y documentación de exportación, comunicación con socios y campañas gestionadas sin desbordar la oficina. Apps y automatizaciones en tu propia instancia de IA privada, con tus datos bajo tu control.",
+    h1: "IA privada para empresas agroalimentarias y cooperativas",
     intro: "En campaña, la oficina de una cooperativa o una comercializadora recibe en dos meses el trabajo de un año: pedidos, albaranes, entradas de socios, certificados y documentación de exportación. Un agente que lee, registra y responde, y unas herramientas que llevan la trazabilidad solas, hacen que la campaña no desborde a nadie.",
+    privacy: "Datos de socios, liquidaciones, trazabilidad y clientes de exportación en la instancia de la cooperativa, con acceso por persona y sin cederse para entrenar modelos de terceros.",
     pains: ["Pedidos de clientes y distribuidores que llegan por email y WhatsApp y se teclean", "Albaranes de entrada y salida en papel", "Documentación de exportación y certificados preparados a mano", "Socios que llaman para saber liquidaciones y entregas", "Campañas que desbordan a la oficina"],
     automations: [
       { area: "Ventas", title: "Pedidos de distribuidores sin teclear", text: "Pedidos por email o WhatsApp convertidos en pedidos reales con tarifa del cliente, confirmados y en preparación.", hours: 8 },
@@ -327,6 +340,14 @@ export const sectors: SectorDef[] = [
     match: ["agro", "agricul", "vitivin", "aceite", "cooperativa", "frutos", "cítric", "porcino", "lácteo"],
   },
 ];
+
+/** Pregunta común a todos los sectores: dónde quedan los datos con la IA privada. */
+const privacyFaq = (sector: SectorDef) => ({
+  question: "¿Dónde quedan los datos de mi empresa?",
+  answer: `En una instancia de IA privada de uso exclusivo para tu empresa, en servidores dedicados en la Unión Europea, con copias de seguridad cifradas y permisos por persona y por app. ${sector.privacy}`,
+});
+
+export const sectors: SectorDef[] = baseSectors.map((sector) => ({ ...sector, faqs: [...sector.faqs, privacyFaq(sector)] }));
 
 export function getSector(slug: string): SectorDef | undefined {
   return sectors.find((s) => s.slug === slug);

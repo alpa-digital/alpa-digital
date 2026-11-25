@@ -10,8 +10,8 @@ const ZonesPage = () => (
         <section className="px-4 md:px-8 pb-10">
           <div className="max-w-5xl mx-auto">
             <Breadcrumbs items={[{ name: "Inicio", path: "/" }, { name: "Zonas", path: "/zonas" }]} />
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mt-6 mb-6" style={{ textWrap: "balance" }}>Automatización con IA para pymes en toda España</h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">Nuestra sede está en Utrera (Sevilla). Visitamos presencialmente empresas de Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, y trabajamos en remoto con el resto de España. Elige tu zona para ver qué automatizan los negocios de tu sector.</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mt-6 mb-6" style={{ textWrap: "balance" }}>IA privada para pymes en toda España</h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">Nuestra sede está en Utrera (Sevilla). Visitamos presencialmente empresas de Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, y trabajamos en remoto con el resto de España. Elige tu zona para ver qué apps y automatizaciones de IA privada encajan en los negocios de tu sector.</p>
           </div>
         </section>
         <section className="px-4 md:px-8 pb-16">
@@ -23,7 +23,7 @@ const ZonesPage = () => (
                   {provincesByCommunity(community).map((prov) => (
                     <li key={prov.slug}>
                       <Link to={provincePath(prov)} className={`hover:text-primary transition-colors ${prov.tier === 1 ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-                        Automatización con IA {prov.in}{prov.tier === 1 ? " · presencial" : ""}
+                        IA privada {prov.in}{prov.tier === 1 ? " · presencial" : ""}
                       </Link>
                     </li>
                   ))}
@@ -32,7 +32,7 @@ const ZonesPage = () => (
             ))}
           </div>
         </section>
-        <CtaBand title="¿Tu empresa está en otra parte?" text="Da igual dónde estés: la primera reunión es por videollamada y la mayor parte del trabajo se hace en remoto." onContactClick={openContact} />
+        <CtaBand title="¿Tu empresa está en otra parte?" text="Da igual dónde estés: la plataforma funciona en la nube, la primera reunión es por videollamada y el piloto se puede hacer en remoto." onContactClick={openContact} />
       </>
     )}
   </PageShell>

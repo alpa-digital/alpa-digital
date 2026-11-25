@@ -26,7 +26,7 @@ export const organizationJsonLd = {
   url: site.url,
   email: site.email,
   logo: `${site.url}/icon-512.png`,
-  description: "Consultoría, automatización y desarrollo con inteligencia artificial para pequeñas y medianas empresas en España.",
+  description: "IA privada para pymes: plataforma de IA propia, apps corporativas con IA y automatizaciones sobre los datos de cada empresa.",
   areaServed: [
     { "@type": "Country", name: "España" },
     ...site.onSiteProvinces.map((slug) => ({ "@type": "AdministrativeArea", name: provinces.find((prov) => prov.slug === slug)?.name ?? slug })),
@@ -72,9 +72,10 @@ export function localFaqs(place: string, province: Province) {
           ? `Sí, y de forma presencial: nuestra sede está en Utrera (Sevilla) y visitamos empresas de ${province.name} sin coste para la primera reunión. El seguimiento se hace por videollamada y en persona cuando el proyecto lo pide.`
           : `Sí. Trabajamos con pymes de toda España, ${place} incluido. La mayor parte del trabajo se hace en remoto con reuniones por videollamada y, cuando el proyecto lo pide, viajamos desde nuestra sede en Utrera (Sevilla).`,
     },
-    { question: `¿Qué tipo de empresas ${place} automatizan con IA?`, answer: `En ${province.name} vemos sobre todo ${province.sectors.slice(0, 3).map((s) => s.toLowerCase()).join(", ")}: negocios con mucha atención al cliente, presupuestos, pedidos y documentación que se puede automatizar.` },
-    { question: "¿Cuánto se tarda?", answer: "El diagnóstico dura una o dos semanas. Cada automatización se entrega normalmente entre dos y seis semanas, con alcance y plazo cerrados antes de empezar. El acompañamiento es mensual y sin permanencia." },
-    { question: "¿Necesito cambiar mis programas?", answer: "No. Conectamos la automatización a lo que ya usas: correo, WhatsApp, tu CRM, tu programa de facturación o tu ERP." },
+    { question: `¿Qué es una IA privada para una pyme ${place}?`, answer: "Una plataforma de IA de uso exclusivo para tu empresa: modelos abiertos en infraestructura dedicada, conectados a tus documentos y herramientas, con las apps corporativas que usa tu equipo. No es un chatbot público al que subes tus datos." },
+    { question: `¿Qué tipo de empresas ${place} pueden aprovecharla?`, answer: `En ${province.name} vemos sobre todo ${province.sectors.slice(0, 3).map((s) => s.toLowerCase()).join(", ")}: negocios con mucha atención al cliente, presupuestos, pedidos y documentación, y con datos que no quieren sacar de la empresa.` },
+    { question: "¿Dónde quedan los datos de mi empresa?", answer: "En una instancia de uso exclusivo, en servidores dedicados en la Unión Europea, con copias de seguridad cifradas y permisos por persona y por app. No se usan para entrenar modelos de terceros." },
+    { question: "¿Cómo se empieza?", answer: "Con un piloto sobre un proceso concreto, probado con tus datos reales. El alcance y el plazo se acuerdan por escrito antes de empezar. No hace falta cambiar tus programas: la plataforma se conecta a tu correo, tu CRM, tu ERP y tus documentos." },
   ];
 }
 
@@ -90,16 +91,16 @@ function localSeo(province: Province, municipality?: string): RouteSeo {
   ];
   return {
     path,
-    title: `Automatización con IA para pymes ${placeIn} | Alpa Digital`,
-    description: `Automatización, agentes de IA y software a medida para pymes ${placeIn} (${province.community}). ${province.sectors.slice(0, 3).join(", ")}. Diagnóstico, automatizaciones y sistemas de IA con alcance y plazo cerrados.`,
+    title: `IA privada y automatización para pymes ${placeIn} | Alpa Digital`,
+    description: `IA privada para pymes ${placeIn} (${province.community}): apps corporativas, agentes y automatizaciones con los datos de tu empresa, en infraestructura dedicada en la UE. ${province.sectors.slice(0, 3).join(", ")}. Empezamos con un piloto.`,
     canonical: canonicalUrl(path),
     priority: municipality ? 0.6 : 0.7,
     jsonLd: [
       {
         "@context": "https://schema.org",
         "@type": "Service",
-        name: `Automatización con IA para pymes ${placeIn}`,
-        serviceType: "Automatización e inteligencia artificial para pymes",
+        name: `IA privada y automatización para pymes ${placeIn}`,
+        serviceType: "IA privada, apps corporativas y automatización para pymes",
         provider: { "@id": `${site.url}/#organization` },
         areaServed: municipality
           ? { "@type": "City", name: municipality, containedInPlace: { "@type": "AdministrativeArea", name: province.name } }
@@ -184,40 +185,40 @@ function productCaseSeo(item: ProductCase): RouteSeo {
 }
 
 const staticRoutes: RouteSeo[] = [
-  { path: "/contacto", title: "Contacto | Automatización y desarrollo de software | Alpa Digital", description: "Cuéntanos qué proceso quieres automatizar o qué producto digital quieres desarrollar. Contacta con Alpa Digital, desde Utrera para empresas de toda España.", canonical: canonicalUrl("/contacto"), priority: 0.7, jsonLd: [{ "@context": "https://schema.org", "@type": "ContactPage", name: "Contacto con Alpa Digital", url: canonicalUrl("/contacto"), about: { "@id": `${site.url}/#organization` } }, breadcrumb([{ name: "Inicio", path: "/" }, { name: "Contacto", path: "/contacto/" }])] },
+  { path: "/contacto", title: "Contacto | IA privada para pymes | Alpa Digital", description: "Cuéntanos qué proceso le quita tiempo a tu equipo y con qué datos trabaja. Te proponemos un piloto de IA privada. Alpa Digital, desde Utrera para empresas de toda España.", canonical: canonicalUrl("/contacto"), priority: 0.7, jsonLd: [{ "@context": "https://schema.org", "@type": "ContactPage", name: "Contacto con Alpa Digital", url: canonicalUrl("/contacto"), about: { "@id": `${site.url}/#organization` } }, breadcrumb([{ name: "Inicio", path: "/" }, { name: "Contacto", path: "/contacto/" }])] },
   { path: "/servicios/desarrollo-producto-digital", title: "Desarrollo de producto digital: SaaS y apps | Alpa Digital", description: "Diseño y desarrollo de productos digitales para startups y empresas: plataformas SaaS, aplicaciones móviles y productos web, con IA cuando aporta valor.", canonical: canonicalUrl("/servicios/desarrollo-producto-digital"), priority: 0.9, jsonLd: [{ "@context": "https://schema.org", "@type": "Service", name: "Desarrollo de producto digital", description: "Diseño y desarrollo de plataformas SaaS, aplicaciones móviles y productos web para startups y empresas.", provider: { "@id": `${site.url}/#organization` }, areaServed: { "@type": "Country", name: "España" }, url: canonicalUrl("/servicios/desarrollo-producto-digital") }, breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios/" }, { name: "Desarrollo de producto digital", path: "/servicios/desarrollo-producto-digital/" }]), faqJsonLd(productFaqs)] },
-  { path: "/recursos", title: "Guías de automatización e IA para pymes | Alpa Digital", description: "Guías prácticas sobre automatización, agentes de IA y procesos de empresa para decidir por dónde empezar.", canonical: canonicalUrl("/recursos"), priority: 0.8, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Recursos", path: "/recursos/" }])] },
-  { path: "/casos", title: "Casos de automatización y producto digital | Alpa Digital", description: "Proyectos reales de automatización, inteligencia artificial y desarrollo de productos digitales para empresas y startups.", canonical: canonicalUrl("/casos"), priority: 0.8, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Casos", path: "/casos/" }])] },
-  { path: "/como-trabajamos", title: "Cómo trabajamos: automatización y producto digital | Alpa Digital", description: "Del diagnóstico y la definición del alcance al desarrollo, pruebas y seguimiento de automatizaciones y productos digitales.", canonical: canonicalUrl("/como-trabajamos"), priority: 0.7, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Cómo trabajamos", path: "/como-trabajamos/" }])] },
-  { path: "/nosotros", title: "El equipo de Alpa Digital | Automatización e IA", description: "Conoce a Alpa Digital, equipo de consultoría y desarrollo de automatización e inteligencia artificial para empresas en toda España.", canonical: canonicalUrl("/nosotros"), priority: 0.7, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Nosotros", path: "/nosotros/" }])] },
+  { path: "/recursos", title: "Guías de IA privada y automatización para pymes | Alpa Digital", description: "Guías prácticas sobre IA privada, automatización, agentes de IA y procesos de empresa para decidir por dónde empezar.", canonical: canonicalUrl("/recursos"), priority: 0.8, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Recursos", path: "/recursos/" }])] },
+  { path: "/casos", title: "Casos de IA aplicada y software | Alpa Digital", description: "Proyectos reales de IA aplicada en empresas como CAF y López Alcón Electrificaciones, y productos digitales desarrollados por Alpa.", canonical: canonicalUrl("/casos"), priority: 0.8, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Casos", path: "/casos/" }])] },
+  { path: "/como-trabajamos", title: "Cómo trabajamos: del piloto a tu IA privada | Alpa Digital", description: "Empezamos con un piloto sobre un proceso real, lo probamos con tus datos en una instancia de IA privada y crecemos app a app sobre la misma instancia.", canonical: canonicalUrl("/como-trabajamos"), priority: 0.7, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Cómo trabajamos", path: "/como-trabajamos/" }])] },
+  { path: "/nosotros", title: "El equipo de Alpa Digital | IA privada para pymes", description: "Conoce a Alpa Digital, el equipo que monta plataformas de IA privada para pymes de toda España, desde Utrera (Sevilla).", canonical: canonicalUrl("/nosotros"), priority: 0.7, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Nosotros", path: "/nosotros/" }])] },
   {
     path: "/",
-    title: "Alpa Digital - Automatización con IA y consultoría para pymes",
-    description: "Automatizamos con inteligencia artificial las tareas repetitivas de tu pyme: atención al cliente, presupuestos, facturación y seguimiento comercial. Diagnóstico, implementación y acompañamiento, con alcance y plazo cerrados.",
+    title: "Alpa Digital - IA privada para pymes: tus datos, bajo tu control",
+    description: "Plataforma de IA privada para pymes: modelos abiertos en infraestructura dedicada en la UE, apps corporativas con IA y automatizaciones sobre tus datos. Empezamos con un piloto.",
     canonical: canonicalUrl("/"),
     priority: 1,
     jsonLd: [organizationJsonLd],
   },
   {
     path: "/servicios",
-    title: "Servicios de automatización, IA y desarrollo de software | Alpa Digital",
-    description: "Automatización de procesos, agentes de IA, desarrollo de software y consultoría. Conoce cómo Alpa define, construye y pone en marcha soluciones para pymes y startups.",
+    title: "Servicios de IA privada para pymes: apps, agentes y automatizaciones | Alpa Digital",
+    description: "Plataforma de IA privada para pymes con apps corporativas, agentes y automatizaciones sobre tus datos, consultoría y piloto, y desarrollo a medida.",
     canonical: canonicalUrl("/servicios"),
     priority: 0.8,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }])],
   },
   {
     path: "/sectores",
-    title: "IA y automatización por sectores: instalaciones, clínicas, asesorías, distribución y más | Alpa Digital",
-    description: "Qué automatizan con IA las pymes de cada sector: instalaciones eléctricas, construcción, clínicas, asesorías, distribución, comercio, hostelería, inmobiliarias, industria, transporte y agroalimentario.",
+    title: "IA privada por sectores: instalaciones, clínicas, asesorías, distribución y más | Alpa Digital",
+    description: "Qué apps y automatizaciones de IA privada encajan en cada sector: instalaciones eléctricas, construcción, clínicas, asesorías, distribución, comercio, hostelería, inmobiliarias, industria, transporte y agroalimentario.",
     canonical: canonicalUrl("/sectores"),
     priority: 0.8,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Sectores", path: "/sectores" }])],
   },
   {
     path: "/zonas",
-    title: "Automatización con IA para pymes en toda España, por provincia | Alpa Digital",
-    description: "Trabajamos con pymes de todas las provincias de España. Elige tu provincia o municipio y descubre qué automatizan las empresas de tu zona.",
+    title: "IA privada para pymes en toda España, por provincia | Alpa Digital",
+    description: "Montamos IA privada para pymes de todas las provincias de España. Elige tu provincia o municipio y descubre qué apps y automatizaciones encajan en las empresas de tu zona.",
     canonical: canonicalUrl("/zonas"),
     priority: 0.6,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Zonas", path: "/zonas" }])],

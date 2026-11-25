@@ -76,9 +76,9 @@ const LocationPage = () => {
             <div className="max-w-5xl mx-auto">
               <Breadcrumbs items={[{ name: "Inicio", path: "/" }, { name: "Zonas", path: "/zonas" }, { name: province.name, path: provincePath(province) }, ...(municipality ? [{ name: municipality, path }] : [])]} />
               <p className="inline-flex items-center gap-2 text-sm text-primary font-medium mt-6 mb-3"><MapPin className="w-4 h-4" /> {place} · {province.community}</p>
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mb-6" style={{ textWrap: "balance" }}>Automatización con IA para pymes {placeIn}</h1>
+              <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mb-6" style={{ textWrap: "balance" }}>IA privada para pymes {placeIn}</h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">
-                Ayudamos a las pequeñas y medianas empresas {placeIn} a quitarse de encima el trabajo repetitivo con inteligencia artificial: atención al cliente, presupuestos, facturas, pedidos y seguimiento comercial. {province.note}
+                Montamos en pymes {placeIn} su propia plataforma de IA: modelos abiertos en infraestructura dedicada y, sobre ella, las apps que usa el equipo, como atención al cliente, CRM, presupuestos, documentos y automatizaciones. Con los datos de la empresa y sin cederlos a terceros. {province.note}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mt-8">
                 <button onClick={() => openContact()} className="bg-primary text-white px-7 py-3.5 rounded-full font-medium hover:scale-105 transition-transform">Cuéntanos tu caso</button>
@@ -98,7 +98,7 @@ const LocationPage = () => {
                     {municipality === site.homeMunicipality ? "Aquí está nuestra sede." : `A un paso de nuestra sede en ${site.homeMunicipality} (${site.address.region}).`}
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Primera reunión presencial sin coste en toda la provincia de {province.name}. Diagnóstico con tu equipo en tus instalaciones y seguimiento en persona cuando el proyecto lo pide.
+                    Primera reunión presencial sin coste en toda la provincia de {province.name}. Revisamos el proceso con tu equipo en tus instalaciones y hacemos el seguimiento del piloto en persona cuando hace falta.
                   </p>
                 </div>
               </div>
@@ -107,18 +107,18 @@ const LocationPage = () => {
 
           <section className="px-4 md:px-8 py-12 border-t border-border">
             <div className="max-w-5xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Qué automatizan las empresas {placeIn}</h2>
-              <p className="text-muted-foreground mb-8 max-w-3xl">Ejemplos de procesos que pueden estudiarse en empresas de distintos sectores de {province.name}.</p>
+              <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Qué puede hacer la IA privada en empresas {placeIn}</h2>
+              <p className="text-muted-foreground mb-8 max-w-3xl">Ejemplos de apps y automatizaciones que pueden estudiarse en empresas de distintos sectores de {province.name}.</p>
               <div className="grid md:grid-cols-2 gap-5">
                 {shownSectors.map((sector) => {
                   const page = sectorForLabel(sector);
                   return (
                     <div key={sector} className="rounded-2xl border border-border p-6">
                       <h3 className="text-lg font-medium text-foreground mb-2">{sector}</h3>
-                      <p className="text-muted-foreground leading-relaxed">Ejemplos que se pueden estudiar: {automationFor(sector)}.</p>
+                      <p className="text-muted-foreground leading-relaxed">Apps y automatizaciones que se pueden estudiar: {automationFor(sector)}.</p>
                       {page && (
                         <Link to={sectorPath(page)} className="inline-flex items-center gap-1 text-sm text-primary mt-3 hover:underline">
-                          IA {page.forName} <ArrowRight className="w-3.5 h-3.5" />
+                          IA privada {page.forName} <ArrowRight className="w-3.5 h-3.5" />
                         </Link>
                       )}
                     </div>
@@ -134,7 +134,7 @@ const LocationPage = () => {
                 <div><h2 className="text-2xl md:text-3xl font-light mb-4">{locationGuide.title}</h2><p className="text-muted-foreground leading-relaxed">{locationGuide.intro}</p></div>
                 <div className="border-t border-border">{locationGuide.examples.map((example) => <div key={example.title} className="py-5 border-b border-border"><h3 className="font-medium mb-2">{example.title}</h3><p className="text-sm text-muted-foreground leading-relaxed">{example.text}</p></div>)}</div>
               </div>
-              <div className="max-w-5xl mx-auto mt-7 flex flex-wrap gap-x-8 gap-y-4"><Link to="/recursos/que-procesos-automatizar-primero-pyme/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">Guía: qué procesos automatizar primero <ArrowRight className="w-4 h-4" /></Link><Link to="/casos/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">Ver proyectos de Alpa <ArrowRight className="w-4 h-4" /></Link></div>
+              <div className="max-w-5xl mx-auto mt-7 flex flex-wrap gap-x-8 gap-y-4"><Link to="/recursos/que-procesos-automatizar-primero-pyme/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">Guía: qué procesos automatizar primero <ArrowRight className="w-4 h-4" /></Link><Link to="/servicios/sistemas-ia/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">Qué es una IA privada <ArrowRight className="w-4 h-4" /></Link></div>
             </section>
           )}
 
@@ -143,9 +143,9 @@ const LocationPage = () => {
               <h2 className="text-2xl md:text-3xl font-light text-foreground mb-6">Cómo trabajamos con empresas {placeIn}</h2>
               <div className="grid md:grid-cols-3 gap-5">
                 {[
-                  { t: "Primera reunión por videollamada", d: "30 minutos para entender qué tarea te quita más tiempo. Sin compromiso." },
-                  { t: "Diagnóstico con tu equipo", d: province.tier === 1 ? "Sesiones en tus instalaciones con las personas que hacen el trabajo, para ver el proceso en sitio." : "Sesiones en remoto con las personas que hacen el trabajo. Viajamos desde Utrera (Sevilla) cuando hace falta ver el proceso en sitio." },
-                  { t: "Implantación y formación", d: "Automatización conectada a tus herramientas, probada con casos reales tuyos, y formación del equipo. Un mes de soporte incluido." },
+                  { t: "Primera conversación", d: "Por videollamada, para entender qué proceso le quita más tiempo a tu equipo y con qué datos trabaja. Sin compromiso." },
+                  { t: "Piloto con tus datos", d: province.tier === 1 ? "Montamos ese proceso en una instancia de IA privada y lo revisamos con tu equipo en tus instalaciones, con casos reales." : "Montamos ese proceso en una instancia de IA privada y lo revisamos con tu equipo en remoto, con casos reales. Viajamos desde Utrera (Sevilla) cuando hace falta." },
+                  { t: "App a app", d: "Con el resultado medido, añadimos más apps y automatizaciones sobre la misma instancia, y formamos al equipo." },
                 ].map((step, i) => (
                   <div key={step.t} className="rounded-2xl border border-border bg-background p-6">
                     <p className="text-xs text-primary font-medium mb-2">Paso {i + 1}</p>
@@ -215,7 +215,7 @@ const LocationPage = () => {
             </div>
           </section>
 
-          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano ${placeIn}?`} text="Escríbenos en dos líneas. Te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías." onContactClick={openContact} />
+          <CtaBand title={`¿Montamos tu IA privada ${placeIn}?`} text="Escríbenos en dos líneas qué proceso le quita más tiempo a tu equipo. Te diremos con franqueza si merece la pena y te proponemos un piloto." onContactClick={openContact} />
         </>
       )}
     </PageShell>

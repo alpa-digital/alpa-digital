@@ -9,7 +9,7 @@ const CTA = () => {
   return <section className="studio-contact" aria-labelledby="home-contact-title">
     <div>
       <h2 id="home-contact-title">
-        <span>{english ? "Shall we get started?" : "¿Lo ponemos en marcha?"}</span>{" "}
+        <span>{english ? "Shall we set up your private AI?" : "¿Montamos tu IA privada?"}</span>{" "}
         <Link to="/contacto/" state={{ from: pathname }}>{english ? "Let's talk." : "Hablemos."}<ArrowUpRight aria-hidden="true" /></Link>
       </h2>
     </div>

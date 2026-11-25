@@ -21,7 +21,7 @@ const ProcessPage = () => {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const isOpen = activePhase !== null;
   const phase = activePhase !== null ? stages[activePhase] : null;
-  const projects = getWorkProjects(lang).filter(item => ["makernotch", "consulta-manuales-mantenimiento-ferroviario"].includes(item.slug));
+  const projects = getWorkProjects(lang).filter(item => ["seleccion-candidatos-sector-electrico", "consulta-manuales-mantenimiento-ferroviario"].includes(item.slug));
 
   useEffect(() => {
     const sections = Array.from(document.querySelectorAll<HTMLElement>(".method-stage"));

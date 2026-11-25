@@ -7,10 +7,11 @@ const Footer = () => {
   const { lang } = useLang();
   const english = lang === "en";
   const serviceLinks = [
-    { href: "/servicios/automatizacion-ia-pymes/", label: english ? "Process automation" : "Automatización de procesos" },
-    { href: "/servicios/agentes-ia-empresas/", label: english ? "AI agents" : "Agentes de IA" },
-    { href: "/servicios/desarrollo-producto-digital/", label: english ? "Digital product development" : "Desarrollo de producto digital" },
-    { href: "/servicios/consultoria-ia-pymes/", label: english ? "AI consulting" : "Consultoría de IA" },
+    { href: "/servicios/sistemas-ia/", label: english ? "Private AI for businesses" : "IA privada para empresas" },
+    { href: "/servicios/desarrollo-software-medida-ia/", label: english ? "Business apps with AI" : "Apps corporativas con IA" },
+    { href: "/servicios/agentes-ia-empresas/", label: english ? "Private AI agents" : "Agentes de IA privados" },
+    { href: "/servicios/automatizacion-ia-pymes/", label: english ? "Automations" : "Automatizaciones" },
+    { href: "/servicios/consultoria-ia-pymes/", label: english ? "Consulting and pilot" : "Consultoría y piloto" },
   ];
   const studioLinks = [
     { href: "/contacto/", label: english ? "Contact" : "Contacto" },
@@ -27,7 +28,7 @@ const Footer = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-[1.1fr_1fr_.8fr_1fr] gap-9 lg:gap-12">
           <div>
             <Link to="/" aria-label={english ? "Alpa Digital home" : "Alpa Digital, inicio"}><img src={alpaLogoWhite} alt="Alpa Digital" className="h-8 w-auto" width="108" height="32" loading="lazy" /></Link>
-            <p className="text-white/65 text-sm leading-relaxed mt-5 max-w-[24ch]">{english ? "Automation, AI and digital product development." : "Automatización, IA y desarrollo de producto digital."}</p>
+            <p className="text-white/65 text-sm leading-relaxed mt-5 max-w-[24ch]">{english ? "Private AI, business apps and automation for SMEs." : "IA privada, apps corporativas y automatización para pymes."}</p>
           </div>
           <nav aria-label={english ? "Services" : "Servicios"}>
             <h2 className="font-semibold text-sm mb-4">{english ? "Services" : "Servicios"}</h2>
