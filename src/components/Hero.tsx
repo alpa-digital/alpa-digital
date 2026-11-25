@@ -1,68 +1,84 @@
-import { useEffect, useState } from "react";
-import { Clock, ShieldCheck, ClipboardCheck } from "lucide-react";
-import { useCopy } from "@/i18n";
+import { useEffect, useRef, useState } from "react";
+import { Play, X } from "lucide-react";
+import { useLang } from "@/i18n";
+import { track } from "@/lib/analytics";
 
-interface HeroProps {
-  onContactClick: () => void;
-}
-
-
-const Hero = ({ onContactClick }: HeroProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const c = useCopy();
+const Hero = () => {
+  const { lang } = useLang();
+  const english = lang === "en";
+  const [filmOpen, setFilmOpen] = useState(false);
+  const [filmClosing, setFilmClosing] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const filmTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setIsVisible(true);
-  }, []);
+    if (!filmOpen) return;
+    const dialog = dialogRef.current;
+    const trigger = filmTriggerRef.current;
+    const previousOverflow = document.body.style.overflow;
+    dialog?.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      dialog?.close();
+      trigger?.focus({ preventScroll: true });
+    };
+  }, [filmOpen]);
+  useEffect(() => {
+    if (!filmClosing) return;
+    // Also close if a motion preference changes or an animation is cancelled mid-exit.
+    const timer = window.setTimeout(() => setFilmOpen(false), 220);
+    return () => window.clearTimeout(timer);
+  }, [filmClosing]);
 
-  return (
-    <div className="bg-background relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
-        <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-primary/60 rounded-full animate-pulse" style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
-        <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-primary/40 rounded-full animate-pulse" style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
-      </div>
+  const openFilm = () => {
+    setFilmClosing(false);
+    setFilmOpen(true);
+    track("video_play", { place: "home_hero" });
+  };
+  const closeFilm = () => {
+    dialogRef.current?.querySelector("video")?.pause();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setFilmOpen(false);
+    else setFilmClosing(true);
+  };
 
-      <section className="flex items-center pt-28 md:pt-32 pb-16 md:pb-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-8 w-full">
-          <div className={`max-w-6xl transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <p className="text-sm md:text-base font-medium text-primary mb-6 animate-fade-in tracking-wide uppercase">
-              {c.hero.eyebrow}
-            </p>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-foreground leading-[1.05] mb-10 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              {c.hero.title}
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground font-medium max-w-3xl animate-fade-in" style={{ animationDelay: '0.4s', lineHeight: '1.8' }}>
-              {c.hero.body}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mt-10 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <button
-                onClick={onContactClick}
-                className="bg-primary text-white px-8 py-4 rounded-full text-base md:text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 active:scale-95"
-              >
-                {c.hero.ctaPrimary}
-              </button>
-              <a
-                href="#automatizaciones"
-                className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base md:text-lg font-medium border border-border text-foreground hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
-              >
-                {c.hero.ctaSecondary}
-              </a>
-            </div>
-
-            <ul className="flex flex-wrap gap-x-8 gap-y-3 mt-10 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.8s' }}>
-              <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary" /> {c.hero.point1}</li>
-              <li className="flex items-center gap-2"><ClipboardCheck className="w-4 h-4 text-primary" /> {c.hero.point2}</li>
-              <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> {c.hero.point3}</li>
-            </ul>
-          </div>
+  return <>
+    <section className="studio-hero" aria-labelledby="home-title">
+      <div className="studio-hero-content">
+        <h1 id="home-title">
+          <span className="studio-hero-line"><span>{english ? "We automate processes." : "Automatizamos procesos."}</span></span>{" "}
+          <span className="studio-hero-line"><span>{english ? "We build products." : "Desarrollamos productos."}</span></span>
+        </h1>
+        <div className="studio-hero-bottom">
+          <p>{english
+            ? "We are Alpa, an automation and software development team. We connect your business tools and build SaaS, web platforms and mobile apps from scratch."
+            : "Somos Alpa, un equipo de automatización y desarrollo de software. Conectamos las herramientas de tu empresa y creamos SaaS, plataformas web y apps móviles desde cero."}</p>
+          <button ref={filmTriggerRef} type="button" className="studio-hero-video" onClick={openFilm} aria-haspopup="dialog">
+            <span className="studio-hero-play"><Play size={23} fill="currentColor" aria-hidden="true" /></span>
+            <span className="studio-hero-video-label">
+              <span>{english ? "Meet Alpa" : "Conoce Alpa"}</span>
+              <span>{english ? "Watch video · 56 sec" : "Ver vídeo · 56 s"}</span>
+            </span>
+          </button>
         </div>
-      </section>
-
-    </div>
-  );
+      </div>
+    </section>
+    {filmOpen && <dialog
+      ref={dialogRef}
+      onCancel={event => { event.preventDefault(); closeFilm(); }}
+      onClose={() => setFilmOpen(false)}
+      data-closing={filmClosing}
+      onAnimationEnd={event => { if (event.target === event.currentTarget && filmClosing) setFilmOpen(false); }}
+      aria-label={english ? "Alpa presentation" : "Presentación de Alpa"}
+      className="studio-film w-[calc(100%-2rem)] max-w-5xl rounded-xl bg-[#0D0E11] p-3 md:p-5 text-white backdrop:bg-black/80"
+    >
+      <div className="flex justify-end mb-3">
+        <button type="button" autoFocus onClick={closeFilm} aria-label={english ? "Close video" : "Cerrar vídeo"} className="p-2 rounded-full hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+          <X className="w-5 h-5" aria-hidden="true" />
+        </button>
+      </div>
+      <video src="/alpa-marca.mp4" controls autoPlay playsInline className="w-full rounded-lg" />
+    </dialog>}
+  </>;
 };
-
 export default Hero;

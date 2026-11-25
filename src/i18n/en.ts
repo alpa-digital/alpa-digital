@@ -11,8 +11,8 @@ export const en: Copy = {
   },
   hero: {
     eyebrow: "AI and automation for small businesses",
-    title: "Your company running while you run the business",
-    body: "We build the AI systems your company needs, from a single automation that takes a task off your plate to custom apps and connected agents, and we help you decide what to build and in what order. No endless projects, no technology nobody understands.",
+    title: "Automation and digital products to move forward",
+    body: "We help businesses automate tasks with AI and build digital products for startups and teams that want to bring an idea to their users. We decide what is worth building and work in stages.",
     ctaPrimary: "Tell us about your case",
     ctaSecondary: "See what we build",
     point1: "First automation in weeks, not months",
@@ -118,7 +118,10 @@ export const en: Copy = {
     },
   },
   services: {
-    title: "Three lines of service",
+    title: "From deciding to building",
+    productTitle: "Digital product development",
+    productDescription: "We build SaaS, mobile apps and web products for startups and businesses.",
+    productLink: "Explore product development",
     subtitle: "Decide, build and keep moving. You can start with any of them.",
     lines: {
       diagnostico: {
@@ -223,46 +226,20 @@ export const en: Copy = {
     ],
   },
   cta: {
-    title: "Which task would you like to stop doing by hand?",
-    body: "Write to us in two lines. We will tell you honestly whether it is worth automating and how much time you would save, within 24 hours.",
+    title: "What would you like to build or improve?",
+    body: "Tell us what your team needs. We will explore the problem and the next step together.",
     button: "Tell us about your case",
   },
   faq: {
-    title: "Frequently asked questions",
-    subtitle: "What companies ask us before we start",
+    title: "Frequently asked questions.",
+    subtitle: "If you have another question, we can discuss it in our first conversation.",
     items: [
-      {
-        q: "Is this for a company my size?",
-        a: "Yes. We work with companies of 5 to 100 people: professional firms, clinics, distributors, workshops, estate agents, shops and service businesses. You need no IT department and no large investment. We start with a single process and grow with the results.",
-      },
-      {
-        q: "Which tasks can be automated with AI?",
-        a: "The ones that repeat, follow similar rules and eat time: answering frequent enquiries, preparing quotes, reading and recording invoices, following up with customers, screening applications, writing content or preparing reports. In the assessment we tell you which ones make sense in your case and which do not.",
-      },
-      {
-        q: "Do I have to change the software I use?",
-        a: "No. We connect the automation to the tools you already use: email, WhatsApp, Google Workspace or Microsoft 365, your CRM, your invoicing software or your ERP. We only suggest changing a tool when that tool is the problem, and we will say so plainly.",
-      },
-      {
-        q: "What happens to my data and my customers' data?",
-        a: "Your data stays in your systems. We choose AI providers with privacy guarantees, we never use your information to train models, and we put in writing which data is processed and where. If your sector has special requirements, we adapt the solution to them.",
-      },
-      {
-        q: "What if the AI gets it wrong?",
-        a: "It does get things wrong, like anyone new to a job. That is why we design every automation with review points: the AI prepares, a person approves what matters. Over time, once reliability is proven, it can be given more autonomy.",
-      },
-      {
-        q: "How long does it take?",
-        a: "The assessment takes one or two weeks. Each automation is usually delivered in two to six weeks, with scope and deadline agreed before we start. Ongoing support is monthly with no lock-in. We never work on open-ended hours.",
-      },
-      {
-        q: "Where are you based?",
-        a: "Our office is in Utrera (Seville, Spain). We work on site with companies in Seville, Cádiz, Huelva, Córdoba, Málaga and Badajoz, and remotely with companies across Spain: the first meeting is a video call and most of the work needs no travel.",
-      },
-      {
-        q: "What happens once the automation is running?",
-        a: "We train your team, document how it works and stay with you for the first month. After that you can run it yourself, keep us on monthly or call us when something changes in your business.",
-      },
+      { q: "Do you work with small businesses or startups?", a: "Both. We help small businesses improve processes and build digital products for startups and established companies. The scope depends on the problem and the stage of the project." },
+      { q: "Does my idea need to be fully defined?", a: "No. We can help you understand the need, set priorities and define a first version or a test before starting development." },
+      { q: "Does every project need AI?", a: "No. We use AI when it adds value to the process or product. Sometimes connecting tools or building an application without AI is enough." },
+      { q: "Can you work with what we already have?", a: "We can study your tools or an existing product and assess how to connect or evolve them. First we review their condition and available access before agreeing on changes." },
+      { q: "How are budget and timelines agreed?", a: "First we define the need and the scope of the phase to be developed. The proposal covers the planned work, timeline and how it will be checked. Integrations, data and product complexity affect the estimate." },
+      { q: "Where do you work?", a: "We are based in Utrera, Seville. We work remotely with companies across Spain and on site in nearby provinces when the project requires it." },
     ],
   },
   footer: {
@@ -278,14 +255,15 @@ export const en: Copy = {
   },
   contact: {
     title: "Let's talk about your company",
-    subtitle: "Tell us what is eating your time and we reply within 24 hours",
+    subtitle: "Tell us what you need and we can discuss the next steps",
     close: "Close",
     need: "What do you need?",
     needOptions: {
       general: "Not sure yet",
-      diagnostico: "Diagnosis and R&D",
-      sistemas: "Building",
-      acompanamiento: "Consulting and advisory",
+      diagnostico: "Automation and AI",
+      sistemas: "Custom software",
+      acompanamiento: "AI consulting",
+      producto: "Product development",
     },
     name: "Name",
     namePlaceholder: "Your full name",
@@ -295,17 +273,17 @@ export const en: Copy = {
     phonePlaceholder: "+34 600 000 000",
     company: "Company",
     companyPlaceholder: "Your company name",
-    message: "Which task eats most of your time?",
-    messagePlaceholder: "E.g. every week I spend hours copying invoices by hand, answering the same questions on WhatsApp...",
+    message: "Tell us about your project or need",
+    messagePlaceholder: "For example, a process to improve or a product you would like to build...",
     cancel: "Cancel",
     send: "Send message",
     sending: "Sending...",
     directEmail: "Or write to us directly at",
-    mailSubject: "AI automation enquiry from alpa.digital",
+    mailSubject: "Project enquiry from alpa.digital",
     toastTitle: "Message sent",
-    toastBody: "We read it today and reply within 24 hours.",
+    toastBody: "Thanks for getting in touch. The Alpa team will review your enquiry and reply by email.",
     toastFallbackTitle: "Finish sending from your email",
-    toastFallbackBody: "We could not send it from the site, so we opened your email client with the message already written.",
+    toastFallbackBody: "We could not send your enquiry. Your message is still here: try again or send it from your email.",
     errors: {
       nameRequired: "Your name is required",
       nameLong: "The name must be under 100 characters",

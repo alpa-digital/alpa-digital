@@ -16,7 +16,7 @@ const CookieConsent = () => {
       <p className="text-sm text-foreground font-medium mb-1">{c.cookies.title}</p>
       <p className="text-sm text-muted-foreground leading-relaxed mb-4">
         {c.cookies.textStart}
-        <Link to="/politica-cookies" className="text-primary underline">{c.cookies.policy}</Link>{c.cookies.textEnd}
+        <Link to="/politica-cookies/" className="text-primary underline">{c.cookies.policy}</Link>{c.cookies.textEnd}
       </p>
       <div className="flex gap-2">
         <button onClick={() => { grantConsent(); setVisible(false); }} className="flex-1 bg-primary text-white rounded-full px-4 py-2 text-sm font-medium hover:bg-primary/90">{c.cookies.accept}</button>

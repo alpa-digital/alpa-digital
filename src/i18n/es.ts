@@ -12,8 +12,8 @@ export const es = {
   },
   hero: {
     eyebrow: "Automatización e IA para pymes",
-    title: "Tu pyme trabajando mientras tú te ocupas del negocio",
-    body: "Construimos los sistemas de IA que tu pyme necesita, desde una automatización que quita una tarea hasta apps corporativas y agentes interconectados, y te ayudamos a decidir con criterio qué construir y en qué orden. Sin proyectos eternos ni tecnología que nadie entiende.",
+    title: "Automatización y productos digitales para avanzar",
+    body: "Ayudamos a empresas a automatizar tareas con IA y construimos productos digitales para startups y equipos que quieren llevar una idea a sus usuarios. Definimos qué merece la pena construir y avanzamos por fases.",
     ctaPrimary: "Cuéntanos tu caso",
     ctaSecondary: "Ver qué construimos",
     point1: "Primera automatización en semanas, no meses",
@@ -119,7 +119,10 @@ export const es = {
     },
   },
   services: {
-    title: "Tres líneas de servicio",
+    title: "De decidir a construir",
+    productTitle: "Desarrollo de producto digital",
+    productDescription: "Creamos SaaS, aplicaciones móviles y productos web para startups y empresas.",
+    productLink: "Ver desarrollo de producto",
     subtitle: "Decidir, construir y seguir avanzando. Puedes empezar por cualquiera.",
     lines: {
       diagnostico: {
@@ -224,46 +227,20 @@ export const es = {
     ],
   },
   cta: {
-    title: "¿Qué tarea te gustaría dejar de hacer a mano?",
-    body: "Escríbenos en dos líneas. Te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías, en menos de 24 h.",
+    title: "¿Qué te gustaría construir o mejorar?",
+    body: "Cuéntanos qué necesita tu equipo. Estudiaremos contigo el problema y el siguiente paso.",
     button: "Cuéntanos tu caso",
   },
   faq: {
-    title: "Preguntas frecuentes",
-    subtitle: "Lo que nos preguntan las pymes antes de empezar",
+    title: "Preguntas frecuentes.",
+    subtitle: "Si te queda alguna duda, la vemos contigo en la primera conversación.",
     items: [
-      {
-        q: "¿Esto es para una empresa de mi tamaño?",
-        a: "Sí. Trabajamos con pymes de entre 5 y 100 personas: despachos, clínicas, distribuidores, talleres, inmobiliarias, comercios y empresas de servicios. No hace falta departamento de informática ni grandes inversiones. Empezamos por un solo proceso y crecemos según los resultados.",
-      },
-      {
-        q: "¿Qué tareas se pueden automatizar con IA?",
-        a: "Las que se repiten, siguen reglas parecidas y consumen tiempo: responder consultas frecuentes, preparar presupuestos, leer y registrar facturas, hacer seguimiento a clientes, cribar candidaturas, redactar contenido o preparar informes. En el diagnóstico te decimos cuáles tienen sentido en tu caso y cuáles no.",
-      },
-      {
-        q: "¿Tengo que cambiar mis programas actuales?",
-        a: "No. Conectamos la automatización a las herramientas que ya usas: correo, WhatsApp, Google Workspace o Microsoft 365, tu CRM, tu programa de facturación o tu ERP. Solo recomendamos cambiar de herramienta cuando la actual es el problema, y eso te lo diremos con claridad.",
-      },
-      {
-        q: "¿Qué pasa con mis datos y los de mis clientes?",
-        a: "Tus datos siguen en tus sistemas. Elegimos proveedores de IA con garantías de privacidad, no usamos tu información para entrenar modelos y dejamos por escrito qué datos se procesan y dónde. Si tu sector tiene requisitos especiales, adaptamos la solución a ellos.",
-      },
-      {
-        q: "¿Y si la IA se equivoca?",
-        a: "Se equivoca, como cualquier persona nueva en un puesto. Por eso diseñamos cada automatización con puntos de revisión: la IA prepara, una persona aprueba lo importante. Con el tiempo, cuando la fiabilidad está demostrada, se puede dar más autonomía.",
-      },
-      {
-        q: "¿Cuánto se tarda?",
-        a: "El diagnóstico dura una o dos semanas. Cada automatización se entrega normalmente entre dos y seis semanas, con alcance y plazo cerrados antes de empezar. El acompañamiento es mensual y sin permanencia. Nunca trabajamos por horas abiertas.",
-      },
-      {
-        q: "¿Dónde estáis?",
-        a: "Nuestra sede está en Utrera (Sevilla). Trabajamos presencialmente con empresas de Sevilla, Cádiz, Huelva, Córdoba, Málaga y Badajoz, y en remoto con pymes de toda España: la primera reunión es por videollamada y la mayor parte del trabajo no necesita desplazamientos.",
-      },
-      {
-        q: "¿Qué pasa cuando la automatización está en marcha?",
-        a: "Formamos a tu equipo, dejamos documentado cómo funciona y te acompañamos el primer mes. Después puedes gestionarla tú, contar con nosotros mes a mes o llamarnos cuando algo cambie en tu negocio.",
-      },
+      { q: "¿Trabajáis con pymes o con startups?", a: "Trabajamos con ambas. Ayudamos a pymes a mejorar procesos y desarrollamos productos digitales para startups y empresas existentes. El alcance depende del problema y de la fase del proyecto." },
+      { q: "¿Necesito tener la idea completamente definida?", a: "No. Podemos ayudarte a entender la necesidad, ordenar prioridades y definir una primera versión o una prueba antes de comenzar el desarrollo." },
+      { q: "¿Todos los proyectos tienen que llevar IA?", a: "No. Usamos IA cuando aporta valor al proceso o al producto. En otros casos puede bastar con conectar herramientas o desarrollar una aplicación sin IA." },
+      { q: "¿Podéis trabajar con lo que ya tenemos?", a: "Podemos estudiar tus herramientas o un producto existente y valorar cómo integrarlos o evolucionarlos. Primero revisamos su estado y el acceso disponible antes de acordar los cambios." },
+      { q: "¿Cómo se acuerdan el presupuesto y los plazos?", a: "Primero concretamos la necesidad y el alcance de la fase que se va a desarrollar. La propuesta recoge el trabajo previsto, el plazo y cómo se comprobará. Las integraciones, los datos y la complejidad del producto influyen en la estimación." },
+      { q: "¿Dónde trabajáis?", a: "Nuestra sede está en Utrera, Sevilla. Trabajamos en remoto con empresas de toda España y de forma presencial en las provincias cercanas cuando el proyecto lo requiere." },
     ],
   },
   footer: {
@@ -279,14 +256,15 @@ export const es = {
   },
   contact: {
     title: "Hablemos de tu empresa",
-    subtitle: "Cuéntanos qué te quita tiempo y te respondemos en menos de 24 h",
+    subtitle: "Cuéntanos qué necesitas y hablaremos de los siguientes pasos",
     close: "Cerrar",
     need: "¿Qué necesitas?",
     needOptions: {
       general: "Todavía no lo sé",
-      diagnostico: "Diagnóstico e I+D",
-      sistemas: "Construcción",
-      acompanamiento: "Consultoría y asesoría",
+      diagnostico: "Automatización e IA",
+      sistemas: "Software a medida",
+      acompanamiento: "Consultoría de IA",
+      producto: "Desarrollo de producto",
     },
     name: "Nombre",
     namePlaceholder: "Tu nombre completo",
@@ -296,17 +274,17 @@ export const es = {
     phonePlaceholder: "+34 600 000 000",
     company: "Empresa",
     companyPlaceholder: "Nombre de tu empresa",
-    message: "¿Qué tarea te quita más tiempo?",
-    messagePlaceholder: "Ej.: cada semana dedico horas a pasar facturas a mano, contestar las mismas preguntas por WhatsApp...",
+    message: "Cuéntanos tu proyecto o necesidad",
+    messagePlaceholder: "Por ejemplo, un proceso que quieres mejorar o un producto que te gustaría desarrollar...",
     cancel: "Cancelar",
     send: "Enviar mensaje",
     sending: "Enviando...",
     directEmail: "O escríbenos directamente a",
-    mailSubject: "Consulta de automatización con IA desde alpa.digital",
+    mailSubject: "Consulta de proyecto desde alpa.digital",
     toastTitle: "Mensaje enviado",
-    toastBody: "Lo leemos hoy mismo y te respondemos en menos de 24 h.",
+    toastBody: "Gracias por escribirnos. El equipo de Alpa revisará tu consulta y te responderá por email.",
     toastFallbackTitle: "Termina el envío desde tu correo",
-    toastFallbackBody: "No hemos podido enviarlo desde la web, así que hemos abierto tu cliente de email con el mensaje ya escrito.",
+    toastFallbackBody: "No hemos podido enviar tu consulta. Tu mensaje sigue aquí: puedes volver a intentarlo o enviarlo desde tu correo.",
     errors: {
       nameRequired: "El nombre es obligatorio",
       nameLong: "El nombre debe tener menos de 100 caracteres",

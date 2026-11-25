@@ -37,7 +37,7 @@ export const sectors: SectorDef[] = [
     title: "IA y automatización para empresas de instalaciones eléctricas | Alpa Digital",
     description: "Presupuestos a partir de fotos, certificados y boletines desde el móvil, control de herramientas por QR y fichaje en obra. Automatización y apps a medida para instaladores eléctricos, de climatización y fotovoltaica.",
     h1: "IA y automatización para empresas de instalaciones",
-    intro: "Electricistas, instaladores de climatización y empresas de fotovoltaica viven entre la obra y la oficina: presupuestos que se hacen de noche, certificados que se retrasan, herramientas que desaparecen y horas que nadie apunta. Todo eso se puede quitar de encima con un agente al que los técnicos hablan desde la furgoneta.",
+    intro: "En una empresa instaladora, las solicitudes, presupuestos y partes pueden pasar entre obra y oficina por distintos canales. Ayudamos a revisar esos procesos y a desarrollar herramientas y automatizaciones que faciliten el trabajo del equipo, con revisión humana donde haga falta.",
     pains: ["Presupuestos que se preparan a mano después de la visita, a menudo días después", "Boletines y certificados (CIE, legalizaciones) que se acumulan y retrasan cobros", "Herramientas y material que no se sabe en qué furgoneta están", "Partes de horas y fichajes en papel o en WhatsApp sin orden", "Clientes que llaman para saber cuándo vais y qué falta"],
     automations: [
       { area: "Ventas", title: "Presupuestos a partir de fotos y medidas", text: "El técnico manda fotos, medidas y notas por WhatsApp desde la visita y el presupuesto sale en vuestra plantilla, con vuestras partidas y precios, listo para revisar y enviar.", hours: 7 },
@@ -54,7 +54,7 @@ export const sectors: SectorDef[] = [
       { question: "¿Por dónde se empieza?", answer: "Por un diagnóstico de una o dos semanas con tu equipo. Después, la primera automatización, normalmente presupuestos o certificados, con alcance y plazo cerrados." },
     ],
     provinces: ["sevilla", "cadiz", "malaga", "madrid", "murcia", "valencia"],
-    match: ["instalac", "electric", "construc"],
+    match: ["instalac", "electric"],
   },
   {
     slug: "construccion-reformas",

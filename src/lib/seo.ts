@@ -1,3 +1,7 @@
+import { productFaqs } from "@/data/product";
+import { resources, resourcePath, getResource, type Resource } from "@/data/resources";
+import { caseStudies, casePath, getCase, type CaseStudy } from "@/data/cases";
+import { productCases, productCasePath, getProductCase, type ProductCase } from "@/data/productCases";
 import { provinces, getProvince, getMunicipality, slugify, type Province } from "@/data/locations";
 import { services, getService, pillarOf, type ServiceDef } from "@/data/services";
 import { site } from "@/data/site";
@@ -21,7 +25,7 @@ export const organizationJsonLd = {
   name: site.name,
   url: site.url,
   email: site.email,
-  logo: `${site.url}/alpa-logo.png`,
+  logo: `${site.url}/icon-512.png`,
   description: "Consultoría, automatización y desarrollo con inteligencia artificial para pequeñas y medianas empresas en España.",
   areaServed: [
     { "@type": "Country", name: "España" },
@@ -40,10 +44,12 @@ export const organizationJsonLd = {
   priceRange: "€€",
 };
 
+const canonicalUrl = (path: string) => `${site.url}${path === "/" ? "/" : `${path.replace(/\/+$/, "")}/`}`;
+
 const breadcrumb = (items: { name: string; path: string }[]) => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  itemListElement: items.map((item, i) => ({ "@type": "ListItem", position: i + 1, name: item.name, item: `${site.url}${item.path}` })),
+  itemListElement: items.map((item, i) => ({ "@type": "ListItem", position: i + 1, name: item.name, item: canonicalUrl(item.path) })),
 });
 
 const faqJsonLd = (faqs: { question: string; answer: string }[]) => ({
@@ -52,10 +58,10 @@ const faqJsonLd = (faqs: { question: string; answer: string }[]) => ({
   mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
 });
 
-export const servicePath = (service: ServiceDef) => `/servicios/${service.slug}`;
-export const sectorPath = (sector: SectorDef) => `/sectores/${sector.slug}`;
-export const provincePath = (province: Province) => `/automatizacion-ia/${province.slug}`;
-export const municipalityPath = (province: Province, municipality: string) => `/automatizacion-ia/${province.slug}/${slugify(municipality)}`;
+export const servicePath = (service: ServiceDef) => `/servicios/${service.slug}/`;
+export const sectorPath = (sector: SectorDef) => `/sectores/${sector.slug}/`;
+export const provincePath = (province: Province) => `/automatizacion-ia/${province.slug}/`;
+export const municipalityPath = (province: Province, municipality: string) => `/automatizacion-ia/${province.slug}/${slugify(municipality)}/`;
 
 export function localFaqs(place: string, province: Province) {
   return [
@@ -86,7 +92,7 @@ function localSeo(province: Province, municipality?: string): RouteSeo {
     path,
     title: `Automatización con IA para pymes ${placeIn} | Alpa Digital`,
     description: `Automatización, agentes de IA y software a medida para pymes ${placeIn} (${province.community}). ${province.sectors.slice(0, 3).join(", ")}. Diagnóstico, automatizaciones y sistemas de IA con alcance y plazo cerrados.`,
-    canonical: `${site.url}${path}`,
+    canonical: canonicalUrl(path),
     priority: municipality ? 0.6 : 0.7,
     jsonLd: [
       {
@@ -98,7 +104,7 @@ function localSeo(province: Province, municipality?: string): RouteSeo {
         areaServed: municipality
           ? { "@type": "City", name: municipality, containedInPlace: { "@type": "AdministrativeArea", name: province.name } }
           : { "@type": "AdministrativeArea", name: province.name },
-        url: `${site.url}${path}`,
+        url: canonicalUrl(path),
       },
       breadcrumb(crumbs),
       faqJsonLd(localFaqs(placeIn, province)),
@@ -112,10 +118,10 @@ function serviceSeo(service: ServiceDef): RouteSeo {
     path,
     title: service.title,
     description: service.description,
-    canonical: `${site.url}${path}`,
+    canonical: canonicalUrl(path),
     priority: 0.9,
     jsonLd: [
-      { "@context": "https://schema.org", "@type": "Service", name: service.name, description: service.description, provider: { "@id": `${site.url}/#organization` }, areaServed: { "@type": "Country", name: "España" }, url: `${site.url}${path}` },
+      { "@context": "https://schema.org", "@type": "Service", name: service.name, description: service.description, provider: { "@id": `${site.url}/#organization` }, areaServed: { "@type": "Country", name: "España" }, url: canonicalUrl(path) },
       breadcrumb(
         service.pillar
           ? [{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }, { name: service.short, path }]
@@ -132,7 +138,7 @@ function sectorSeo(sector: SectorDef): RouteSeo {
     path,
     title: sector.title,
     description: sector.description,
-    canonical: `${site.url}${path}`,
+    canonical: canonicalUrl(path),
     priority: 0.8,
     jsonLd: [
       {
@@ -143,7 +149,7 @@ function sectorSeo(sector: SectorDef): RouteSeo {
         provider: { "@id": `${site.url}/#organization` },
         audience: { "@type": "BusinessAudience", name: sector.name },
         areaServed: { "@type": "Country", name: "España" },
-        url: `${site.url}${path}`,
+        url: canonicalUrl(path),
       },
       breadcrumb([{ name: "Inicio", path: "/" }, { name: "Sectores", path: "/sectores" }, { name: sector.short, path }]),
       faqJsonLd(sector.faqs),
@@ -151,20 +157,52 @@ function sectorSeo(sector: SectorDef): RouteSeo {
   };
 }
 
+function resourceSeo(item: Resource): RouteSeo {
+  const path = resourcePath(item);
+  const canonical = canonicalUrl(path);
+  return {
+    path, title: `${item.title} | Alpa Digital`, description: item.summary, canonical, priority: 0.7,
+    jsonLd: [
+      { "@context": "https://schema.org", "@type": "Article", headline: item.title, description: item.summary, mainEntityOfPage: canonical, author: { "@type": "Organization", name: site.name, url: site.url }, publisher: { "@id": `${site.url}/#organization` } },
+      breadcrumb([{ name: "Inicio", path: "/" }, { name: "Recursos", path: "/recursos/" }, { name: item.title, path }]),
+    ],
+  };
+}
+
+function caseSeo(item: CaseStudy): RouteSeo {
+  const path = casePath(item);
+  return {
+    path, title: `${item.title} | Caso de Alpa Digital`, description: item.summary,
+    canonical: canonicalUrl(path), priority: 0.8,
+    jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Casos", path: "/casos/" }, { name: item.title, path }])],
+  };
+}
+
+function productCaseSeo(item: ProductCase): RouteSeo {
+  const path = productCasePath(item);
+  return { path, title: `${item.name}: desarrollo de producto digital | Alpa Digital`, description: item.summary, canonical: canonicalUrl(path), priority: 0.8, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Casos", path: "/casos/" }, { name: item.name, path }])] };
+}
+
 const staticRoutes: RouteSeo[] = [
+  { path: "/contacto", title: "Contacto | Automatización y desarrollo de software | Alpa Digital", description: "Cuéntanos qué proceso quieres automatizar o qué producto digital quieres desarrollar. Contacta con Alpa Digital, desde Utrera para empresas de toda España.", canonical: canonicalUrl("/contacto"), priority: 0.7, jsonLd: [{ "@context": "https://schema.org", "@type": "ContactPage", name: "Contacto con Alpa Digital", url: canonicalUrl("/contacto"), about: { "@id": `${site.url}/#organization` } }, breadcrumb([{ name: "Inicio", path: "/" }, { name: "Contacto", path: "/contacto/" }])] },
+  { path: "/servicios/desarrollo-producto-digital", title: "Desarrollo de producto digital: SaaS y apps | Alpa Digital", description: "Diseño y desarrollo de productos digitales para startups y empresas: plataformas SaaS, aplicaciones móviles y productos web, con IA cuando aporta valor.", canonical: canonicalUrl("/servicios/desarrollo-producto-digital"), priority: 0.9, jsonLd: [{ "@context": "https://schema.org", "@type": "Service", name: "Desarrollo de producto digital", description: "Diseño y desarrollo de plataformas SaaS, aplicaciones móviles y productos web para startups y empresas.", provider: { "@id": `${site.url}/#organization` }, areaServed: { "@type": "Country", name: "España" }, url: canonicalUrl("/servicios/desarrollo-producto-digital") }, breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios/" }, { name: "Desarrollo de producto digital", path: "/servicios/desarrollo-producto-digital/" }]), faqJsonLd(productFaqs)] },
+  { path: "/recursos", title: "Guías de automatización e IA para pymes | Alpa Digital", description: "Guías prácticas sobre automatización, agentes de IA y procesos de empresa para decidir por dónde empezar.", canonical: canonicalUrl("/recursos"), priority: 0.8, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Recursos", path: "/recursos/" }])] },
+  { path: "/casos", title: "Casos de automatización y producto digital | Alpa Digital", description: "Proyectos reales de automatización, inteligencia artificial y desarrollo de productos digitales para empresas y startups.", canonical: canonicalUrl("/casos"), priority: 0.8, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Casos", path: "/casos/" }])] },
+  { path: "/como-trabajamos", title: "Cómo trabajamos: automatización y producto digital | Alpa Digital", description: "Del diagnóstico y la definición del alcance al desarrollo, pruebas y seguimiento de automatizaciones y productos digitales.", canonical: canonicalUrl("/como-trabajamos"), priority: 0.7, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Cómo trabajamos", path: "/como-trabajamos/" }])] },
+  { path: "/nosotros", title: "El equipo de Alpa Digital | Automatización e IA", description: "Conoce a Alpa Digital, equipo de consultoría y desarrollo de automatización e inteligencia artificial para empresas en toda España.", canonical: canonicalUrl("/nosotros"), priority: 0.7, jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Nosotros", path: "/nosotros/" }])] },
   {
     path: "/",
     title: "Alpa Digital - Automatización con IA y consultoría para pymes",
     description: "Automatizamos con inteligencia artificial las tareas repetitivas de tu pyme: atención al cliente, presupuestos, facturación y seguimiento comercial. Diagnóstico, implementación y acompañamiento, con alcance y plazo cerrados.",
-    canonical: site.url,
+    canonical: canonicalUrl("/"),
     priority: 1,
     jsonLd: [organizationJsonLd],
   },
   {
     path: "/servicios",
-    title: "Servicios: sistemas de IA y consultoría de IA para pymes | Alpa Digital",
-    description: "Dos líneas de servicio: construimos sistemas de herramientas y automatizaciones con IA (automatizaciones, agentes, apps corporativas, IA corporativa) y hacemos consultoría de IA (diagnóstico, I+D, diseño de producto, roadmap).",
-    canonical: `${site.url}/servicios`,
+    title: "Servicios de automatización, IA y desarrollo de software | Alpa Digital",
+    description: "Automatización de procesos, agentes de IA, desarrollo de software y consultoría. Conoce cómo Alpa define, construye y pone en marcha soluciones para pymes y startups.",
+    canonical: canonicalUrl("/servicios"),
     priority: 0.8,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Servicios", path: "/servicios" }])],
   },
@@ -172,7 +210,7 @@ const staticRoutes: RouteSeo[] = [
     path: "/sectores",
     title: "IA y automatización por sectores: instalaciones, clínicas, asesorías, distribución y más | Alpa Digital",
     description: "Qué automatizan con IA las pymes de cada sector: instalaciones eléctricas, construcción, clínicas, asesorías, distribución, comercio, hostelería, inmobiliarias, industria, transporte y agroalimentario.",
-    canonical: `${site.url}/sectores`,
+    canonical: canonicalUrl("/sectores"),
     priority: 0.8,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Sectores", path: "/sectores" }])],
   },
@@ -180,7 +218,7 @@ const staticRoutes: RouteSeo[] = [
     path: "/zonas",
     title: "Automatización con IA para pymes en toda España, por provincia | Alpa Digital",
     description: "Trabajamos con pymes de todas las provincias de España. Elige tu provincia o municipio y descubre qué automatizan las empresas de tu zona.",
-    canonical: `${site.url}/zonas`,
+    canonical: canonicalUrl("/zonas"),
     priority: 0.6,
     jsonLd: [breadcrumb([{ name: "Inicio", path: "/" }, { name: "Zonas", path: "/zonas" }])],
   },
@@ -188,7 +226,7 @@ const staticRoutes: RouteSeo[] = [
     path: "/politica-cookies",
     title: "Política de cookies | Alpa Digital",
     description: "Información sobre las cookies que utiliza alpa.digital y cómo gestionarlas.",
-    canonical: `${site.url}/politica-cookies`,
+    canonical: canonicalUrl("/politica-cookies"),
     priority: 0.1,
     jsonLd: [],
   },
@@ -197,6 +235,9 @@ const staticRoutes: RouteSeo[] = [
 /** Todas las rutas indexables, para el prerenderizado y el sitemap. */
 export function allRoutes(): RouteSeo[] {
   const routes: RouteSeo[] = [...staticRoutes];
+  resources.forEach((item) => routes.push(resourceSeo(item)));
+  caseStudies.forEach((item) => routes.push(caseSeo(item)));
+  productCases.forEach((item) => routes.push(productCaseSeo(item)));
   services.forEach((service) => routes.push(serviceSeo(service)));
   sectors.forEach((sector) => routes.push(sectorSeo(sector)));
   provinces.forEach((province) => {
@@ -211,6 +252,18 @@ export function getRouteSeo(path: string): RouteSeo | undefined {
   const clean = path.replace(/\/+$/, "") || "/";
   const fixed = staticRoutes.find((r) => r.path === clean);
   if (fixed) return fixed;
+  const resourceMatch = clean.match(/^\/recursos\/([a-z0-9-]+)$/);
+  if (resourceMatch) {
+    const item = getResource(resourceMatch[1]);
+    return item ? resourceSeo(item) : undefined;
+  }
+  const caseMatch = clean.match(/^\/casos\/([a-z0-9-]+)$/);
+  if (caseMatch) {
+    const product = getProductCase(caseMatch[1]);
+    if (product) return productCaseSeo(product);
+    const item = getCase(caseMatch[1]);
+    return item ? caseSeo(item) : undefined;
+  }
   const serviceMatch = clean.match(/^\/servicios\/([a-z0-9-]+)$/);
   if (serviceMatch) {
     const service = getService(serviceMatch[1]);
@@ -252,7 +305,7 @@ export function renderHeadTags(seo: RouteSeo): string {
     `<meta name="twitter:title" content="${esc(seo.title)}" />`,
     `<meta name="twitter:description" content="${esc(seo.description)}" />`,
     `<meta name="twitter:image" content="${site.url}/og-image.jpg" />`,
-    ...seo.jsonLd.map((data) => `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`),
+    ...seo.jsonLd.map((data) => `<script type="application/ld+json" data-route-jsonld="1">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`),
   ];
   return tags.join("\n    ");
 }

@@ -217,7 +217,7 @@ export const automationFlows: AreaFlow[] = [
       "Atención al cliente: 41 consultas · respuesta media 52 s",
       "Informe enviado a dirección · 07:04",
     ],
-  },,
+  },
   {
     id: "datos",
     area: "Datos y analítica",

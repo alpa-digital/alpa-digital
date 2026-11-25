@@ -13,7 +13,7 @@ const contactSchema = z.object({
   company: z.string().trim().max(120).optional(),
   message: z.string().trim().min(1).max(1000),
   /** Qué necesita: diagnóstico, construcción, consultoría o todavía no lo sabe. */
-  topic: z.enum(["general", "diagnostico", "sistemas", "acompanamiento"]).optional(),
+  topic: z.enum(["general", "diagnostico", "sistemas", "acompanamiento", "producto"]).optional(),
   /** Etiqueta del interés en el idioma de la web, para leerla tal cual en el correo. */
   topicLabel: z.string().trim().max(80).optional(),
   /** Página desde la que se envía, para saber qué contenido trae al cliente. */
@@ -32,6 +32,7 @@ const subjectTopic: Record<string, string> = {
   diagnostico: "Diagnóstico e I+D",
   sistemas: "Construcción",
   acompanamiento: "Consultoría y asesoría",
+  producto: "Desarrollo de producto",
 };
 
 const escapeHtml = (value: string) =>

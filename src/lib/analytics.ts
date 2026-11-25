@@ -15,10 +15,12 @@ declare global {
   }
 }
 
-function gtag(...args: unknown[]) {
+function gtag(..._args: unknown[]) {
   if (typeof window === "undefined") return;
   window.dataLayer = window.dataLayer ?? [];
-  window.dataLayer.push(args);
+  // Google tag processes command tuples passed as an arguments object.
+  // eslint-disable-next-line prefer-rest-params
+  window.dataLayer.push(arguments);
 }
 
 let loaded = false;
@@ -83,11 +85,13 @@ export function captureUtm() {
   const utm: Record<string, string> = {};
   ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid"].forEach((k) => {
     const v = params.get(k);
-    if (v) utm[k] = v;
+    if (v) utm[k] = v.slice(0, k === "gclid" ? 500 : 200);
   });
   if (Object.keys(utm).length === 0) return;
   try {
-    sessionStorage.setItem(UTM_KEY, JSON.stringify({ ...utm, landing: window.location.pathname, referrer: document.referrer }));
+    if (!sessionStorage.getItem(UTM_KEY)) {
+      sessionStorage.setItem(UTM_KEY, JSON.stringify({ ...utm, landing: window.location.pathname.slice(0, 300) }));
+    }
   } catch {
     /* sin almacenamiento */
   }

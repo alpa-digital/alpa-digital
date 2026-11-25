@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
+import Contacto from "./pages/Contacto";
 import NotFound from "./pages/NotFound";
 import PoliticaCookies from "./pages/PoliticaCookies";
 import ServicePage from "@/components/pages/ServicePage";
@@ -12,6 +13,11 @@ import ZonesPage from "@/components/pages/ZonesPage";
 import LocationPage from "@/components/pages/LocationPage";
 import SectorPage from "@/components/pages/SectorPage";
 import SectorsIndexPage from "@/components/pages/SectorsIndexPage";
+import { ResourcesIndexPage, ResourceDetailPage } from "@/components/pages/ResourcesPage";
+import { CasesIndexPage, CaseDetailPage } from "@/components/pages/CasesPage";
+import { AboutPage } from "@/components/pages/AboutPages";
+import ProcessPage from "@/components/pages/ProcessPage";
+import ProductPage from "@/components/pages/ProductPage";
 import CookieConsent from "@/components/CookieConsent";
 import { useRouteSeo } from "@/hooks/useRouteSeo";
 import { useAnalytics } from "@/lib/analytics";
@@ -35,13 +41,21 @@ const App = () => (
       <RouteEffects />
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/contacto" element={<Contacto />} />
         <Route path="/servicios" element={<ServicesIndexPage />} />
+        <Route path="/servicios/desarrollo-producto-digital" element={<ProductPage />} />
         <Route path="/servicios/:serviceSlug" element={<ServicePage />} />
         <Route path="/sectores" element={<SectorsIndexPage />} />
         <Route path="/sectores/:sectorSlug" element={<SectorPage />} />
         <Route path="/zonas" element={<ZonesPage />} />
         <Route path="/automatizacion-ia/:provinceSlug" element={<LocationPage />} />
         <Route path="/automatizacion-ia/:provinceSlug/:municipalitySlug" element={<LocationPage />} />
+        <Route path="/recursos" element={<ResourcesIndexPage />} />
+        <Route path="/recursos/:resourceSlug" element={<ResourceDetailPage />} />
+        <Route path="/casos" element={<CasesIndexPage />} />
+        <Route path="/casos/:caseSlug" element={<CaseDetailPage />} />
+        <Route path="/como-trabajamos" element={<ProcessPage />} />
+        <Route path="/nosotros" element={<AboutPage />} />
         <Route path="/politica-cookies" element={<PoliticaCookies />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

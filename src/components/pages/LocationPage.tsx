@@ -1,3 +1,4 @@
+import { locationGuides } from "@/data/locationGuides";
 import { Link, useParams } from "react-router-dom";
 import { ArrowRight, Check, MapPin } from "lucide-react";
 import PageShell, { Breadcrumbs, CtaBand, FaqList } from "@/components/pages/PageShell";
@@ -60,6 +61,7 @@ const LocationPage = () => {
   const towns = [province.capital, ...province.municipalities].filter((m) => m !== municipality);
   const neighbours = provinces.filter((p) => p.community === province.community && p.slug !== province.slug);
   const exampleFlows = automationFlows.slice(0, 3);
+  const locationGuide = locationGuides[municipalitySlug ? `${provinceSlug}/${municipalitySlug}` : provinceSlug];
   // En páginas de municipio, los sectores ligados a otro municipio concreto ("Mueble en Yecla") no aplican.
   const sectors = municipality
     ? province.sectors.filter((s) => !/ en [A-ZÁÉÍÓÚ]/.test(s) || s.includes(municipality))
@@ -106,14 +108,14 @@ const LocationPage = () => {
           <section className="px-4 md:px-8 py-12 border-t border-border">
             <div className="max-w-5xl mx-auto">
               <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Qué automatizan las empresas {placeIn}</h2>
-              <p className="text-muted-foreground mb-8 max-w-3xl">Los sectores con más pymes en {province.name} y lo que suele dar mejor resultado en cada uno.</p>
+              <p className="text-muted-foreground mb-8 max-w-3xl">Ejemplos de procesos que pueden estudiarse en empresas de distintos sectores de {province.name}.</p>
               <div className="grid md:grid-cols-2 gap-5">
                 {shownSectors.map((sector) => {
                   const page = sectorForLabel(sector);
                   return (
                     <div key={sector} className="rounded-2xl border border-border p-6">
                       <h3 className="text-lg font-medium text-foreground mb-2">{sector}</h3>
-                      <p className="text-muted-foreground leading-relaxed">Automatizamos {automationFor(sector)}.</p>
+                      <p className="text-muted-foreground leading-relaxed">Ejemplos que se pueden estudiar: {automationFor(sector)}.</p>
                       {page && (
                         <Link to={sectorPath(page)} className="inline-flex items-center gap-1 text-sm text-primary mt-3 hover:underline">
                           IA {page.forName} <ArrowRight className="w-3.5 h-3.5" />
@@ -125,6 +127,16 @@ const LocationPage = () => {
               </div>
             </div>
           </section>
+
+          {locationGuide && (
+            <section className="px-4 md:px-8 py-12 border-t border-border">
+              <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_1.5fr] gap-8 md:gap-12">
+                <div><h2 className="text-2xl md:text-3xl font-light mb-4">{locationGuide.title}</h2><p className="text-muted-foreground leading-relaxed">{locationGuide.intro}</p></div>
+                <div className="border-t border-border">{locationGuide.examples.map((example) => <div key={example.title} className="py-5 border-b border-border"><h3 className="font-medium mb-2">{example.title}</h3><p className="text-sm text-muted-foreground leading-relaxed">{example.text}</p></div>)}</div>
+              </div>
+              <div className="max-w-5xl mx-auto mt-7 flex flex-wrap gap-x-8 gap-y-4"><Link to="/recursos/que-procesos-automatizar-primero-pyme/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">Guía: qué procesos automatizar primero <ArrowRight className="w-4 h-4" /></Link><Link to="/casos/" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">Ver proyectos de Alpa <ArrowRight className="w-4 h-4" /></Link></div>
+            </section>
+          )}
 
           <section className="px-4 md:px-8 py-12 bg-muted/30">
             <div className="max-w-5xl mx-auto">
@@ -162,7 +174,7 @@ const LocationPage = () => {
                 <h2 className="text-2xl md:text-3xl font-light text-foreground mt-10 mb-4">Ejemplos de automatizaciones</h2>
                 <ul className="space-y-2">
                   {exampleFlows.map((f) => (
-                    <li key={f.id} className="text-muted-foreground"><span className="text-foreground font-medium">{f.area}:</span> {f.title.toLowerCase()} ({f.metric.value} {f.metric.label}).</li>
+                    <li key={f.id} className="text-muted-foreground"><span className="text-foreground font-medium">{f.area}:</span> {f.title.toLowerCase()}.</li>
                   ))}
                 </ul>
               </div>

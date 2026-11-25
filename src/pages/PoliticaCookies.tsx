@@ -12,7 +12,7 @@ const PoliticaCookies = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onContactClick={() => {}} />
+      <Header />
       
       <main className="py-8 md:py-16 px-4 md:px-8 pt-32 md:pt-40">
         <div className="max-w-4xl mx-auto">

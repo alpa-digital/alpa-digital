@@ -101,7 +101,7 @@ async function requestAnalysis(url: string, lang: Lang, e: ScanErrors): Promise<
   }
 }
 
-const AutomationScan = ({ onContactClick }: { onContactClick?: () => void }) => {
+const AutomationScan = ({ onContactClick, compact = false }: { onContactClick?: () => void; compact?: boolean }) => {
   const { toast } = useToast();
   const [phase, setPhase] = useState<Phase>("idle");
   const [url, setUrl] = useState("");
@@ -167,13 +167,15 @@ const AutomationScan = ({ onContactClick }: { onContactClick?: () => void }) => 
     setEmailError(null);
     setSending(true);
     const payload = { email: parsed.data, url: url.trim(), sector: result?.sector, analysis: result, utm: utmParams() };
-    track("lead_submit", { domain: domainFromUrl(url), source: result?.source });
+    track("lead_attempt", { domain: domainFromUrl(url), source: result?.source });
     try {
       const response = await fetch(LEAD_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!response.ok) throw new Error(`lead ${response.status}`);
+      track("lead_submit", { domain: domainFromUrl(url), source: result?.source });
       setSent(true);
       toast({ title: c.scan.leadSentTitle, description: c.scan.leadSentBody });
     } catch {
+      track("lead_mailto_open", { source: result?.source });
       const subject = encodeURIComponent(`${c.scan.leadMailSubject} ${domainFromUrl(url)}`);
       const body = encodeURIComponent(`${c.scan.leadMailIntro}\n\n${c.scan.leadMailWeb}: ${url.trim()}\n${c.scan.leadMailSector}: ${result?.sector ?? c.scan.leadMailUnknown}\n${c.scan.leadMailEmail}: ${parsed.data}\n`);
       window.location.href = `mailto:info@alpa.digital?subject=${subject}&body=${body}`;
@@ -185,11 +187,11 @@ const AutomationScan = ({ onContactClick }: { onContactClick?: () => void }) => 
   };
 
   return (
-    <section id="analiza-tu-empresa" className="py-16 md:py-20 px-4 md:px-8 bg-background relative overflow-hidden scroll-mt-20">
-      <div className="absolute top-0 left-0 w-full h-px bg-border" />
+    <section id={compact ? undefined : "analiza-tu-empresa"} aria-label={c.scan.title} className={compact ? "bg-background relative" : "py-16 md:py-20 px-4 md:px-8 bg-background relative overflow-hidden scroll-mt-20"}>
+      {!compact && <div className="absolute top-0 left-0 w-full h-px bg-border" />}
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 lg:gap-10 items-end">
-          <div>
+        <div className={compact ? "max-w-3xl" : "grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-6 lg:gap-10 items-end"}>
+          {!compact && <div>
             <p className="text-xs font-medium text-primary uppercase tracking-wide mb-2">{c.scan.eyebrow}</p>
             <h2 className="text-3xl md:text-4xl font-light text-foreground leading-tight mb-3" style={{ textWrap: "balance" }}>
               {c.scan.title}
@@ -197,7 +199,7 @@ const AutomationScan = ({ onContactClick }: { onContactClick?: () => void }) => 
             <p className="text-base text-muted-foreground leading-relaxed">
               {c.scan.body}
             </p>
-          </div>
+          </div>}
           <form onSubmit={handleScan} className="w-full">
             <label htmlFor="scan-url" className="block text-sm font-medium text-foreground mb-2">{c.scan.label}</label>
             <div className="flex flex-col sm:flex-row gap-2">

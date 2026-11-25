@@ -9,7 +9,7 @@ export const optimizeImage = (src: string, alt: string, width?: number, height?:
 });
 
 // SEO utility functions
-export const generateStructuredData = (type: string, data: any) => {
+export const generateStructuredData = (type: string, data: Record<string, unknown>) => {
   return {
     "@context": "https://schema.org",
     "@type": type,
@@ -17,11 +17,11 @@ export const generateStructuredData = (type: string, data: any) => {
   };
 };
 
-export const addJsonLd = (data: any, id: string) => {
+export const addJsonLd = (data: Record<string, unknown>, id: string) => {
   const script = document.createElement('script');
   script.type = 'application/ld+json';
   script.id = id;
-  script.innerHTML = JSON.stringify(data);
+  script.textContent = JSON.stringify(data);
   document.head.appendChild(script);
 };
 

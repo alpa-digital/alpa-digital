@@ -1,84 +1,39 @@
-# Google Search Console: puesta en marcha e indexación
+# Google Search Console: seguimiento de Alpa Digital
 
-Orden de trabajo para que el SEO empiece a funcionar. Todo se hace en https://search.google.com/search-console con la cuenta de Google de la empresa. Antes de empezar, la web tiene que estar desplegada en https://alpa.digital con esta versión (la rama ya está fusionada en `main`).
+## Punto de partida
 
-## 1. Propiedad y verificación (una vez)
+La propiedad de dominio `alpa.digital` ya está verificada. El 27 de octubre de 2026, el informe de búsqueda web mostraba 27 clics y aproximadamente 3.360 impresiones entre el 28 de septiembre y el 25 de octubre, frente a 15 clics y 3.070 impresiones en los 28 días anteriores. La posición media pasó de 28,9 a 27,6. Son volúmenes pequeños; comparar también por página y consulta.
 
-1. Añadir propiedad → tipo **Dominio** → `alpa.digital`. Cubre http, https, con y sin www.
-2. Verificar por DNS: Search Console da un registro TXT; añadirlo en el DNS del dominio (donde esté gestionado: Netlify DNS, el registrador, etc.) y pulsar "Verificar". Puede tardar hasta unas horas.
-3. Si el DNS no es accesible, alternativa: propiedad de **prefijo de URL** `https://alpa.digital` y verificar con la etiqueta HTML o con Google Analytics (el sitio ya carga GA4 si `VITE_GA4_ID` está en Netlify).
+El informe de indexación, actualizado el 23 de octubre, mostraba 345 páginas indexadas y 261 no indexadas: 256 redirecciones, 3 alternativas con canónica adecuada, un error de redirección y una página rastreada sin indexar. Una exclusión no implica por sí sola un problema: revisar su motivo y la URL concreta.
 
-## 2. Sitemap (una vez)
+## Oportunidades observadas por página y consulta
 
-Menú **Sitemaps** → añadir `https://alpa.digital/sitemap.xml` → Enviar. Contiene las 488 URL con sus prioridades. Es la vía principal de indexación: Google rastrea desde aquí sin pedir nada más.
+En el mismo periodo de 28 días, la página de consultoría de IA registró 193 impresiones y 1 clic; instalaciones eléctricas, 96 impresiones y 2 clics; inmobiliarias, 80 impresiones y 1 clic; Alcoy, 63 impresiones y 1 clic; y Nerja, 3 impresiones y 2 clics. Son muestras pequeñas y no prueban por sí mismas que un cambio aumente el tráfico.
 
-Comprobar antes que responde: https://alpa.digital/sitemap.xml y https://alpa.digital/robots.txt (que referencia el sitemap).
+Entre las consultas visibles estaban «agencia ia sevilla» (139 impresiones), «consultoría digital para pymes» (91), «soluciones ia para empresas malaga» (61) y «automatización instalaciones» (55). Los totales de una consulta y una URL no implican que correspondan entre sí: para confirmarlo hay que filtrar por página y consulta.
 
-## 3. Solicitar indexación manual (cuota: unas 10 URL al día)
+En la versión local se ha mejorado la explicación de consultoría, la introducción de instalaciones y los ejemplos de Nerja y Estepona. Las páginas de Sevilla, Málaga y Alcoy ya tienen bloques editoriales propios. Se recomienda conservarlas y volver a medir después del despliegue; no se han aplicado redirecciones ni consolidaciones.
 
-Menú **Inspección de URL** → pegar la URL → "Solicitar indexación". Solo acelera; el sitemap hace el resto. Orden sugerido, unas diez por día:
+El informe de Core Web Vitals, actualizado el 21 de octubre, indicaba que no había suficientes datos reales de uso en los últimos 90 días para móvil ni ordenador. Esto no equivale a una evaluación positiva o negativa del rendimiento.
 
-**Día 1: home y servicios**
-- https://alpa.digital/
-- https://alpa.digital/servicios
-- https://alpa.digital/servicios/sistemas-ia
-- https://alpa.digital/servicios/automatizacion-ia-pymes
-- https://alpa.digital/servicios/agentes-ia-empresas
-- https://alpa.digital/servicios/desarrollo-software-medida-ia
-- https://alpa.digital/servicios/consultoria-ia-pymes
-- https://alpa.digital/sectores
-- https://alpa.digital/zonas
-- https://alpa.digital/automatizacion-ia/sevilla
+## Sitemap y URL preferidas
 
-**Día 2: sectores**
-- https://alpa.digital/sectores/instalaciones-electricas
-- https://alpa.digital/sectores/construccion-reformas
-- https://alpa.digital/sectores/clinicas-salud
-- https://alpa.digital/sectores/asesorias-gestorias-despachos
-- https://alpa.digital/sectores/distribucion-mayoristas
-- https://alpa.digital/sectores/comercio-ecommerce
-- https://alpa.digital/sectores/hosteleria-restaurantes-hoteles
-- https://alpa.digital/sectores/inmobiliarias-administracion-fincas
-- https://alpa.digital/sectores/industria-talleres
-- https://alpa.digital/sectores/transporte-logistica
+El sitemap de producción consultado el 27 de octubre de 2026 respondía con 488 URL. Search Console mostraba una lectura histórica con solo dos URL descubiertas. Revisar la fecha de lectura y reenviar el sitemap después del despliegue si sigue sin actualizarse. El sitemap ayuda a descubrir las URL, pero no garantiza su rastreo ni su indexación.
 
-**Día 3: sector restante y provincias presenciales**
-- https://alpa.digital/sectores/agroalimentario-cooperativas
-- https://alpa.digital/automatizacion-ia/sevilla/utrera
-- https://alpa.digital/automatizacion-ia/sevilla/sevilla
-- https://alpa.digital/automatizacion-ia/cadiz
-- https://alpa.digital/automatizacion-ia/huelva
-- https://alpa.digital/automatizacion-ia/cordoba
-- https://alpa.digital/automatizacion-ia/malaga
-- https://alpa.digital/automatizacion-ia/badajoz
-- https://alpa.digital/automatizacion-ia/sevilla/dos-hermanas
-- https://alpa.digital/automatizacion-ia/sevilla/alcala-de-guadaira
+Netlify respondía con redirección permanente para `/servicios`, `/automatizacion-ia/malaga` y `/automatizacion-ia/alicante/alcoy` hacia sus versiones con barra final, que devolvían 200. El build genera el sitemap y las etiquetas canónicas con esa versión. Después de desplegar, comprobar que siguen respondiendo correctamente y que sitemap, enlaces y canónicas coinciden. La raíz es `https://alpa.digital/`.
 
-**Día 4: capitales de nivel 1 y municipios de la Campiña**
-- https://alpa.digital/automatizacion-ia/cadiz/cadiz
-- https://alpa.digital/automatizacion-ia/cadiz/jerez-de-la-frontera
-- https://alpa.digital/automatizacion-ia/huelva/huelva
-- https://alpa.digital/automatizacion-ia/cordoba/cordoba
-- https://alpa.digital/automatizacion-ia/malaga/malaga
-- https://alpa.digital/automatizacion-ia/badajoz/badajoz
-- https://alpa.digital/automatizacion-ia/sevilla/los-palacios-y-villafranca
-- https://alpa.digital/automatizacion-ia/sevilla/moron-de-la-frontera
-- https://alpa.digital/automatizacion-ia/sevilla/carmona
-- https://alpa.digital/automatizacion-ia/sevilla/ecija
+## Revisión tras cada despliegue
 
-A partir del día 5, no hace falta pedir más a mano: dejar que el sitemap trabaje y revisar **Páginas** (Indexación) cada semana. Las provincias fuera del nivel 1 y el resto de municipios entran solos.
+1. Comprobar que `https://alpa.digital/sitemap.xml` y `https://alpa.digital/robots.txt` responden correctamente.
+2. Inspeccionar una muestra de páginas importantes en Search Console: inicio, servicios, instalaciones eléctricas, Sevilla, Málaga y Alcoy. Comparar canónica declarada y seleccionada por Google.
+3. Revisar el error histórico de redirección de `/servicios` y validar una corrección solo después de verificar la respuesta pública.
+4. Revisar títulos, descripción y datos estructurados al cargar y al navegar entre páginas.
+5. Verificar contactos y eventos en el entorno de pruebas antes de asociarlos a conversiones publicitarias.
 
-## 4. Lo que hay que mirar las primeras semanas
+## Seguimiento mensual
 
-- **Indexación → Páginas**: cuántas URL están indexadas y por qué se excluyen las que no. Normal ver "Descubierta, actualmente sin indexar" al principio; preocupa "Duplicada" o "Error de servidor".
-- **Experiencia → Core Web Vitals** cuando haya datos: la home lleva animaciones; vigilar LCP en móvil.
-- **Rendimiento**: a las 2 o 3 semanas empezarán a aparecer impresiones. Filtrar por consultas con "sevilla", "utrera" o nombre de sector para ver qué páginas locales funcionan.
-- **Mejoras → Datos estructurados**: deben aparecer FAQ, migas de pan y organización sin errores.
-
-## 5. Complementos
-
-- **Bing Webmaster Tools** (https://www.bing.com/webmasters): "Importar desde Google Search Console" trae la propiedad y el sitemap en un clic.
-- **Google Business Profile** de la sede en Utrera enlazando a https://alpa.digital/automatizacion-ia/sevilla/utrera. Es lo que más pesa en búsquedas locales.
-- Cada vez que se publique una página nueva (un caso de éxito, un artículo), pedir su indexación a mano el mismo día.
-
-Nota: la API de indexación de Google solo admite páginas de ofertas de empleo y eventos en directo, así que para esta web no hay forma automática de pedir indexación; el sitemap es el mecanismo correcto.
+- Comparar clics, impresiones, CTR y posición por página y consulta, con periodos equivalentes. Separar búsquedas de marca y las relacionadas con servicios o sectores.
+- Registrar contactos recibidos y oportunidades cualificadas por canal cuando sea posible. No contabilizar abrir el correo como un mensaje enviado.
+- Revisar páginas locales con datos y evaluar su utilidad individualmente antes de mejorar, mantener o consolidar. La ausencia de impresiones por sí sola no determina qué hacer.
+- Comprobar Core Web Vitals cuando haya datos reales; usar también pruebas de laboratorio para detectar problemas técnicos.
+- En Search Console, inspeccionar URL concretas y solicitar indexación cuando sea útil. La solicitud no garantiza indexación ni un plazo específico.

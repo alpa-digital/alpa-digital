@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ContactForm from "@/components/ContactForm";
 import { useContactForm, type ContactTopic } from "@/hooks/useContactForm";
 
 export interface Crumb {
@@ -28,15 +27,14 @@ export const Breadcrumbs = ({ items }: { items: Crumb[] }) => (
   </nav>
 );
 
-/** Estructura común de las páginas interiores: cabecera, contenido, pie y formulario de contacto. */
+/** Estructura común de las páginas interiores: cabecera, contenido y pie. Los CTA llevan a /contacto/. */
 const PageShell = ({ children }: { children: (openContact: (topic?: ContactTopic) => void) => ReactNode }) => {
-  const { isContactFormOpen, contactTopic, openContactForm, closeContactForm } = useContactForm();
+  const { openContactForm } = useContactForm();
   return (
     <div className="min-h-screen bg-background">
-      <Header onContactClick={openContactForm} />
+      <Header />
       <main className="pt-24 md:pt-28">{children(openContactForm)}</main>
       <Footer />
-      <ContactForm isOpen={isContactFormOpen} onClose={closeContactForm} topic={contactTopic} />
     </div>
   );
 };

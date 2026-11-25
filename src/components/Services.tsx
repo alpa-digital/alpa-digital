@@ -1,60 +1,30 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Compass, Blocks, Route, Check, ArrowRight } from "lucide-react";
-import { useCopy } from "@/i18n";
-
+import { ArrowRight, Plus } from "lucide-react";
+import { useLang } from "@/i18n";
 import type { ContactTopic } from "@/hooks/useContactForm";
+import AnimatedDetails from "@/components/AnimatedDetails";
 
-interface ServicesProps {
-  onContactClick: (topic?: ContactTopic) => void;
-}
+interface ServicesProps { onContactClick: (topic?: ContactTopic) => void }
 
-const lineMeta = [
-  { id: "diagnostico", Icon: Compass, href: "/servicios/consultoria-ia-pymes" },
-  { id: "sistemas", Icon: Blocks, href: "/servicios/sistemas-ia" },
-  { id: "acompanamiento", Icon: Route, href: "/servicios/consultoria-ia-pymes" },
-] as const;
-
-/** Las tres líneas de servicio, en tres tarjetas. Sin importes: eso vive en las páginas de servicio. */
 const Services = ({ onContactClick }: ServicesProps) => {
-  const c = useCopy();
-  const lines = lineMeta.map(({ id, Icon, href }) => ({ id, Icon, href, ...c.services.lines[id] }));
-  return (
-  <section id="servicios" className="py-20 md:py-24 px-4 md:px-8 bg-background relative scroll-mt-20">
-    <div className="absolute top-0 left-0 w-full h-px bg-border" />
-    <div className="max-w-6xl mx-auto">
-      <div className="max-w-2xl mb-10 md:mb-12">
-        <h2 className="text-4xl md:text-5xl font-light text-foreground mb-3">{c.services.title}</h2>
-        <p className="text-lg text-muted-foreground font-light">{c.services.subtitle}</p>
-      </div>
-
-      <div className="grid md:grid-cols-3 gap-4 md:gap-5">
-        {lines.map(({ id, Icon, name, claim, text, items, href, cta, more }) => (
-          <div key={id} id={id} className="rounded-3xl border border-border bg-card p-7 md:p-8 flex flex-col scroll-mt-24">
-            <div className="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center mb-6"><Icon className="w-5 h-5 text-primary" /></div>
-            <p className="text-xs font-medium text-primary uppercase tracking-wide mb-1">{name}</p>
-            <h3 className="text-2xl font-medium text-foreground mb-3">{claim}</h3>
-            <p className="text-muted-foreground leading-relaxed mb-6">{text}</p>
-            <ul className="space-y-3 mb-8">
-              {items.map((item) => (
-                <li key={item.title} className="flex items-start gap-3">
-                  <Check className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
-                  <span className="text-sm leading-relaxed">
-                    <span className="font-medium text-foreground">{item.title}.</span> <span className="text-muted-foreground">{item.text}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-auto flex flex-col items-start gap-3">
-              <button onClick={() => onContactClick(id)} className="bg-primary text-white px-6 py-3 rounded-full text-sm md:text-base font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95">{cta}</button>
-              <Link to={href} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">{more} <ArrowRight className="w-4 h-4" /></Link>
-            </div>
-          </div>
-        ))}
-      </div>
+  const { lang } = useLang();
+  const english = lang === "en";
+  const [activeService, setActiveService] = useState<number | null>(0);
+  const services = english ? [
+    { name: "Automation and AI", label: "For your team", text: "Connect your tools, prepare information and reduce repetitive data entry. We define which checks stay with your team.", href: "/servicios/automatizacion-ia-pymes/" },
+    { name: "Software development", label: "SaaS and apps", text: "Build a product from scratch or develop the next version. SaaS platforms, mobile apps and internal tools for startups and established companies.", href: "/servicios/desarrollo-producto-digital/" },
+    { name: "AI consulting", label: "Where to start", text: "Review the process with your team, assess what is viable and agree on the first project before investing in development.", href: "/servicios/consultoria-ia-pymes/" },
+  ] : [
+    { name: "Automatización e IA", label: "Para tu equipo", text: "Conectar herramientas, preparar información y reducir la copia de datos. Definimos qué comprobaciones quedan en manos de tu equipo.", href: "/servicios/automatizacion-ia-pymes/" },
+    { name: "Desarrollo de software", label: "SaaS y apps", text: "Construir un producto desde cero o desarrollar su siguiente versión. Plataformas SaaS, apps móviles y herramientas internas para startups y empresas.", href: "/servicios/desarrollo-producto-digital/" },
+    { name: "Consultoría de IA", label: "Por dónde empezar", text: "Revisar el proceso con tu equipo, valorar qué es viable y acordar un primer proyecto antes de invertir en desarrollo.", href: "/servicios/consultoria-ia-pymes/" },
+  ];
+  return <section id="servicios" aria-labelledby="home-services-title" className="studio-services">
+    <div className="studio-services-grid">
+      <div><h2 id="home-services-title">{english ? <>Automation<br />and software.<br /><span>One team.</span></> : <>Automatización<br />y software.<br /><span>Un mismo equipo.</span></>}</h2><p>{english ? "We can start with one process or the first version of your product. Then we move forward in stages." : "Podemos empezar por un proceso concreto o por la primera versión de tu producto. Y avanzar por fases."}</p><button type="button" onClick={() => onContactClick("diagnostico")} className="studio-service-advice">{english ? "Help me choose where to start" : "Ayudadme a elegir por dónde empezar"}<ArrowRight size={17} aria-hidden="true" /></button></div>
+      <div className="studio-service-list">{services.map((service,index) => <AnimatedDetails key={service.href} expanded={activeService === index} onExpandedChange={open => setActiveService(open ? index : null)} className="studio-service" summary={<><span>{service.name}</span><Plus size={22} aria-hidden="true" /></>}><p>{service.text}</p><Link to={service.href}>{english ? "Explore this service" : "Conocer este servicio"}<ArrowRight size={16} aria-hidden="true" /></Link><span className="studio-service-label">{service.label}</span></AnimatedDetails>)}</div>
     </div>
-    <div className="absolute bottom-0 left-0 w-full h-px bg-border" />
-  </section>
-  );
+  </section>;
 };
-
 export default Services;

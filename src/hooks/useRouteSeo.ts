@@ -4,7 +4,7 @@ import { getRouteSeo } from "@/lib/seo";
 
 /** En cliente: actualiza título, descripción, canonical y JSON-LD al navegar entre rutas. */
 export function useRouteSeo() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
     const seo = getRouteSeo(pathname);
     if (!seo) return;
@@ -24,6 +24,9 @@ export function useRouteSeo() {
     setMeta('meta[property="og:title"]', "content", seo.title);
     setMeta('meta[property="og:description"]', "content", seo.description);
     setMeta('meta[property="og:url"]', "content", seo.canonical);
+    setMeta('meta[name="twitter:title"]', "content", seo.title);
+    setMeta('meta[name="twitter:description"]', "content", seo.description);
+    setMeta('meta[name="robots"]', "content", seo.noindex ? "noindex, follow" : "index, follow, max-image-preview:large, max-snippet:-1");
     document.head.querySelectorAll('script[data-route-jsonld]').forEach((el) => el.remove());
     seo.jsonLd.forEach((data) => {
       const script = document.createElement("script");
@@ -32,6 +35,17 @@ export function useRouteSeo() {
       script.textContent = JSON.stringify(data);
       document.head.appendChild(script);
     });
-    window.scrollTo({ top: 0 });
   }, [pathname]);
+
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      const id = hash.slice(1);
+      document.getElementById(id)?.scrollIntoView();
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname, hash]);
 }

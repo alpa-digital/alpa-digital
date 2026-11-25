@@ -1,269 +1,117 @@
-import { useEffect, useState } from "react";
-import { X, Send, Mail, User, MessageSquare } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, Check } from "lucide-react";
 import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { track, utmParams } from "@/lib/analytics";
 import { contactTopics, type ContactTopic } from "@/hooks/useContactForm";
 import { CONTACT_ENDPOINT } from "@/config/endpoints";
 import { site } from "@/data/site";
-import { useCopy } from "@/i18n";
+import { useCopy, useLang } from "@/i18n";
 import type { Copy } from "@/i18n/es";
 
-const buildSchema = (e: Copy["contact"]["errors"]) =>
-  z.object({
-    name: z.string().trim().min(1, { message: e.nameRequired }).max(100, { message: e.nameLong }),
-    email: z.string().trim().email({ message: e.emailInvalid }).max(255, { message: e.emailLong }),
-    phone: z.string().trim().optional().transform((val) => (val === "" ? undefined : val)),
-    company: z.string().trim().optional().transform((val) => (val === "" ? undefined : val)),
-    message: z.string().trim().min(1, { message: e.messageRequired }).max(1000, { message: e.messageLong }),
-  });
-
+const buildSchema = (e: Copy["contact"]["errors"]) => z.object({
+  name: z.string().trim().min(1, e.nameRequired).max(100, e.nameLong),
+  email: z.string().trim().email(e.emailInvalid).max(255, e.emailLong),
+  phone: z.string().trim().max(40).optional().transform(value => value || undefined),
+  company: z.string().trim().max(120).optional().transform(value => value || undefined),
+  message: z.string().trim().min(1, e.messageRequired).max(1000, e.messageLong),
+});
 type ContactFormData = z.infer<ReturnType<typeof buildSchema>>;
-
-interface ContactFormProps {
-  isOpen: boolean;
-  onClose: () => void;
-  /** Qué necesita quien escribe, según el botón que ha pulsado. */
-  topic?: ContactTopic;
-}
-
 const emptyForm: ContactFormData = { name: "", email: "", phone: "", company: "", message: "" };
 
-/** Texto plano del mensaje, para el respaldo por mailto. */
-const plainBody = (c: Copy["contact"], data: ContactFormData, need: string, source: string) =>
-  `${c.need}: ${need}\n${c.name}: ${data.name}\n${c.email}: ${data.email}\n${c.phone}: ${data.phone || "-"}\n${c.company}: ${data.company || "-"}\n\n${data.message}` +
-  (source ? `\n\n${source}` : "");
-
-const ContactForm = ({ isOpen, onClose, topic = "general" }: ContactFormProps) => {
-  const [formData, setFormData] = useState<ContactFormData>(emptyForm);
-  const [need, setNeed] = useState<ContactTopic>(topic);
-  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  // Campo trampa: los humanos no lo ven, los bots lo rellenan.
-  const [honeypot, setHoneypot] = useState("");
-  const { toast } = useToast();
+const ContactForm = ({ topic = "general", sourcePage = "/contacto/" }: { topic?: ContactTopic; sourcePage?: string }) => {
   const c = useCopy();
+  const { lang } = useLang();
+  const english = lang === "en";
+  const [formData, setFormData] = useState<ContactFormData>(emptyForm);
+  const [need, setNeed] = useState(topic);
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [honeypot, setHoneypot] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+  const successRef = useRef<HTMLDivElement>(null);
+  const requestRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    if (isOpen) setNeed(topic);
-  }, [isOpen, topic]);
+  useEffect(() => { setNeed(topic); }, [topic]);
+  useEffect(() => { if (status === "success") successRef.current?.focus(); }, [status]);
+  useEffect(() => () => requestRef.current?.abort(), []);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previous;
-    };
-  }, [isOpen, onClose]);
-
-  const handleInputChange = (field: keyof ContactFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
+  const change = (field: keyof ContactFormData, value: string) => {
+    setFormData(previous => ({ ...previous, [field]: value }));
+    setErrors(previous => ({ ...previous, [field]: undefined }));
+    if (status === "error") setStatus("idle");
   };
+  const mailBody = `${c.contact.need}: ${c.contact.needOptions[need]}\n${c.contact.name}: ${formData.name}\n${c.contact.email}: ${formData.email}\n${c.contact.phone}: ${formData.phone || "-"}\n${c.contact.company}: ${formData.company || "-"}\n\n${formData.message}`;
+  const mailHref = `mailto:${site.email}?subject=${encodeURIComponent(c.contact.mailSubject)}&body=${encodeURIComponent(mailBody)}`;
 
-  /** Devuelve los datos limpios (sin espacios, sin campos vacíos) o null si algo falla. */
-  const validateForm = (): ContactFormData | null => {
-    try {
-      const parsed = buildSchema(c.contact.errors).parse(formData);
-      setErrors({});
-      return parsed;
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors: Partial<Record<keyof ContactFormData, string>> = {};
-        error.issues.forEach((err) => {
-          const field = err.path[0] as keyof ContactFormData;
-          newErrors[field] = err.message;
-        });
-        setErrors(newErrors);
-      }
-      return null;
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (status === "sending") return;
+    const result = buildSchema(c.contact.errors).safeParse(formData);
+    if (!result.success) {
+      const nextErrors: typeof errors = {};
+      result.error.issues.forEach(issue => { nextErrors[issue.path[0] as keyof ContactFormData] = issue.message; });
+      setErrors(nextErrors);
+      formRef.current?.querySelector<HTMLElement>(`#contact-${Object.keys(nextErrors)[0]}`)?.focus();
+      return;
     }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const data = validateForm();
-    if (!data) return;
-    setIsSubmitting(true);
-
+    setErrors({});
+    setStatus("sending");
+    const controller = new AbortController();
+    requestRef.current = controller;
+    const timeout = window.setTimeout(() => controller.abort(), 20000);
     const utm = utmParams();
-    const source = utm.utm_campaign ? `Origen: ${utm.utm_source ?? "-"} / ${utm.utm_campaign}` : "";
-
+    const source = utm.utm_campaign ? `Origen: ${utm.utm_source ?? "-"} / ${utm.utm_campaign}` : undefined;
     try {
       const response = await fetch(CONTACT_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          topic: need,
-          topicLabel: c.contact.needOptions[need],
-          page: typeof window !== "undefined" ? window.location.pathname : undefined,
-          source: source || undefined,
-          website: honeypot || undefined,
-        }),
+        method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal,
+        body: JSON.stringify({ ...result.data, topic: need, topicLabel: c.contact.needOptions[need], page: sourcePage, source, website: honeypot || undefined }),
       });
-      if (!response.ok) throw new Error(`contact ${response.status}`);
-
+      if (!response.ok) throw new Error("Contact request failed");
+      // A hosting fallback can return index.html with 200; that is not a sent message.
+      const contentType = response.headers.get("content-type") || "";
+      if (contentType.includes("text/html")) throw new Error("Contact endpoint unavailable");
+      if (contentType.includes("application/json")) {
+        const payload = await response.json();
+        if (payload.ok === false || payload.error) throw new Error("Contact endpoint rejected request");
+      }
       track("contact_submit", { method: "form", topic: need });
-      toast({ title: c.contact.toastTitle, description: c.contact.toastBody });
+      setStatus("success");
       setFormData(emptyForm);
-      onClose();
     } catch {
-      // Si el envío no sale (función sin configurar, red caída), el mensaje no se
-      // pierde: se abre el cliente de correo con todo escrito.
-      track("contact_submit", { method: "mailto", topic: need });
-      const subject = encodeURIComponent(c.contact.mailSubject);
-      const body = encodeURIComponent(plainBody(c.contact, data, c.contact.needOptions[need], source));
-      window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
-      toast({ title: c.contact.toastFallbackTitle, description: c.contact.toastFallbackBody });
+      if (requestRef.current === controller) setStatus("error");
     } finally {
-      setIsSubmitting(false);
+      window.clearTimeout(timeout);
+      if (requestRef.current === controller) requestRef.current = null;
     }
   };
 
-  if (!isOpen) return null;
+  if (status === "success") return <div ref={successRef} tabIndex={-1} className="contact-form-success" role="status">
+    <Check aria-hidden="true" size={40} />
+    <h2>{c.contact.toastTitle}</h2>
+    <p>{c.contact.toastBody}</p>
+    <button type="button" onClick={() => { setStatus("idle"); setErrors({}); }} className="contact-submit">{english ? "Send another enquiry" : "Enviar otra consulta"}<ArrowUpRight aria-hidden="true" size={20} /></button>
+  </div>;
 
-  return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="contact-title"
-        className="bg-background sm:rounded-2xl rounded-t-2xl shadow-2xl border border-border w-full max-w-xl max-h-[92vh] sm:max-h-[88vh] overflow-hidden flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="px-5 pt-5 pb-4 sm:px-6 border-b border-border">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                <Mail className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h2 id="contact-title" className="text-lg sm:text-xl font-semibold text-foreground leading-tight">{c.contact.title}</h2>
-                <p className="text-sm text-muted-foreground">{c.contact.subtitle}</p>
-              </div>
-            </div>
-            <button onClick={onClose} aria-label={c.contact.close} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors flex-shrink-0">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+  const field = (id: "name" | "email" | "phone" | "company", type: string, required: boolean, maxLength: number, autoComplete: string) => <div className="contact-field">
+    <label htmlFor={`contact-${id}`}>{c.contact[id]} {required ? <span aria-hidden="true">*</span> : <span className="contact-optional">({english ? "optional" : "opcional"})</span>}</label>
+    <input id={`contact-${id}`} name={id} type={type} autoComplete={autoComplete} required={required} maxLength={maxLength} value={formData[id] || ""} placeholder={c.contact[`${id}Placeholder`]} onChange={event => change(id, event.target.value)} aria-invalid={!!errors[id]} aria-describedby={errors[id] ? `contact-${id}-error` : undefined} />
+    {errors[id] && <p id={`contact-${id}-error`} className="contact-field-error" role="alert">{errors[id]}</p>}
+  </div>;
 
-        <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-3 overflow-y-auto flex-1">
-          <fieldset className="space-y-2">
-            <legend className="text-sm font-medium leading-none mb-2">{c.contact.need}</legend>
-            <div className="flex flex-wrap gap-2">
-              {contactTopics.map((id) => {
-                const active = need === id;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => setNeed(id)}
-                    className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
-                      active ? "border-primary bg-primary text-white" : "border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                    }`}
-                  >
-                    {c.contact.needOptions[id]}
-                  </button>
-                );
-              })}
-            </div>
-          </fieldset>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="flex items-center space-x-2">
-                <User className="w-4 h-4" />
-                <span>{c.contact.name} *</span>
-              </Label>
-              <Input id="name" type="text" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} placeholder={c.contact.namePlaceholder} className={errors.name ? "border-red-500" : ""} maxLength={100} />
-              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center space-x-2">
-                <Mail className="w-4 h-4" />
-                <span>{c.contact.email} *</span>
-              </Label>
-              <Input id="email" type="email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} placeholder={c.contact.emailPlaceholder} className={errors.email ? "border-red-500" : ""} maxLength={255} />
-              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="phone">{c.contact.phone}</Label>
-              <Input id="phone" type="tel" value={formData.phone} onChange={(e) => handleInputChange("phone", e.target.value)} placeholder={c.contact.phonePlaceholder} maxLength={20} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="company">{c.contact.company}</Label>
-              <Input id="company" type="text" value={formData.company} onChange={(e) => handleInputChange("company", e.target.value)} placeholder={c.contact.companyPlaceholder} maxLength={100} />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="message" className="flex items-center space-x-2">
-              <MessageSquare className="w-4 h-4" />
-              <span>{c.contact.message} *</span>
-            </Label>
-            <Textarea
-              id="message"
-              value={formData.message}
-              onChange={(e) => handleInputChange("message", e.target.value)}
-              placeholder={c.contact.messagePlaceholder}
-              rows={4}
-              className={errors.message ? "border-red-500" : ""}
-              maxLength={1000}
-            />
-            <div className="flex justify-between items-center">
-              {errors.message && <p className="text-sm text-red-500">{errors.message}</p>}
-              <p className="text-xs text-muted-foreground ml-auto">{formData.message.length}/1000</p>
-            </div>
-          </div>
-
-          {/* Trampa para bots: fuera de la vista y del foco, nunca la rellena una persona. */}
-          <input
-            type="text"
-            name="website"
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
-            value={honeypot}
-            onChange={(e) => setHoneypot(e.target.value)}
-            className="absolute left-[-9999px] w-px h-px opacity-0"
-          />
-
-          <div className="flex space-x-3 pt-2">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-              {c.contact.cancel}
-            </Button>
-            <Button type="submit" disabled={isSubmitting} className="flex-1">
-              {isSubmitting ? c.contact.sending : (
-                <>
-                  <Send className="w-4 h-4 mr-2" />
-                  {c.contact.send}
-                </>
-              )}
-            </Button>
-          </div>
-
-          <p className="text-center text-xs text-muted-foreground pt-1">
-            {c.contact.directEmail}{" "}
-            <a href={`mailto:${site.email}`} className="text-primary hover:underline">{site.email}</a>
-          </p>
-        </form>
-      </div>
-    </div>
-  );
+  return <form ref={formRef} onSubmit={handleSubmit} noValidate className="contact-project-form" aria-labelledby="contact-form-title" aria-busy={status === "sending"}>
+    <h2 id="contact-form-title">{english ? "Tell us about your project." : "Hablemos de tu proyecto."}</h2>
+    <p className="contact-required-note">{english ? "Fields marked * are required." : "Los campos con * son obligatorios."}</p>
+    <fieldset disabled={status === "sending"} className="contact-form-fields">
+      <legend className="sr-only">{english ? "Project details" : "Datos de tu consulta"}</legend>
+      <fieldset className="contact-needs"><legend>{c.contact.need}</legend><div>{contactTopics.map(id => <label key={id} className="contact-need"><input type="radio" name="topic" value={id} checked={need === id} onChange={() => setNeed(id)} /><span>{c.contact.needOptions[id]}</span></label>)}</div></fieldset>
+      <div className="contact-fields-row">{field("name", "text", true, 100, "name")}{field("email", "email", true, 255, "email")}</div>
+      <div className="contact-fields-row">{field("company", "text", false, 120, "organization")}{field("phone", "tel", false, 40, "tel")}</div>
+      <div className="contact-field"><label htmlFor="contact-message">{c.contact.message} <span aria-hidden="true">*</span></label><textarea id="contact-message" name="message" required rows={5} maxLength={1000} value={formData.message} onChange={event => change("message", event.target.value)} placeholder={c.contact.messagePlaceholder} aria-invalid={!!errors.message} aria-describedby={`contact-message-count${errors.message ? " contact-message-error" : ""}`} />{errors.message && <p id="contact-message-error" className="contact-field-error" role="alert">{errors.message}</p>}<p id="contact-message-count" className="contact-message-count">{formData.message.length}/1000</p></div>
+      <div className="contact-honeypot" aria-hidden="true"><label htmlFor="contact-website">Website</label><input id="contact-website" type="text" name="website" tabIndex={-1} autoComplete="off" value={honeypot} onChange={event => setHoneypot(event.target.value)} /></div>
+      <p className="contact-data-note">{english ? "We will use these details to reply to your enquiry. For questions about your data, write to " : "Usaremos estos datos para responder a tu consulta. Para cualquier cuestión sobre tus datos, escribe a "}<a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      {status === "error" && <div className="contact-send-error" role="alert"><p>{c.contact.toastFallbackBody}</p><a href={mailHref} onClick={() => track("contact_mailto_open", { topic: need })}>{english ? "Send from my email" : "Enviar desde mi correo"}<ArrowUpRight aria-hidden="true" size={18} /></a></div>}
+      <button type="submit" disabled={status === "sending"} className="contact-submit">{status === "sending" ? c.contact.sending : c.contact.send}<ArrowUpRight aria-hidden="true" size={20} /></button>
+    </fieldset>
+  </form>;
 };
-
 export default ContactForm;

@@ -1,159 +1,22 @@
-import { useEffect, useRef, useState } from "react";
-import { useCopy } from "@/i18n";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { useCopy, useLang } from "@/i18n";
 
 const Workflow = () => {
   const c = useCopy();
-  const [visibleSteps, setVisibleSteps] = useState<boolean[]>([]);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const steps = c.workflow.steps.map((step, i) => ({
-    number: String(i + 1).padStart(2, "0"),
-    title: step.title,
-    description: step.text,
-  }));
-
-  useEffect(() => {
-    const observers = stepRefs.current.map((ref, index) => {
-      if (!ref) return null;
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setVisibleSteps(prev => {
-                const newVisible = [...prev];
-                newVisible[index] = true;
-                return newVisible;
-              });
-            }
-          });
-        },
-        {
-          threshold: 0.3,
-          rootMargin: "0px 0px -100px 0px"
-        }
-      );
-
-      observer.observe(ref);
-      return observer;
-    });
-
-    return () => {
-      observers.forEach(observer => {
-        if (observer) observer.disconnect();
-      });
-    };
-  }, []);
-
-  return (
-    <section className="py-24 px-8 bg-muted/30 overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <h2 className="text-5xl font-light text-foreground mb-6 animate-fade-in">
-            {c.workflow.title}
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            {c.workflow.subtitle}
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-1 gap-12 max-w-4xl mx-auto">
-          {steps.map((step, index) => {
-            const isVisible = visibleSteps[index];
-            const progressPercentage = ((index + 1) / steps.length) * 100;
-            
-            return (
-              <div 
-                key={index} 
-                ref={el => stepRefs.current[index] = el}
-                className={`relative flex items-start gap-6 transition-all duration-1000 ease-out transform ${
-                  isVisible 
-                    ? 'opacity-100 translate-y-0 translate-x-0' 
-                    : 'opacity-0 translate-y-10 translate-x-8'
-                }`}
-                style={{ 
-                  transitionDelay: `${index * 0.2}s`
-                }}
-              >
-                <div className="flex-shrink-0">
-                  <div className="relative w-16 h-16 rounded-full bg-background flex items-center justify-center transition-all duration-500 hover:scale-110">
-                    {/* Background circle */}
-                    <div className="absolute inset-0 rounded-full border-2 border-border"></div>
-                    
-                    {/* Progress circle with animation */}
-                    <svg className="absolute inset-0 w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="30"
-                        fill="none"
-                        stroke="hsl(var(--primary))"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeDasharray={`${2 * Math.PI * 30}`}
-                        strokeDashoffset={`${2 * Math.PI * 30 * (isVisible ? (1 - progressPercentage / 100) : 1)}`}
-                        className="transition-all duration-2000 ease-out"
-                        style={{ 
-                          transitionDelay: `${index * 0.3 + 0.5}s`,
-                          opacity: 0.9
-                        }}
-                      />
-                      
-                      {/* Glow effect */}
-                      {isVisible && (
-                        <circle
-                          cx="32"
-                          cy="32"
-                          r="30"
-                          fill="none"
-                          stroke="hsl(var(--primary))"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeDasharray={`${2 * Math.PI * 30}`}
-                          strokeDashoffset={`${2 * Math.PI * 30 * (1 - progressPercentage / 100)}`}
-                          className="opacity-40 blur-sm transition-all duration-2000 ease-out"
-                          style={{ 
-                            transitionDelay: `${index * 0.3 + 0.5}s`
-                          }}
-                        />
-                      )}
-                    </svg>
-                    
-                    <span className={`relative z-10 text-xl font-light transition-all duration-700 ${
-                      isVisible ? 'text-primary scale-100' : 'text-muted-foreground scale-90'
-                    }`} style={{ transitionDelay: `${index * 0.2 + 0.8}s` }}>
-                      {step.number}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="flex-1">
-                  <h3 className={`text-2xl font-medium mb-4 transition-all duration-700 ease-out ${
-                    isVisible ? 'text-foreground translate-x-0' : 'text-muted-foreground translate-x-4'
-                  }`} style={{ transitionDelay: `${index * 0.2 + 0.4}s` }}>
-                    {step.title}
-                  </h3>
-                  
-                  <p className={`leading-relaxed text-lg transition-all duration-700 ease-out ${
-                    isVisible ? 'text-muted-foreground translate-x-0 opacity-100' : 'text-muted-foreground/60 translate-x-6 opacity-0'
-                  }`} style={{ transitionDelay: `${index * 0.2 + 0.6}s` }}>
-                    {step.description}
-                  </p>
-                </div>
-
-                {/* Connecting line to next step */}
-                {index < steps.length - 1 && (
-                  <div className={`absolute left-8 top-20 w-0.5 h-12 bg-gradient-to-b transition-all duration-1000 ${
-                    isVisible ? 'from-primary/40 to-border opacity-100' : 'from-transparent to-transparent opacity-0'
-                  }`} style={{ transitionDelay: `${index * 0.2 + 1}s` }}></div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
+  const { lang } = useLang();
+  const english = lang === "en";
+  const steps = english ? [
+    { title: "Understand the need", text: "We talk with your team about the people, the process and the problem to solve." },
+    { title: "Choose where to start", text: "Together we prioritise opportunities and agree on a clear scope for the first phase." },
+    { title: "Build and test", text: "We design, develop and test the solution in stages with the people who will use it." },
+    { title: "Use and improve", text: "We prepare the team to use the solution and decide the next steps based on what we learn." },
+  ] : [
+    { title: "Entendemos la necesidad", text: "Hablamos con tu equipo sobre las personas, el proceso y el problema que hay que resolver." },
+    { title: "Elegimos por dónde empezar", text: "Priorizamos oportunidades y acordamos un alcance claro para la primera fase." },
+    { title: "Construimos y probamos", text: "Diseñamos, desarrollamos y probamos la solución por fases con las personas que la utilizarán." },
+    { title: "Ponemos en marcha y mejoramos", text: "Preparamos al equipo para utilizar la solución y decidimos los siguientes pasos con lo aprendido." },
+  ];
+  return <section className="py-20 md:py-24 px-4 md:px-8 bg-muted/30"><div className="max-w-7xl mx-auto grid lg:grid-cols-[.85fr_1.15fr] gap-10 lg:gap-20"><div><h2 className="text-4xl md:text-5xl font-light leading-tight">{c.workflow.title}</h2><p className="text-lg text-muted-foreground leading-relaxed mt-5 max-w-md">{english ? "A clear process for building automation and digital products alongside your team." : "Un proceso claro para construir automatizaciones y productos digitales junto a tu equipo."}</p><Link to="/como-trabajamos/" className="inline-flex items-center gap-2 text-primary font-medium hover:underline mt-7">{english ? "Explore our process" : "Conoce cómo trabajamos"} <ArrowRight className="w-4 h-4" /></Link></div><ol className="border-t border-border">{steps.map((step, index) => <li key={step.title} className="grid grid-cols-[2.5rem_1fr] sm:grid-cols-[3rem_1fr_1.5fr] gap-3 sm:gap-6 py-6 border-b border-border"><span className="text-sm text-primary font-medium">{String(index + 1).padStart(2, "0")}</span><h3 className="text-lg font-medium">{step.title}</h3><p className="col-start-2 sm:col-start-auto text-sm text-muted-foreground leading-relaxed">{step.text}</p></li>)}</ol></div></section>;
 };
-
 export default Workflow;

@@ -1,5 +1,7 @@
+import RelatedResources from "@/components/RelatedResources";
+import { caseStudies, casePath } from "@/data/cases";
 import { Link, useParams } from "react-router-dom";
-import { ArrowRight, Bot, Check, Clock } from "lucide-react";
+import { ArrowRight, Bot, Check } from "lucide-react";
 import PageShell, { Breadcrumbs, CtaBand, FaqList } from "@/components/pages/PageShell";
 import NotFound from "@/pages/NotFound";
 import { getSector, sectors } from "@/data/sectors";
@@ -11,7 +13,6 @@ const SectorPage = () => {
   const { sectorSlug = "" } = useParams();
   const sector = getSector(sectorSlug);
   if (!sector) return <NotFound />;
-  const totalHours = sector.automations.reduce((sum, a) => sum + a.hours, 0);
   const related = sectors.filter((s) => s.slug !== sector.slug).slice(0, 5);
   const provs = sector.provinces.map((slug) => provinces.find((p) => p.slug === slug)).filter((p): p is NonNullable<typeof p> => Boolean(p));
   const sistemas = pillarOf("sistemas");
@@ -37,7 +38,7 @@ const SectorPage = () => {
           </section>
 
           <section className="px-4 md:px-8 py-10 border-t border-border bg-muted/30">
-            <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_auto] gap-8 items-start">
+            <div className="max-w-5xl mx-auto ">
               <div>
                 <h2 className="text-2xl md:text-3xl font-light text-foreground mb-4">Lo que se repite {sector.forName.replace(/^para /, "en ")}</h2>
                 <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2.5">
@@ -46,14 +47,7 @@ const SectorPage = () => {
                   ))}
                 </ul>
               </div>
-              <div className="grid grid-cols-3 md:grid-cols-1 gap-3">
-                {sector.metrics.map((m) => (
-                  <div key={m.label} className="rounded-xl border border-border bg-background px-4 py-3 md:min-w-[200px]">
-                    <p className="text-2xl font-semibold text-foreground" style={{ fontVariantNumeric: "tabular-nums" }}>{m.value}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{m.label}</p>
-                  </div>
-                ))}
-              </div>
+
             </div>
           </section>
 
@@ -61,17 +55,15 @@ const SectorPage = () => {
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Qué automatizamos {sector.forName}</h2>
-                  <p className="text-muted-foreground max-w-2xl">Cada automatización se contrata suelta, con alcance y plazo cerrados, y comparte base con las demás para crecer hasta el sistema completo.</p>
+                  <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Procesos que se pueden automatizar {sector.forName}</h2>
+                  <p className="text-muted-foreground max-w-2xl">Estos ejemplos sirven para identificar oportunidades. La viabilidad, las herramientas y la revisión necesaria se definen para cada empresa.</p>
                 </div>
-                <p className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary"><Clock className="w-4 h-4" /> ≈ {totalHours} h/semana en total</p>
               </div>
               <div className="grid md:grid-cols-2 gap-5">
                 {sector.automations.map((a, i) => (
                   <article key={a.title} className="rounded-2xl border border-border p-6 flex flex-col">
                     <div className="flex items-center justify-between gap-3 mb-3">
                       <span className="text-xs font-medium text-primary">{a.area}</span>
-                      <span className="text-xs text-muted-foreground" style={{ fontVariantNumeric: "tabular-nums" }}>≈ {a.hours} h/semana</span>
                     </div>
                     <h3 className="text-lg font-medium text-foreground mb-2">{i + 1}. {a.title}</h3>
                     <p className="text-muted-foreground leading-relaxed">{a.text}</p>
@@ -139,7 +131,7 @@ const SectorPage = () => {
                   {provs.map((p) => (
                     <li key={p.slug}><Link to={provincePath(p)} className="inline-block rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors">{p.name}{p.tier === 1 ? " · presencial" : ""}</Link></li>
                   ))}
-                  <li><Link to="/zonas" className="inline-block rounded-full border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm text-primary">Todas las zonas</Link></li>
+                  <li><Link to="/zonas/" className="inline-block rounded-full border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm text-primary">Todas las zonas</Link></li>
                 </ul>
               </div>
               <div>
@@ -148,13 +140,24 @@ const SectorPage = () => {
                   {related.map((s) => (
                     <li key={s.slug}><Link to={sectorPath(s)} className="inline-block rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors">{s.short}</Link></li>
                   ))}
-                  <li><Link to="/sectores" className="inline-block rounded-full border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm text-primary">Todos los sectores</Link></li>
+                  <li><Link to="/sectores/" className="inline-block rounded-full border border-primary/40 bg-primary/5 px-3 py-1.5 text-sm text-primary">Todos los sectores</Link></li>
                 </ul>
               </div>
             </div>
           </section>
 
-          <CtaBand title={`¿Qué tarea te gustaría dejar de hacer a mano?`} text={`Escríbenos en dos líneas. Conocemos el sector y te diremos con franqueza si merece la pena automatizarla y cuánto tiempo ahorrarías.`} onContactClick={openContact} />
+          {caseStudies.filter((item) => item.relatedSector === sector.slug).map((item) => (
+            <section key={item.slug} className="px-4 md:px-8 py-12 border-t border-border">
+              <div className="max-w-5xl mx-auto grid md:grid-cols-[1fr_2fr] gap-4 md:gap-8">
+                <h2 className="text-2xl font-light">Un proyecto relacionado</h2>
+                <div><p className="text-sm text-primary font-medium mb-2">{item.sector}</p><Link to={casePath(item)} className="text-xl font-medium hover:text-primary transition-colors">{item.title}</Link><p className="text-muted-foreground leading-relaxed mt-2">{item.summary}</p><Link to={casePath(item)} className="inline-flex items-center gap-1 text-primary text-sm font-medium mt-4 hover:underline">Ver proyecto <ArrowRight className="w-4 h-4" /></Link></div>
+              </div>
+            </section>
+          ))}
+
+          <RelatedResources sector={sector.slug} />
+
+          <CtaBand title="¿Qué tarea te gustaría dejar de hacer a mano?" text="Cuéntanos cómo trabaja tu equipo y estudiaremos si merece la pena automatizar alguna parte del proceso." onContactClick={openContact} />
         </>
       )}
     </PageShell>

@@ -1,35 +1,17 @@
-import { useState } from "react";
+import { useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-/**
- * Qué busca quien escribe. Se deduce del botón que ha pulsado y se puede
- * cambiar en el propio formulario; viaja con el mensaje para saber por dónde ha
- * entrado y qué necesita.
- */
-export type ContactTopic = "general" | "diagnostico" | "sistemas" | "acompanamiento";
+export type ContactTopic = "general" | "diagnostico" | "sistemas" | "acompanamiento" | "producto";
+export const contactTopics = ["general", "diagnostico", "sistemas", "acompanamiento", "producto"] as const;
+export const isContactTopic = (value: unknown): value is ContactTopic => typeof value === "string" && (contactTopics as readonly string[]).includes(value);
+export const contactPath = (topic: ContactTopic = "general") => topic === "general" ? "/contacto/" : `/contacto/?tema=${topic}`;
 
-export const contactTopics = ["general", "diagnostico", "sistemas", "acompanamiento"] as const;
-
-const isTopic = (value: unknown): value is ContactTopic => typeof value === "string" && (contactTopics as readonly string[]).includes(value);
-
+/** Los CTA conservan el interés seleccionado al navegar a la página de contacto. */
 export const useContactForm = () => {
-  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
-  const [contactTopic, setContactTopic] = useState<ContactTopic>("general");
-
-  // Varios botones pasan esta función directamente como onClick, así que el
-  // argumento puede ser un evento: solo se acepta si es un tema conocido.
-  const openContactForm = (topic?: ContactTopic | unknown) => {
-    setContactTopic(isTopic(topic) ? topic : "general");
-    setIsContactFormOpen(true);
-  };
-
-  const closeContactForm = () => {
-    setIsContactFormOpen(false);
-  };
-
-  return {
-    isContactFormOpen,
-    contactTopic,
-    openContactForm,
-    closeContactForm,
-  };
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const openContactForm = useCallback((topic?: ContactTopic | unknown) => {
+    navigate(contactPath(isContactTopic(topic) ? topic : "general"), { state: { from: pathname } });
+  }, [navigate, pathname]);
+  return { openContactForm };
 };

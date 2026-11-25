@@ -1,137 +1,40 @@
-import { useEffect, useRef, useState } from "react";
-import ClientLogo, { clientBySlug } from "@/components/ClientLogo";
-import { useCopy } from "@/i18n";
+import { useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { clientBySlug } from "@/components/ClientLogo";
+import { useCopy, useLang } from "@/i18n";
+import AnimatedDetails from "@/components/AnimatedDetails";
 
-// Cada reseña se atribuye a la empresa, no a la persona.
-const AUTHORS = ["caf", "lopez-alcon", "trackeo"].map(clientBySlug);
+const authors = [
+  { client: clientBySlug("trackeo"), sourceIndex: 2 },
+  { client: clientBySlug("caf"), sourceIndex: 0 },
+  { client: clientBySlug("lopez-alcon"), sourceIndex: 1 },
+];
 
 const Testimonials = () => {
   const c = useCopy();
-  const [visibleCards, setVisibleCards] = useState<boolean[]>([]);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const testimonials = AUTHORS.map((client, i) => ({
-    client,
-    text: c.testimonials.items[i].text,
-    boldText: c.testimonials.items[i].highlight,
-    additionalText: c.testimonials.items[i].closing || undefined,
-  }));
-
-  useEffect(() => {
-    const observers = cardRefs.current.map((ref, index) => {
-      if (!ref) return null;
-
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setVisibleCards(prev => {
-                const newVisible = [...prev];
-                newVisible[index] = true;
-                return newVisible;
-              });
-            }
-          });
-        },
-        {
-          threshold: 0.3,
-          rootMargin: "0px 0px -50px 0px"
-        }
-      );
-
-      observer.observe(ref);
-      return observer;
-    });
-
-    return () => {
-      observers.forEach(observer => {
-        if (observer) observer.disconnect();
-      });
-    };
-  }, []);
-
+  const { lang } = useLang();
+  const english = lang === "en";
+  const [index, setIndex] = useState(0);
+  const author = authors[index];
+  const item = c.testimonials.items[author.sourceIndex];
+  const controlClass = "w-11 h-11 rounded-full border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors motion-reduce:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4";
   return (
-    <section className="py-24 px-8 bg-background relative overflow-hidden">
-      {/* Línea separadora superior */}
-      <div className="absolute top-0 left-0 w-full h-px bg-border"></div>
+    <section aria-labelledby="home-testimonials-title" className="px-4 md:px-8 py-16 md:py-24">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-light text-foreground mb-16 animate-fade-in">
-          {c.testimonials.title}
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-12">
-          {testimonials.map((testimonial, index) => {
-            const isVisible = visibleCards[index];
-            
-            return (
-              <div 
-                key={index} 
-                ref={el => cardRefs.current[index] = el}
-                className={`space-y-6 transition-all duration-1000 ease-out ${
-                  isVisible 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-8 scale-95'
-                }`}
-                style={{ transitionDelay: `${index * 0.2}s` }}
-              >
-                {/* Empresa que firma la reseña */}
-                <div className={`h-10 flex items-center transition-all duration-500 ${
-                  isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                }`} style={{ transitionDelay: `${index * 0.2 + 0.3}s` }}>
-                  <ClientLogo
-                    client={testimonial.client}
-                    imgClass="max-h-10 max-w-[150px]"
-                    maskClass="h-10 w-[150px]"
-                    textClass="text-lg font-semibold tracking-tight text-foreground"
-                  />
-                </div>
-
-                {/* Testimonio */}
-                <div className="space-y-4">
-                  <p className={`text-foreground leading-relaxed transition-all duration-700 ease-out ${
-                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`} style={{ transitionDelay: `${index * 0.2 + 0.5}s` }}>
-                    {testimonial.text}{" "}
-                    <strong className="font-semibold">{testimonial.boldText}</strong>
-                    {testimonial.additionalText && (
-                      <>
-                        {/[.!?]$/.test(testimonial.boldText) ? " " : ". "}
-                        {testimonial.additionalText}
-                      </>
-                    )}
-                  </p>
-
-                  {/* Estrellas */}
-                  <div className={`flex space-x-1 transition-all duration-500 ${
-                    isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
-                  }`} style={{ transitionDelay: `${index * 0.2 + 0.7}s` }}>
-                    {[...Array(5)].map((_, i) => (
-                      <span 
-                        key={i} 
-                        className={`text-red-500 text-lg transition-all duration-300 ${
-                          isVisible ? 'animate-pulse' : ''
-                        }`}
-                        style={{ 
-                          animationDelay: `${index * 0.2 + 0.9 + i * 0.1}s`,
-                          animationDuration: '0.6s',
-                          animationIterationCount: '1'
-                        }}
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="flex flex-wrap justify-between items-center gap-5 mb-8 md:mb-12">
+          <h2 id="home-testimonials-title" className="text-lg font-medium">{english ? "In our clients' words." : "En palabras de quienes trabajan con Alpa."}</h2>
+          <div className="flex items-center gap-3">
+            <button type="button" onClick={() => setIndex((index + authors.length - 1) % authors.length)} aria-label={english ? "Previous testimonial" : "Testimonio anterior"} className={controlClass}><ArrowLeft aria-hidden="true" className="w-4 h-4" /></button>
+            <span className="text-sm text-[#59616c] tabular-nums">{index + 1} / {authors.length}</span>
+            <button type="button" onClick={() => setIndex((index + 1) % authors.length)} aria-label={english ? "Next testimonial" : "Siguiente testimonio"} className={controlClass}><ArrowRight aria-hidden="true" className="w-4 h-4" /></button>
+          </div>
         </div>
+        <figure aria-live="polite" aria-atomic="true" className="max-w-6xl min-h-[11rem] md:min-h-[14rem]">
+          <blockquote key={`${author.client.slug}-${lang}`} className="home-quote-change text-xl sm:text-2xl md:text-3xl lg:text-[2.1rem] leading-[1.5] sm:leading-[1.5] md:leading-[1.5] lg:leading-[1.45] tracking-[-0.015em]"><p>«{item.highlight}»</p></blockquote>
+          <figcaption key={`caption-${author.client.slug}`} className="home-quote-change mt-7 text-base font-semibold">{author.client.name}</figcaption><AnimatedDetails key={author.client.slug} className="mt-4 text-sm max-w-3xl" summaryClassName="cursor-pointer text-primary w-fit focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4" summary={english ? "Read the full testimonial" : "Leer el testimonio completo"}><p className="text-[#59616c] leading-relaxed mt-4">«{item.text} {item.highlight}{item.closing && <> {item.closing}</>}»</p></AnimatedDetails>
+        </figure>
       </div>
-      
-      {/* Línea separadora inferior */}
-      <div className="absolute bottom-0 left-0 w-full h-px bg-border"></div>
     </section>
   );
 };
-
 export default Testimonials;

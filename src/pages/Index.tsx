@@ -1,59 +1,39 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
-import AutomationFlows from "@/components/AutomationFlows";
-import AutomationScan from "@/components/AutomationScan";
-import Sectors from "@/components/Sectors";
-import Workflow from "@/components/Workflow";
+import HomeTools from "@/components/HomeTools";
+import CaseStudies from "@/components/CaseStudies";
 import Testimonials from "@/components/Testimonials";
-import ClientLogos from "@/components/ClientLogos";
+import ClientStrip from "@/components/ClientStrip";
 import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
-import ContactForm from "@/components/ContactForm";
 import { useContactForm } from "@/hooks/useContactForm";
+import { useRef } from "react";
+import { useHomeMotion } from "@/hooks/useHomeMotion";
 
 const Index = () => {
-  const { isContactFormOpen, contactTopic, openContactForm, closeContactForm } = useContactForm();
+  const { openContactForm } = useContactForm();
+  const mainRef = useRef<HTMLElement>(null);
+  useHomeMotion(mainRef);
 
   return (
     <>
       <SEOHead />
       <div className="min-h-screen bg-background">
-        <Header onContactClick={openContactForm} />
-        <main>
-          <Hero onContactClick={openContactForm} />
-          <section aria-label="Sistemas de herramientas y automatizaciones con IA">
-            <AutomationFlows />
-          </section>
-          <section aria-label="Analiza qué automatizar en tu empresa">
-            <AutomationScan onContactClick={() => openContactForm("diagnostico")} />
-          </section>
-          <section aria-label="Líneas de servicio">
-            <Services onContactClick={openContactForm} />
-          </section>
-          <section aria-label="Sectores">
-            <Sectors />
-          </section>
-          <section aria-label="Proceso de trabajo">
-            <Workflow />
-          </section>
-          <section aria-label="Testimonios de clientes">
-            <Testimonials />
-          </section>
-          <section aria-label="Empresas con las que hemos trabajado">
-            <ClientLogos />
-          </section>
-          <section aria-label="Llamada a la acción">
-            <CTA onContactClick={openContactForm} />
-          </section>
-          <section aria-label="Preguntas frecuentes">
-            <FAQ />
-          </section>
+        <Header />
+        <main ref={mainRef} className="home-motion">
+          <Hero />
+          <ClientStrip />
+          <Services onContactClick={openContactForm} />
+          <CaseStudies />
+          <Testimonials />
+          <FAQ onContactClick={openContactForm} />
+          <HomeTools onContactClick={() => openContactForm("diagnostico")} />
+          <CTA />
         </main>
         <Footer />
-        <ContactForm isOpen={isContactFormOpen} onClose={closeContactForm} topic={contactTopic} />
       </div>
     </>
   );

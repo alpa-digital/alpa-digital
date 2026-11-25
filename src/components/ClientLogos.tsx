@@ -1,76 +1,15 @@
-import { useEffect, useRef, useState } from "react";
 import { clients } from "@/data/clients";
 import ClientLogo from "@/components/ClientLogo";
 import { useCopy } from "@/i18n";
 
 const ClientLogos = () => {
-  const [isVisible, setIsVisible] = useState(false);
   const c = useCopy();
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const node = sectionRef.current;
-    if (!node) return;
-    const observer = new IntersectionObserver((entries) => entries.forEach((e) => e.isIntersecting && setIsVisible(true)), { threshold: 0.15 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  // El contador de clientes sale de la propia lista, para que no se quede corto al añadir logos.
-  const numbers = ["25", "5", String(clients.length)];
-  const stats = c.clients.stats.map((stat, i) => ({ number: numbers[i], symbol: "+", ...stat }));
-
-  return (
-    <section ref={sectionRef} className="py-16 md:py-24 px-4 md:px-8 bg-background border-t border-border overflow-hidden">
-      <div className="max-w-7xl mx-auto">
-        <div className={`text-center mb-10 md:mb-14 transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <h3 className="text-4xl md:text-5xl font-light text-foreground mb-4" style={{ textWrap: "balance" }}>{c.clients.title}</h3>
-          <p className="text-sm md:text-base text-muted-foreground/80">{c.clients.subtitle}</p>
-        </div>
-
-        {/* Flex en lugar de rejilla: cuando la última fila no se llena, los logos sueltos quedan centrados. */}
-        <ul className="flex flex-wrap justify-center gap-3 md:gap-4" aria-label={c.clients.title}>
-          {clients.map((client, index) => (
-            <li
-              key={client.slug}
-              className={`w-[calc(50%-0.375rem)] sm:w-[calc(33.333%-0.5rem)] md:w-[calc(33.333%-0.667rem)] lg:w-[calc(25%-0.75rem)] flex items-center justify-center h-20 md:h-24 lg:h-28 px-4 rounded-2xl bg-card hover:bg-secondary/40 transition-all ${
-                isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"
-              }`}
-              style={{ transitionDelay: `${index * 0.06}s`, transitionDuration: "600ms" }}
-            >
-              <ClientLogo client={client} />
-            </li>
-          ))}
-        </ul>
-
-        <p className={`text-center mt-8 md:mt-10 text-xs md:text-sm text-muted-foreground/70 transition-all duration-1000 ease-out ${isVisible ? "opacity-100" : "opacity-0"}`} style={{ transitionDelay: "0.9s" }}>
-          {c.clients.footnote}
-        </p>
-
-        <div className="mt-16 md:mt-20 bg-secondary/20 rounded-2xl p-8 md:p-12">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div className="grid grid-cols-3 gap-8 lg:gap-12">
-              {stats.map((stat, index) => (
-                <div key={stat.label} className={`text-center transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`} style={{ transitionDelay: `${1.1 + index * 0.2}s` }}>
-                  <div className="mb-4">
-                    <span className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground">{stat.number}</span>
-                    <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">{stat.symbol}</span>
-                  </div>
-                  <p className="text-sm md:text-base text-muted-foreground font-medium">{stat.label}</p>
-                  <p className="text-sm md:text-base text-muted-foreground font-medium">{stat.sublabel}</p>
-                </div>
-              ))}
-            </div>
-            <div className={`transition-all duration-1000 ease-out ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`} style={{ transitionDelay: "1.7s" }}>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                {c.clients.closing}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <section className="py-16 md:py-24 px-4 md:px-8 bg-background border-t border-border">
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-10 md:mb-12 max-w-3xl"><h2 className="text-4xl md:text-5xl font-light text-foreground mb-4" style={{ textWrap: "balance" }}>{c.clients.title}</h2><p className="text-muted-foreground leading-relaxed">{c.clients.subtitle}</p></div>
+      <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" aria-label={c.clients.title}>{clients.map((client) => <li key={client.slug} className="flex items-center justify-center h-20 md:h-24 lg:h-28 px-4 rounded-2xl bg-secondary/30"><ClientLogo client={client} /></li>)}</ul>
+      <p className="mt-7 text-xs md:text-sm text-muted-foreground">{c.clients.footnote}</p>
+    </div>
+  </section>;
 };
-
 export default ClientLogos;

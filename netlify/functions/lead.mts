@@ -13,7 +13,16 @@ const areaNames: Record<string, string> = {
 const leadSchema = z.object({
   email: z.string().trim().email().max(255),
   url: z.string().trim().max(300),
-  sector: z.string().max(40).optional(),
+  sector: z.string().max(200).optional(),
+  utm: z.object({
+    utm_source: z.string().max(200).optional(),
+    utm_medium: z.string().max(200).optional(),
+    utm_campaign: z.string().max(200).optional(),
+    utm_term: z.string().max(200).optional(),
+    utm_content: z.string().max(200).optional(),
+    gclid: z.string().max(500).optional(),
+    landing: z.string().max(300).optional(),
+  }).optional(),
   analysis: z
     .object({
       company: z.string(),
@@ -113,6 +122,7 @@ export default async (req: Request, _context: Context) => {
         <strong>Web:</strong> ${escapeHtml(lead.url)}<br>
         <strong>Sector:</strong> ${escapeHtml(lead.sector ?? "no indicado")}<br>
         <strong>Origen del análisis:</strong> ${escapeHtml(lead.analysis?.source ?? "sin análisis")}</p>
+        ${lead.utm ? `<p><strong>Campaña:</strong> ${escapeHtml([lead.utm.utm_source, lead.utm.utm_medium, lead.utm.utm_campaign].filter(Boolean).join(" / ") || "no indicada")}<br><strong>Página de entrada:</strong> ${escapeHtml(lead.utm.landing ?? "no indicada")}</p>` : ""}
         ${lead.analysis ? reportHtml(lead) : ""}`,
     });
   } catch (error) {

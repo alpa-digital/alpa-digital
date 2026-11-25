@@ -30,12 +30,11 @@ for (const seo of routes) {
   written++;
 }
 
-const today = new Date().toISOString().slice(0, 10);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes
   .filter((r) => !r.noindex)
-  .map((r) => `  <url>\n    <loc>${siteUrl}${r.path === "/" ? "" : r.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${r.priority >= 0.9 ? "weekly" : "monthly"}</changefreq>\n    <priority>${r.priority.toFixed(1)}</priority>\n  </url>`)
+  .map((r) => `  <url>\n    <loc>${r.canonical}</loc>\n  </url>`)
   .join("\n")}
 </urlset>
 `;
