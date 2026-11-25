@@ -1,45 +1,49 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { caseStudies, casePath } from "@/data/cases";
 import { useLang } from "@/i18n";
-import makerImage from "@/assets/projects/makernotch-cicd.webp";
-import boughtImage from "@/assets/projects/boughtcast-dashboard.webp";
-import brandImage from "@/assets/projects/brandtoads-logo.png";
+import ClientLogo, { clientBySlug } from "@/components/ClientLogo";
 
-// One selection per page load, including StrictMode and route remounts.
-let pageSelection: number | undefined;
-const nextSelection = (count: number) => {
-  if (pageSelection !== undefined) return pageSelection;
-  try {
-    const stored = window.sessionStorage.getItem("alpa-featured-projects");
-    const previous = stored === null ? -1 : Number(stored);
-    pageSelection = Number.isInteger(previous) && previous >= -1 && previous < count ? (previous + 1) % count : 0;
-    window.sessionStorage.setItem("alpa-featured-projects", String(pageSelection));
-  } catch {
-    pageSelection = Math.floor(Math.random() * count);
-  }
-  return pageSelection;
+/** Portada de cada caso destacado: el flujo que resuelve, en tres pasos. Sin cifras: solo las que estén verificadas. */
+const caseCovers: Record<string, { client: string; es: { name: string; sector: string; detail: string; steps: string[] }; en: { name: string; sector: string; title: string; summary: string; detail: string; steps: string[] } }> = {
+  "seleccion-candidatos-sector-electrico": {
+    client: "lopez-alcon",
+    es: { name: "Selección de candidatos", sector: "Instalaciones eléctricas", detail: "López Alcón Electrificaciones · Digitalización y RR. HH.", steps: ["Llega una candidatura", "La IA la analiza con los criterios del puesto", "RR. HH. revisa los perfiles que encajan"] },
+    en: { name: "Candidate screening", detail: "López Alcón Electrificaciones · Digitalisation and HR", sector: "Electrical installations", title: "Digitalisation and AI-assisted candidate screening", summary: "Digitalisation of an electrical sector company and initial automation of candidate analysis for its HR team.", steps: ["An application arrives", "AI analyses it against the role criteria", "HR reviews the profiles that fit"] },
+  },
+  "consulta-manuales-mantenimiento-ferroviario": {
+    client: "caf",
+    es: { name: "Manuales ferroviarios", sector: "Mantenimiento ferroviario", detail: "CAF · Mantenimiento de trenes en una línea de Oslo", steps: ["El operario pregunta por una pieza", "La IA busca en los manuales de mantenimiento", "El operario recibe la respuesta"] },
+    en: { name: "Railway manuals", detail: "CAF · Train maintenance on an Oslo line", sector: "Railway maintenance", title: "Searching maintenance manuals for railway operators", summary: "A documentation search system helps operators on an Oslo railway line find information about parts and components.", steps: ["An operator asks about a part", "AI searches the maintenance manuals", "The operator gets the answer"] },
+  },
 };
+
+const otherProducts = [
+  { name: "MakerNotch", slug: "makernotch" },
+  { name: "Boughtcast", slug: "boughtcast" },
+  { name: "BrandToAds", slug: "brandtoads" },
+  { name: "Climbber", slug: "climbber" },
+];
 
 const CaseStudies = () => {
   const { lang } = useLang();
   const english = lang === "en";
-  const [selection, setSelection] = useState(0);
-  const products = [
-    { name: "MakerNotch", slug: "makernotch", image: makerImage, category: english ? "Mac app" : "Aplicación para Mac", description: english ? "Your projects, a glance away." : "Tus proyectos, a la vista desde el Mac.", width: 1600, height: 644 },
-    { name: "Boughtcast", slug: "boughtcast", image: boughtImage, category: english ? "Web platform" : "Plataforma web", description: english ? "A place for buyers to share their experience." : "Una plataforma para compartir experiencias de compra.", width: 2880, height: 1800 },
-    { name: "BrandToAds", slug: "brandtoads", image: brandImage, category: english ? "Advertising platform" : "Plataforma publicitaria", description: english ? "Ad creatives built around a brand." : "Creatividades publicitarias a partir de una marca.", width: 1663, height: 426 },
-  ];
-  const projectCount = products.length;
-  useEffect(() => { setSelection(nextSelection(projectCount)); }, [projectCount]);
-  const featured = [products[selection], products[(selection + 1) % projectCount]];
-  const remaining = products.filter(product => !featured.includes(product));
   return <section id="proyectos" aria-labelledby="home-work-title" className="studio-work">
-    <div className="studio-work-header"><h2 id="home-work-title">{english ? <>From idea<br />to solution.</> : <>De la idea<br />a la solución.</>}</h2><div><p>{english ? "Software and automation built around the people who use them." : "Software y automatizaciones construidos para quienes los utilizan."}</p><Link to="/casos/">{english ? "Explore our work" : "Ver nuestro trabajo"}<ArrowRight aria-hidden="true" size={18} /></Link></div></div>
-    <div className="studio-work-grid">{featured.map(product => <article key={product.slug} className={`studio-work-project studio-work-${product.slug}`}><Link to={`/casos/${product.slug}/`} aria-label={`${english ? "Explore project" : "Ver proyecto"} ${product.name}`} className="studio-work-cover"><span>{product.category}</span><div className="studio-work-media"><img src={product.image} alt={product.slug === "brandtoads" ? (english ? "BrandToAds logo" : "Logotipo de BrandToAds") : (english ? `${product.name} product screenshot with sample data` : `Captura del producto ${product.name} con datos de ejemplo`)} width={product.width} height={product.height} loading="lazy" /></div><div className="studio-work-cover-title">{product.name}<ArrowUpRight size={30} aria-hidden="true" /></div></Link><div className="studio-work-project-caption"><h3>{product.description}</h3><p>{product.slug === "brandtoads" ? (english ? "Developed by Alpa · Product logo" : "Desarrollado por Alpa · Logotipo del producto") : (english ? "Developed from scratch by Alpa · Screenshot with sample data" : "Desarrollo desde cero por Alpa · Captura con datos de ejemplo")}</p></div></article>)}</div>
-    <div className="studio-more-work"><span>{english ? "Also developed by Alpa" : "También desarrollados por Alpa"}</span>{remaining.map(product => <Link key={product.slug} to={`/casos/${product.slug}/`}>{product.name}<ArrowUpRight size={17} aria-hidden="true" /></Link>)}<Link to="/casos/climbber/">Climbber<ArrowUpRight size={17} aria-hidden="true" /></Link></div>
-    <div className="studio-automation-work"><h3>{english ? <>Automation,<br />in practice.</> : <>Automatización,<br />en la práctica.</>}</h3><div>{caseStudies.map((item,index) => <Link key={item.slug} to={casePath(item)}><div><span>{english ? (index === 0 ? "Electrical sector" : "Railway maintenance") : item.sector}</span><h4>{english ? (index === 0 ? "AI-assisted candidate analysis" : "Searching maintenance manuals") : item.title}</h4></div><ArrowUpRight aria-hidden="true" size={23} /></Link>)}</div></div>
+    <div className="studio-work-header"><h2 id="home-work-title">{english ? <>Applied AI,<br />in practice.</> : <>IA aplicada,<br />en la práctica.</>}</h2><div><p>{english ? "AI projects already working in companies, with their real processes and data." : "Proyectos de IA que ya funcionan en empresas, con sus procesos y sus datos reales."}</p></div></div>
+    <div className="studio-work-grid">{caseStudies.map(item => {
+      const cover = caseCovers[item.slug];
+      if (!cover) return null;
+      const copy = english ? cover.en : { ...cover.es, title: item.title, summary: item.summary };
+      return <article key={item.slug} className={`studio-work-project studio-work-case studio-work-case-${item.slug}`}>
+        <Link to={casePath(item)} aria-label={`${english ? "Read case" : "Ver caso"}: ${copy.title}`} className="studio-work-cover">
+          <div className="studio-case-client"><span className="studio-case-logo"><ClientLogo client={clientBySlug(cover.client)} imgClass="max-h-[26px] max-w-[110px]" maskClass="w-[110px] h-[26px]" /></span><span>{copy.sector}</span></div>
+          <ol className="studio-case-steps" aria-hidden="true">{copy.steps.map((step, index) => <li key={step}><span>{String(index + 1).padStart(2, "0")}</span>{step}</li>)}</ol>
+          <div className="studio-work-cover-title">{copy.name}<ArrowUpRight size={30} aria-hidden="true" /></div>
+        </Link>
+        <div className="studio-work-project-caption"><p className="studio-case-detail">{copy.detail}</p><h3>{copy.title}</h3><p>{copy.summary}</p></div>
+      </article>;
+    })}</div>
+    <div className="studio-more-work studio-product-logos"><span>{english ? "Also developed by Alpa" : "También desarrollados por Alpa"}</span>{otherProducts.map(product => <Link key={product.slug} to={`/casos/${product.slug}/`} aria-label={`${english ? "Explore project" : "Ver proyecto"} ${product.name}`}>{product.name}</Link>)}</div>
   </section>;
 };
 export default CaseStudies;

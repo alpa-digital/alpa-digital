@@ -1,7 +1,7 @@
 import RelatedResources from "@/components/RelatedResources";
 import { caseStudies, casePath } from "@/data/cases";
 import { Link, useParams } from "react-router-dom";
-import { ArrowRight, Bot, Check } from "lucide-react";
+import { ArrowRight, Check, LayoutGrid, Lock } from "lucide-react";
 import PageShell, { Breadcrumbs, CtaBand, FaqList } from "@/components/pages/PageShell";
 import NotFound from "@/pages/NotFound";
 import { getSector, sectors } from "@/data/sectors";
@@ -37,6 +37,16 @@ const SectorPage = () => {
             </div>
           </section>
 
+          <section className="px-4 md:px-8 py-8 border-t border-border">
+            <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+              <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"><Lock className="w-5 h-5 text-primary" aria-hidden="true" /></div>
+              <div>
+                <h2 className="font-medium text-foreground">Por qué una IA privada {sector.forName}</h2>
+                <p className="text-muted-foreground leading-relaxed mt-1 max-w-3xl">{sector.privacy}</p>
+              </div>
+            </div>
+          </section>
+
           <section className="px-4 md:px-8 py-10 border-t border-border bg-muted/30">
             <div className="max-w-5xl mx-auto ">
               <div>
@@ -55,8 +65,8 @@ const SectorPage = () => {
             <div className="max-w-5xl mx-auto">
               <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Procesos que se pueden automatizar {sector.forName}</h2>
-                  <p className="text-muted-foreground max-w-2xl">Estos ejemplos sirven para identificar oportunidades. La viabilidad, las herramientas y la revisión necesaria se definen para cada empresa.</p>
+                  <h2 className="text-2xl md:text-3xl font-light text-foreground mb-2">Apps y automatizaciones de IA privada {sector.forName}</h2>
+                  <p className="text-muted-foreground max-w-2xl">Ejemplos de lo que puede hacer tu instancia de Alpa con los datos de tu empresa. La viabilidad, las integraciones y la revisión necesaria se definen para cada empresa en el piloto.</p>
                 </div>
               </div>
               <div className="grid md:grid-cols-2 gap-5">
@@ -76,15 +86,15 @@ const SectorPage = () => {
           <section className="px-4 md:px-8 py-12 bg-[#08090B] text-white">
             <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_1.2fr] gap-10 items-center">
               <div>
-                <p className="text-xs font-medium text-blue-300 uppercase tracking-wide mb-2">La escala de empresa</p>
-                <h2 className="text-2xl md:text-3xl font-light mb-4" style={{ textWrap: "balance" }}>Así sería el sistema completo {sector.forName.replace(/^para /, "de ")}</h2>
-                <p className="text-white/60 leading-relaxed mb-5">Las mismas automatizaciones, conectadas entre sí y con un agente central al que el equipo habla por WhatsApp o por voz. Datos compartidos, permisos y supervisión. Se construye por fases, con alcance y plazo cerrados en cada una.</p>
-                <Link to={servicePath(sistemas)} className="inline-flex items-center gap-2 text-blue-300 hover:text-white">Ver sistemas de IA <ArrowRight className="w-4 h-4" /></Link>
+                <p className="text-xs font-medium text-blue-300 uppercase tracking-wide mb-2">Tu instancia de Alpa</p>
+                <h2 className="text-2xl md:text-3xl font-light mb-4" style={{ textWrap: "balance" }}>Así sería la IA privada {sector.forName.replace(/^para /, "de ")}</h2>
+                <p className="text-white/60 leading-relaxed mb-5">Una instancia de uso exclusivo con tu marca y tu subdominio, con las apps que necesita tu equipo sobre los mismos datos, usuarios y permisos. Se empieza por una app en un piloto y se añaden las demás sobre la misma instancia.</p>
+                <Link to={servicePath(sistemas)} className="inline-flex items-center gap-2 text-blue-300 hover:text-white">Ver IA privada para empresas <ArrowRight className="w-4 h-4" /></Link>
               </div>
               <div className="rounded-2xl border border-white/10 bg-[#0D0E11] p-5 md:p-6">
                 <div className="mx-auto w-fit rounded-2xl border border-blue-400 bg-blue-500/15 px-4 py-3 flex items-center gap-3 shadow-[0_0_30px_rgba(59,130,246,0.35)] mb-5">
-                  <div className="w-9 h-9 rounded-full bg-blue-500/30 flex items-center justify-center"><Bot className="w-5 h-5 text-white" /></div>
-                  <p className="text-sm font-semibold">{sector.system.hub}</p>
+                  <div className="w-9 h-9 rounded-full bg-blue-500/30 flex items-center justify-center"><LayoutGrid className="w-5 h-5 text-white" /></div>
+                  <div><p className="text-sm font-semibold">tuempresa.alpa.digital</p><p className="text-[11px] text-white/60">IA privada · {sector.system.hub}</p></div>
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
                   {sector.system.modules.map((m) => (
@@ -104,9 +114,9 @@ const SectorPage = () => {
                 <h2 className="text-2xl md:text-3xl font-light text-foreground mb-4">Cómo empezar</h2>
                 <ul className="space-y-3">
                   {[
-                    { t: "Analiza tu web gratis", d: "En 30 segundos, un primer mapa de las áreas con más trabajo repetitivo." },
-                    { t: "Diagnóstico", d: "Una o dos semanas con las personas que hacen el trabajo. Plan priorizado con estimación cerrada." },
-                    { t: "Primera automatización", d: "La que más horas ahorra, en dos a seis semanas, con alcance y plazo cerrados y un mes de soporte." },
+                    { t: "Primera conversación", d: "Nos cuentas qué proceso le quita más tiempo a tu equipo y con qué datos trabaja." },
+                    { t: "Piloto con tus datos", d: "Montamos ese proceso en una instancia de IA privada y lo probamos con casos reales, con alcance y plazo acordados por escrito." },
+                    { t: "App a app", d: "Con el resultado medido, añadimos más apps y automatizaciones sobre la misma instancia." },
                   ].map((s) => (
                     <li key={s.t} className="flex items-start gap-3"><Check className="w-4 h-4 text-primary mt-1 flex-shrink-0" /><span><span className="font-medium text-foreground">{s.t}</span><span className="text-muted-foreground"> · {s.d}</span></span></li>
                   ))}
@@ -157,7 +167,7 @@ const SectorPage = () => {
 
           <RelatedResources sector={sector.slug} />
 
-          <CtaBand title="¿Qué tarea te gustaría dejar de hacer a mano?" text="Cuéntanos cómo trabaja tu equipo y estudiaremos si merece la pena automatizar alguna parte del proceso." onContactClick={openContact} />
+          <CtaBand title={`¿Montamos tu IA privada ${sector.forName.replace(/^para /, "en ")}?`} text="Cuéntanos qué proceso le quita más tiempo a tu equipo y con qué datos trabaja. Te proponemos un piloto para probarlo." onContactClick={openContact} />
         </>
       )}
     </PageShell>

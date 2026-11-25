@@ -1,8 +1,8 @@
 /** Short introductions for the shared service hero. Full scope remains in services.ts. */
 export const servicePresentation: Record<string, { intro: string; scopeTitle: string }> = {
-  "sistemas-ia": { intro: "Conectamos automatizaciones, agentes y aplicaciones para que tu equipo trabaje con información compartida. Empezamos por una necesidad y avanzamos por fases.", scopeTitle: "De un proceso al sistema." },
-  "automatizacion-ia-pymes": { intro: "Conectamos tus herramientas para reducir tareas repetitivas. Definimos el proceso, las excepciones y lo que tiene que revisar una persona.", scopeTitle: "Empieza por un proceso." },
-  "agentes-ia-empresas": { intro: "Diseñamos asistentes que consultan información y trabajan con tus herramientas. Acordamos qué pueden hacer, sus límites y cuándo interviene tu equipo.", scopeTitle: "Con tus datos y tus herramientas." },
-  "desarrollo-software-medida-ia": { intro: "Desarrollamos las aplicaciones que tu empresa necesita para trabajar: herramientas internas, portales y sistemas conectados. La IA forma parte de la solución cuando aporta valor.", scopeTitle: "Para tu forma de trabajar." },
-  "consultoria-ia-pymes": { intro: "Revisamos el trabajo con tu equipo, priorizamos oportunidades y probamos lo que necesita validación antes de invertir en desarrollo.", scopeTitle: "Decidir antes de desarrollar." },
+  "sistemas-ia": { intro: "Una instancia de IA de uso exclusivo para tu empresa, con modelos abiertos en infraestructura dedicada y las apps que usa tu equipo. Tus datos, bajo tu control.", scopeTitle: "Una plataforma. Tus apps." },
+  "automatizacion-ia-pymes": { intro: "Flujos entre tus apps y herramientas que funcionan dentro de tu instancia de IA privada y que tu equipo puede crear y ajustar.", scopeTitle: "Empieza por un proceso." },
+  "agentes-ia-empresas": { intro: "Agentes que atienden y ayudan a tu equipo consultando los datos de tu empresa, sin cederlos a terceros. Acordamos qué pueden hacer y cuándo interviene una persona.", scopeTitle: "Con tus datos, en tu instancia." },
+  "desarrollo-software-medida-ia": { intro: "Atención al cliente, CRM, presupuestos, obras, personas, documentos y cuadro de mando en una sola instancia con tu marca. Y a medida lo que falte.", scopeTitle: "Las apps de tu equipo." },
+  "consultoria-ia-pymes": { intro: "Revisamos un proceso con tu equipo, lo probamos con tus datos en un piloto de IA privada y acordamos el alcance antes de invertir.", scopeTitle: "Probar antes de ampliar." },
 };

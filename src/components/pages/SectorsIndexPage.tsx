@@ -11,8 +11,8 @@ const SectorsIndexPage = () => (
         <section className="px-4 md:px-8 pb-12">
           <div className="max-w-5xl mx-auto">
             <Breadcrumbs items={[{ name: "Inicio", path: "/" }, { name: "Sectores", path: "/sectores" }]} />
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mt-6 mb-6" style={{ textWrap: "balance" }}>IA y automatización por sectores</h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">Cada sector repite tareas distintas. Aquí está lo que automatizamos en cada uno, con ejemplos de procesos, posibles soluciones y preguntas frecuentes.</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground leading-[1.05] mt-6 mb-6" style={{ textWrap: "balance" }}>IA privada por sectores</h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl leading-relaxed">Cada sector trabaja con datos y tareas distintas. Aquí tienes qué apps y automatizaciones de IA privada encajan en cada uno, por qué importa que los datos se queden en tu empresa y preguntas frecuentes.</p>
           </div>
         </section>
         <section className="px-4 md:px-8 pb-16">
@@ -30,7 +30,7 @@ const SectorsIndexPage = () => (
             })}
           </div>
         </section>
-        <CtaBand title="¿Tu sector no está en la lista?" text="Da igual: las tareas repetitivas se parecen mucho entre sectores. Analiza tu web gratis o escríbenos y te respondemos en menos de 24 h." onContactClick={openContact} />
+        <CtaBand title="¿Tu sector no está en la lista?" text="Da igual: las tareas repetitivas y los datos sensibles se parecen mucho entre sectores. Escríbenos y te proponemos un piloto." onContactClick={openContact} />
       </>
     )}
   </PageShell>

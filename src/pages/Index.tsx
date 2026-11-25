@@ -2,6 +2,8 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import HomeTools from "@/components/HomeTools";
+import WhyPrivate from "@/components/WhyPrivate";
+import PlatformPreview from "@/components/PlatformPreview";
 import CaseStudies from "@/components/CaseStudies";
 import Testimonials from "@/components/Testimonials";
 import ClientStrip from "@/components/ClientStrip";
@@ -25,8 +27,10 @@ const Index = () => {
         <Header />
         <main ref={mainRef} className="home-motion">
           <Hero />
+          <PlatformPreview />
           <ClientStrip />
           <Services onContactClick={openContactForm} />
+          <WhyPrivate />
           <CaseStudies />
           <Testimonials />
           <FAQ onContactClick={openContactForm} />

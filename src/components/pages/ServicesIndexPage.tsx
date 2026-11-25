@@ -25,18 +25,18 @@ const ServicesIndexPage = () => {
   const [activeCapability, setActiveCapability] = useState<number | null>(0);
   const maker = getWorkProjects(lang).find(project => project.slug === "makernotch")!;
   const labels = english ? {
-    serviceDetail: "Explore this service", railway: "Automation in practice", caseLink: "Explore the project",
-    caseContext: "Technical documentation queries for railway maintenance on a line in Oslo. An anonymised real project.",
+    serviceDetail: "Explore this service", railway: "Applied AI in practice", caseLink: "Explore the project",
+    caseContext: "For CAF: technical documentation queries for train maintenance on a line in Oslo. The AI answers from the maintenance manuals.",
     flow: "The approach used in the railway project", documents: "Technical manuals", query: "Operator query", response: "Maintenance information",
-    otherCase: "Also: AI-assisted candidate analysis", productCase: "Developed from scratch by Alpa", productLink: "Explore MakerNotch",
-    otherProducts: "More product work", allWork: "Explore all projects", consultingNote: "You can start here, before deciding what to build.",
+    otherCase: "Also: AI-assisted candidate analysis at López Alcón", productCase: "Developed from scratch by Alpa", productLink: "Explore MakerNotch",
+    otherProducts: "More product work", allWork: "Explore all projects", consultingNote: "Most companies start here: a pilot before scaling up.",
     processTitle: "How we move forward.", processIntro: "The scope is agreed for each project. We work in stages, reviewing what is built with you.",
   } : {
-    serviceDetail: "Ver el servicio", railway: "Automatización en la práctica", caseLink: "Conocer el proyecto",
-    caseContext: "Consultas de documentación técnica para el mantenimiento ferroviario en una línea de Oslo. Proyecto real anonimizado.",
+    serviceDetail: "Ver el servicio", railway: "IA aplicada, en la práctica", caseLink: "Conocer el proyecto",
+    caseContext: "Para CAF: consultas de documentación técnica para el mantenimiento de trenes en una línea de Oslo. La IA responde a partir de los manuales de mantenimiento.",
     flow: "Enfoque del proyecto ferroviario", documents: "Manuales técnicos", query: "Consulta del operario", response: "Información de mantenimiento",
-    otherCase: "También: análisis de candidaturas con IA", productCase: "Desarrollado desde cero por Alpa", productLink: "Conocer MakerNotch",
-    otherProducts: "Más trabajo de producto", allWork: "Ver todos los proyectos", consultingNote: "Puedes empezar aquí, antes de decidir qué desarrollar.",
+    otherCase: "También: análisis de candidaturas con IA en López Alcón", productCase: "Desarrollado desde cero por Alpa", productLink: "Conocer MakerNotch",
+    otherProducts: "Más trabajo de producto", allWork: "Ver todos los proyectos", consultingNote: "La mayoría de empresas empieza aquí: un piloto antes de ampliar.",
     processTitle: "Así avanzamos contigo.", processIntro: "El alcance se acuerda para cada proyecto. Trabajamos por fases y revisamos contigo lo que construimos.",
   };
 
@@ -53,7 +53,7 @@ const ServicesIndexPage = () => {
       <section id="automatizacion" aria-labelledby="automation-offer-title" className="services-offer-section">
         <div className="services-page-container">
           <div className="services-offer-layout">
-            <div className="services-offer-heading"><h2 id="automation-offer-title">{english ? <>Automation<br />and AI.</> : <>Automatización<br />e IA.</>}</h2><p>{c.automation.text}</p><ContactLink topic="diagnostico">{c.automation.contact}</ContactLink></div>
+            <div className="services-offer-heading"><h2 id="automation-offer-title">{english ? <>Private<br />AI.</> : <>IA<br />privada.</>}</h2><p>{c.automation.text}</p><ContactLink topic="sistemas">{c.automation.contact}</ContactLink></div>
             <div className="services-capability-list">{c.automation.offerings.map((item,index) => <AnimatedDetails key={item.path} className="services-capability" expanded={activeCapability === index} onExpandedChange={open => setActiveCapability(open ? index : null)} summary={<><h3>{item.title}</h3><Plus aria-hidden="true" size={22} /></>}><p>{item.text}</p><Link to={item.path} aria-label={`${labels.serviceDetail}: ${item.title}`}>{labels.serviceDetail}<ArrowRight aria-hidden="true" size={18} /></Link></AnimatedDetails>)}</div>
           </div>
           <aside className="services-automation-example" aria-labelledby="services-railway-title">
@@ -70,14 +70,14 @@ const ServicesIndexPage = () => {
 
       <section id="desarrollo" aria-labelledby="software-offer-title" className="services-offer-section services-software-section">
         <div className="services-page-container services-software-layout">
-          <div className="services-offer-heading"><h2 id="software-offer-title">{english ? <>Software<br />development.</> : <>Desarrollo<br />de software.</>}</h2><p>{c.software.text}</p><ul className="services-software-scope">{c.software.items.map(item => <li key={item}>{item}</li>)}</ul><div className="services-detail-links"><Link to="/servicios/desarrollo-producto-digital/">{c.software.detail}<ArrowRight aria-hidden="true" size={18} /></Link><Link to="/servicios/desarrollo-software-medida-ia/">{c.software.custom}<ArrowRight aria-hidden="true" size={18} /></Link></div><ContactLink topic="producto">{c.software.contact}</ContactLink></div>
+          <div className="services-offer-heading"><h2 id="software-offer-title">{english ? <>Custom<br />development.</> : <>Desarrollo<br />a medida.</>}</h2><p>{c.software.text}</p><ul className="services-software-scope">{c.software.items.map(item => <li key={item}>{item}</li>)}</ul><div className="services-detail-links"><Link to="/servicios/desarrollo-producto-digital/">{c.software.detail}<ArrowRight aria-hidden="true" size={18} /></Link><Link to="/servicios/desarrollo-software-medida-ia/">{c.software.custom}<ArrowRight aria-hidden="true" size={18} /></Link></div><ContactLink topic="producto">{c.software.contact}</ContactLink></div>
           <div className="services-product-evidence"><Link to="/casos/makernotch/" className="services-product-link" aria-label={labels.productLink}><ProjectCover project={maker} /><div className="services-product-caption"><h3>MakerNotch</h3><p>{labels.productCase}<ArrowUpRight aria-hidden="true" size={19} /></p></div></Link><div className="services-related-products"><span>{labels.otherProducts}</span><Link to="/casos/boughtcast/">Boughtcast<ArrowUpRight aria-hidden="true" size={16} /></Link><Link to="/casos/">{labels.allWork}<ArrowUpRight aria-hidden="true" size={16} /></Link></div></div>
         </div>
       </section>
 
       <section id="consultoria" aria-labelledby="consulting-offer-title" className="services-offer-section">
         <div className="services-page-container services-offer-layout">
-          <div className="services-offer-heading"><h2 id="consulting-offer-title">{english ? <>AI<br />consulting.</> : <>Consultoría<br />de IA.</>}</h2><p>{c.consulting.text}</p><Link className="services-text-link" to="/servicios/consultoria-ia-pymes/">{c.consulting.detail}<ArrowRight aria-hidden="true" size={18} /></Link><ContactLink topic="acompanamiento">{c.consulting.contact}</ContactLink></div>
+          <div className="services-offer-heading"><h2 id="consulting-offer-title">{english ? <>Consulting<br />and pilot.</> : <>Consultoría<br />y piloto.</>}</h2><p>{c.consulting.text}</p><Link className="services-text-link" to="/servicios/consultoria-ia-pymes/">{c.consulting.detail}<ArrowRight aria-hidden="true" size={18} /></Link><ContactLink topic="diagnostico">{c.consulting.contact}</ContactLink></div>
           <div><p className="services-consulting-note">{labels.consultingNote}</p><ul className="services-consulting-list">{c.consulting.offerings.map(item => <li key={item.title}><h3>{item.title}</h3><p>{item.text}</p></li>)}</ul></div>
         </div>
       </section>

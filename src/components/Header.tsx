@@ -18,7 +18,9 @@ const Header = () => {
   const allLinks = lang === "en"
     ? [{ to: "/servicios/", label: "Services" }, { to: "/sectores/", label: "Sectors" }, { to: "/casos/", label: "Projects" }, { to: "/recursos/", label: "Resources" }, { to: "/como-trabajamos/", label: "Our process" }]
     : [{ to: "/servicios/", label: "Servicios" }, { to: "/sectores/", label: "Sectores" }, { to: "/casos/", label: "Casos" }, { to: "/recursos/", label: "Recursos" }, { to: "/como-trabajamos/", label: "Cómo trabajamos" }];
-  const links = studioHeader ? allLinks.filter(link => !["/sectores/", "/recursos/"].includes(link.to)).map(link => link.to === "/casos/" ? { ...link, label: lang === "en" ? "Projects" : "Proyectos" } : link) : allLinks;
+  // Proyectos oculto por ahora en el menú (la página /casos/ sigue publicada). Para mostrarlo, vaciar esta lista.
+  const hiddenLinks = ["/casos/"];
+  const links = (studioHeader ? allLinks.filter(link => !["/sectores/", "/recursos/"].includes(link.to)).map(link => link.to === "/casos/" ? { ...link, label: lang === "en" ? "Projects" : "Proyectos" } : link) : allLinks).filter(link => !hiddenLinks.includes(link.to));
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);

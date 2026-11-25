@@ -6,11 +6,11 @@ brand
 
 ## Users
 
-Responsables de pymes en toda España que quieren reducir tareas repetitivas, y equipos de startups y empresas que necesitan definir, construir o evolucionar productos digitales.
+Dirección y responsables de pymes en toda España que quieren usar IA con los datos de su empresa sin cederlos a proveedores externos ni pagar por cada consulta.
 
 ## Product Purpose
 
-Presentar los servicios de consultoría, automatización y desarrollo de producto digital de Alpa Digital, mostrar trabajo real y facilitar que una empresa o startup cuente su necesidad. La web debe atraer búsquedas relevantes y convertir visitas en conversaciones comerciales útiles.
+Presentar la IA privada de Alpa Digital: una instancia propia por empresa con modelos abiertos en infraestructura dedicada (UE, y hardware propio cuando compense), apps corporativas con IA, automatizaciones e integración a medida. Mostrar trabajo real y facilitar que una pyme proponga un proceso para un piloto. La web debe atraer búsquedas relevantes y convertir visitas en conversaciones comerciales útiles.
 
 ## Brand Personality
 

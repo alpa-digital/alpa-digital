@@ -13,7 +13,8 @@ export const useHomeMotion = (rootRef: RefObject<HTMLElement>) => {
       if (media.matches) return;
       const animations = new Set<Animation>();
       const projects = Array.from(root.querySelectorAll<HTMLElement>(".studio-work-project"));
-      const covers = Array.from(root.querySelectorAll<HTMLElement>(".studio-work-cover"));
+      // Only covers with an image get parallax; text covers (e.g. the AI cases) have no .studio-work-media.
+      const covers = Array.from(root.querySelectorAll<HTMLElement>(".studio-work-cover")).filter(cover => cover.querySelector(".studio-work-media"));
       const mediaElements = covers.map(cover => cover.querySelector<HTMLElement>(".studio-work-media")!);
       const reveal = new IntersectionObserver(entries => {
         entries.filter(entry => entry.isIntersecting).forEach(entry => {

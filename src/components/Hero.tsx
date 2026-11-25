@@ -46,13 +46,13 @@ const Hero = () => {
     <section className="studio-hero" aria-labelledby="home-title">
       <div className="studio-hero-content">
         <h1 id="home-title">
-          <span className="studio-hero-line"><span>{english ? "We automate processes." : "Automatizamos procesos."}</span></span>{" "}
-          <span className="studio-hero-line"><span>{english ? "We build products." : "Desarrollamos productos."}</span></span>
+          <span className="studio-hero-line"><span>{english ? "Private AI for your company." : "IA privada para tu empresa."}</span></span>{" "}
+          <span className="studio-hero-line"><span>{english ? "Your data, under your control." : "Tus datos, bajo tu control."}</span></span>
         </h1>
         <div className="studio-hero-bottom">
           <p>{english
-            ? "We are Alpa, an automation and software development team. We connect your business tools and build SaaS, web platforms and mobile apps from scratch."
-            : "Somos Alpa, un equipo de automatización y desarrollo de software. Conectamos las herramientas de tu empresa y creamos SaaS, plataformas web y apps móviles desde cero."}</p>
+            ? <>Alpa sets up your company's <strong>own AI platform</strong>, running <strong>open models</strong> on <strong>dedicated infrastructure</strong>, with the apps your team uses every day on top: <strong>email</strong>, <strong>CRM</strong>, <strong>documents</strong> and <strong>automations</strong>. No paying an outside provider <strong>for every query</strong>.</>
+            : <>Alpa monta en tu empresa una <strong>plataforma de IA propia</strong>, con <strong>modelos abiertos</strong> en <strong>infraestructura dedicada</strong>, y sobre ella las apps que tu equipo usa cada día: <strong>correo</strong>, <strong>CRM</strong>, <strong>documentos</strong> y <strong>automatizaciones</strong>. Sin pagar a un proveedor externo <strong>por cada consulta</strong>.</>}</p>
           <button ref={filmTriggerRef} type="button" className="studio-hero-video" onClick={openFilm} aria-haspopup="dialog">
             <span className="studio-hero-play"><Play size={23} fill="currentColor" aria-hidden="true" /></span>
             <span className="studio-hero-video-label">
